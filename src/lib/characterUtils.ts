@@ -106,7 +106,7 @@ export function generateRandomCharacter(): MouseCharacter {
 }
 
 // Создание стартового инвентаря
-function createStartingInventory(backgroundEntry: any, bonusItems: string[]) {
+function createStartingInventory(backgroundEntry: { hp: number; pips: number; background: string; itemA: string; itemB: string }, bonusItems: string[]) {
   const items: InventoryItem[] = [];
 
   // Базовое снаряжение

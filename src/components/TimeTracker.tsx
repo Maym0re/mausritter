@@ -14,8 +14,6 @@ export function TimeTracker({ characters = [], onCharacterUpdate }: TimeTrackerP
   const [currentTime, setCurrentTime] = useState(timeManager.getCurrentTime());
   const [currentWeather, setCurrentWeather] = useState<WeatherEntry | null>(null);
   const [todaysEvent, setTodaysEvent] = useState<string | null>(null);
-  const [showRestModal, setShowRestModal] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
 
   // Обновляем время каждую секунду для отображения
   useEffect(() => {
@@ -85,7 +83,6 @@ export function TimeTracker({ characters = [], onCharacterUpdate }: TimeTrackerP
     }
 
     setCurrentTime(timeManager.getCurrentTime());
-    setShowRestModal(false);
   };
 
   const newDay = () => {
@@ -207,7 +204,7 @@ export function TimeTracker({ characters = [], onCharacterUpdate }: TimeTrackerP
       {/* Сезонное событие */}
       {todaysEvent && (
         <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200 mb-6">
-          <h3 className="font-bold text-yellow-900 mb-2">📅 Today's Event</h3>
+          <h3 className="font-bold text-yellow-900 mb-2">📅 Today&apos;s Event</h3>
           <p className="text-yellow-800">{todaysEvent}</p>
           <button
             onClick={() => setTodaysEvent(null)}
