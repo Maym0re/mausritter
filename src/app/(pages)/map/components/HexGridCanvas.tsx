@@ -23,10 +23,47 @@ export function HexGridCanvas({ mode }: HexGridCanvasProps) {
   const [editingHex, setEditingHex] = useState<string | null>(null);
   const [hoveredHex, setHoveredHex] = useState<string | null>(null);
 
+  // Состояние для размеров canvas
+  const [canvasSize, setCanvasSize] = useState({ width: 1000, height: 700 });
+
   const radius = 35;
   const mapRadius = 2;
-  const canvasWidth = 1000;
-  const canvasHeight = 700;
+
+  // Хук для отслеживания размеров окна
+  useEffect(() => {
+    const updateCanvasSize = () => {
+      // Получаем размеры viewport
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // Вычитаем примерную высоту хедера/навигации (если есть)
+      const headerHeight = 120; // Примерная высота верхней панели с кнопками
+      const availableHeight = height - headerHeight;
+
+      const newWidth = width;
+      const newHeight = Math.max(availableHeight, 400); // Минимальная высота 400px
+
+      setCanvasSize({
+        width: newWidth,
+        height: newHeight
+      });
+
+      // Обновляем начальную позицию для центрирования карты
+      setPos({
+        x: newWidth / 2,
+        y: newHeight / 2
+      });
+    };
+
+    // Устанавливаем начальные размеры
+    updateCanvasSize();
+
+    // Слушаем изменения размера окна
+    window.addEventListener('resize', updateCanvasSize);
+
+    // Очищаем слушатель при размонтировании
+    return () => window.removeEventListener('resize', updateCanvasSize);
+  }, []);
 
   // Мемоизируем создание Tile и grid чтобы избежать бесконечного цикла
   const { Tile, grid } = useMemo(() => {
@@ -278,8 +315,8 @@ export function HexGridCanvas({ mode }: HexGridCanvasProps) {
         {/* Основная карта */}
         <div className="flex-1 bg-green-50">
           <Stage
-            width={canvasWidth}
-            height={canvasHeight}
+            width={canvasSize.width}
+            height={canvasSize.height}
             draggable
             scaleX={scale}
             scaleY={scale}
@@ -350,6 +387,7 @@ export function HexGridCanvas({ mode }: HexGridCanvasProps) {
             hex={mapState.hexes.get(mapState.selectedHex)!}
             mode={mode}
             onClose={() => setMapState(prev => ({ ...prev, selectedHex: null }))}
+            isOpen={!!mapState.selectedHex}
           />
         )}
       </div>
