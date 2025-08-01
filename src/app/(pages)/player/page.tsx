@@ -1,6 +1,10 @@
+'use client';
+import { HexGridCanvas } from '../map/components/HexGridCanvas';
+
 export default function PlayerPage() {
-	return (
-		<h1>Profile</h1>
-		
-	)
+  return (
+    <div className="h-screen">
+      <HexGridCanvas mode="player" />
+    </div>
+  );
 }

@@ -1,105 +1,367 @@
 'use client';
-import React, { useState } from "react";
-import { Stage, Layer, Group, RegularPolygon, Text } from "react-konva";
-import { defineHex, Grid, Hex, Orientation, spiral } from "honeycomb-grid";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { Stage, Layer, Group, RegularPolygon, Text, Circle } from "react-konva";
+import { defineHex, Grid, Orientation, spiral } from "honeycomb-grid";
+import { HexData, MapState, HEX_TYPES } from "@/types/map";
+import { hexKey, getRandomHexType, getRandomLandmark, getRandomLandmarkDetail, generateSettlement, getNeighborCoords } from "@/lib/mapUtils";
+import { HexEditModal } from "./HexEditModal";
+import { HexDetailsPanel } from "./HexDetailsPanel";
 
-export function HexGridCanvas() {
-	const [scale, setScale] = useState(1);
-	const [pos, setPos] = useState({ x: 0, y: 0 });
+interface HexGridCanvasProps {
+  mode: 'master' | 'player';
+}
 
-	const radius = 40;
-	const mapRadius = 2;
-	const canvasWidth = 800;
-	const canvasHeight = 600;
+export function HexGridCanvas({ mode }: HexGridCanvasProps) {
+  const [scale, setScale] = useState(1);
+  const [pos, setPos] = useState({ x: 400, y: 300 });
+  const [mapState, setMapState] = useState<MapState>({
+    hexes: new Map(),
+    selectedHex: null,
+    mode,
+    isEditMode: false,
+  });
+  const [editingHex, setEditingHex] = useState<string | null>(null);
+  const [hoveredHex, setHoveredHex] = useState<string | null>(null);
 
-// 1) Define a flat-top hexagon factory with a size (dimension) of radius px
-	const Tile = defineHex({
-		dimensions: radius,
-		orientation: Orientation.FLAT,
-	});
+  const radius = 35;
+  const mapRadius = 2;
+  const canvasWidth = 1000;
+  const canvasHeight = 700;
 
-// 2) Build a hexagon-shaped grid (radius = mapRadius => 19 hexes)
-	const grid = new Grid(Tile, spiral({ radius: mapRadius }));
+  // Мемоизируем создание Tile и grid чтобы избежать бесконечного цикла
+  const { Tile, grid } = useMemo(() => {
+    const Tile = defineHex({
+      dimensions: radius,
+      orientation: Orientation.FLAT, // плоская сторона вверх
+    });
 
-// Export the grid cells and a Layout for pixel conversion
-	const hexes: Grid<Hex> = grid;
+    const grid = new Grid(Tile, spiral({ radius: mapRadius }));
 
-	// Пример: задёргиваем одну картинку для всех ячеек
-	// const [img] = useImage("/path/to/texture.png");
+    return { Tile, grid };
+  }, [radius, mapRadius]);
 
-	return (
-		<Stage
-			width={canvasWidth}
-			height={canvasHeight}
+  // Инициализация карты
+  useEffect(() => {
+    const initialHexes = new Map<string, HexData>();
 
-			draggable
-			scaleX={scale}
-			scaleY={scale}
-			x={pos.x}
-			y={pos.y}
-			onWheel={e => {
-				e.evt.preventDefault();
-				const delta = e.evt.deltaY > 0 ? 0.98 : 1.05;
-				setScale(prev => prev * delta);
-			}}
-		>
-			<Layer>
-				{hexes.toArray().map((hex, i) => {
-					const x = hex.x + canvasWidth / 2;
-					const y = hex.y + canvasHeight / 2;
-					return (
-						<Group key={i} x={x} y={y}>
-							{/* фон-шестиугольник */}
-							<RegularPolygon
-								sides={6}
-								radius={radius}
-								rotation={30}
-								fill={'#fff'}
-								fillPatternScaleX={1}
-								fillPatternScaleY={1}
-								stroke="#333"
-								strokeWidth={1}
-								onMouseEnter={e => {
-									const group = e.target.getParent();
-									group?.moveToTop();
-									// group?.getLayer().batchDraw();
-									e.target.to({
-										scaleX: 1.1,
-										scaleY: 1.1,
-										duration: 0.2,
-									});
-								}}
-								onMouseLeave={e => {
-									e.target.to({
-										scaleX: 1,
-										scaleY: 1,
-										duration: 0.2,
-									});
-								}}
-								onClick={(e) => {
-									// e.target.to({
-									// 	scaleX: 3,
-									// 	scaleY: 3,
-									// 	duration: 0.3,
-									// });
-								}}
-							></RegularPolygon>
-							<Text
-								text={`${i + 1}`}
-								fontSize={radius * 0.6}
-								width={radius * 2}
-								height={radius * 2}
-								align="center"
-								verticalAlign="middle"
-								offsetX={radius}
-								offsetY={radius}
-								fill="#333"
-								listening={false}
-							/>
-						</Group>
-					);
-				})}
-			</Layer>
-		</Stage>
-	);
+    grid.forEach((hex) => {
+      const { q, r, s } = hex;
+      const key = hexKey(q, r);
+
+      // Центральный гекс всегда поселение
+      if (q === 0 && r === 0) {
+        const hexType = HEX_TYPES.find(t => t.id === 'countryside')!;
+        initialHexes.set(key, {
+          q, r, s,
+          hexType,
+          settlement: generateSettlement(),
+          isRevealed: true,
+          notes: "Starting settlement",
+          customName: "Acorndale"
+        });
+      } else {
+        // Генерируем случайный контент для остальных гексов
+        const hexType = getRandomHexType();
+        const landmark = getRandomLandmark(hexType.id);
+        const landmarkDetail = getRandomLandmarkDetail();
+
+        initialHexes.set(key, {
+          q, r, s,
+          hexType,
+          landmark,
+          landmarkDetail,
+          settlement: Math.random() < 0.3 ? generateSettlement() : undefined,
+          isRevealed: mode === 'master',
+          notes: ""
+        });
+      }
+    });
+
+    setMapState(prev => ({ ...prev, hexes: initialHexes }));
+  }, [mode, grid]); // теперь grid стабильный
+
+  const handleHexClick = useCallback((hexKey: string) => {
+    if (mode === 'master') {
+      if (mapState.isEditMode) {
+        setEditingHex(hexKey);
+      } else {
+        // Переключаем видимость для игроков
+        setMapState(prev => {
+          const newHexes = new Map(prev.hexes);
+          const hex = newHexes.get(hexKey);
+          if (hex) {
+            newHexes.set(hexKey, { ...hex, isRevealed: !hex.isRevealed });
+          }
+          return { ...prev, hexes: newHexes };
+        });
+      }
+    }
+
+    setMapState(prev => ({ ...prev, selectedHex: hexKey }));
+  }, [mode, mapState.isEditMode]);
+
+  const handleHexSave = useCallback((hexKey: string, hexData: Partial<HexData>) => {
+    setMapState(prev => {
+      const newHexes = new Map(prev.hexes);
+      const existing = newHexes.get(hexKey);
+      if (existing) {
+        newHexes.set(hexKey, { ...existing, ...hexData });
+      }
+      return { ...prev, hexes: newHexes };
+    });
+    setEditingHex(null);
+  }, []);
+
+  const addNewHexes = useCallback(() => {
+    setMapState(prev => {
+      const newHexes = new Map(prev.hexes);
+      const existingCoords = Array.from(newHexes.keys()).map(key => {
+        const [q, r] = key.split(',').map(Number);
+        return { q, r };
+      });
+
+      // Находим все возможные новые позиции вокруг существующих гексов
+      const potentialNew = new Set<string>();
+      existingCoords.forEach(({ q, r }) => {
+        getNeighborCoords(q, r).forEach(({ q: nq, r: nr }) => {
+          const key = hexKey(nq, nr);
+          if (!newHexes.has(key)) {
+            potentialNew.add(key);
+          }
+        });
+      });
+
+      // Добавляем новые гексы
+      potentialNew.forEach(key => {
+        const [q, r] = key.split(',').map(Number);
+        const hexType = getRandomHexType();
+        const landmark = getRandomLandmark(hexType.id);
+        const landmarkDetail = getRandomLandmarkDetail();
+
+        newHexes.set(key, {
+          q, r, s: -(q + r),
+          hexType,
+          landmark,
+          landmarkDetail,
+          settlement: Math.random() < 0.2 ? generateSettlement() : undefined,
+          isRevealed: mode === 'master',
+          notes: ""
+        });
+      });
+
+      return { ...prev, hexes: newHexes };
+    });
+  }, [mode]);
+
+  const getHexColor = (hex: HexData) => {
+    if (!hex.isRevealed && mode === 'player') {
+      return '#2a2a2a'; // Туман войны
+    }
+    return hex.hexType.color;
+  };
+
+  const getHexStroke = (hexKey: string, hex: HexData) => {
+    if (mapState.selectedHex === hexKey) return '#FFD700';
+    if (hoveredHex === hexKey) return '#FFA500';
+    if (!hex.isRevealed && mode === 'player') return '#404040';
+    return '#8B4513';
+  };
+
+  const renderHexLabel = (hex: HexData, x: number, y: number) => {
+    if (!hex.isRevealed && mode === 'player') {
+      return (
+        <Text
+          x={x - 8}
+          y={y - 6}
+          text="?"
+          fontSize={24}
+          fill="#666"
+          fontFamily="serif"
+        />
+      );
+    }
+
+    const label = hex.customName || hex.settlement?.name || hex.landmark?.name || hex.hexType.name;
+    return (
+      <Text
+        x={x - label.length * 3}
+        y={y - 6}
+        text={label}
+        fontSize={10}
+        fill="#2F4F4F"
+        fontWeight="bold"
+        fontFamily="serif"
+      />
+    );
+  };
+
+  const renderHexIcon = (hex: HexData, x: number, y: number) => {
+    if (!hex.isRevealed && mode === 'player') return null;
+
+    if (hex.settlement) {
+      // Рисуем домик для поселений
+      return (
+        <Group>
+          <RegularPolygon
+            x={x}
+            y={y - 10}
+            sides={4}
+            radius={8}
+            fill="#8B4513"
+            rotation={45}
+          />
+          <RegularPolygon
+            x={x}
+            y={y - 18}
+            sides={3}
+            radius={6}
+            fill="#CD853F"
+          />
+        </Group>
+      );
+    }
+
+    if (hex.landmark) {
+      // Простая иконка для ориентиров
+      return (
+        <Circle
+          x={x}
+          y={y - 8}
+          radius={4}
+          fill="#4169E1"
+          stroke="#000"
+          strokeWidth={1}
+        />
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Панель управления */}
+      <div className="bg-amber-50 border-b-2 border-amber-200 p-4 shadow-md">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-amber-900">
+            {mode === 'master' ? 'Game Master Map' : 'Player Map'}
+          </h2>
+          <div className="flex gap-4">
+            {mode === 'master' && (
+              <>
+                <button
+                  onClick={() => setMapState(prev => ({ ...prev, isEditMode: !prev.isEditMode }))}
+                  className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                    mapState.isEditMode 
+                      ? 'bg-green-600 text-white hover:bg-green-700' 
+                      : 'bg-amber-600 text-white hover:bg-amber-700'
+                  }`}
+                >
+                  {mapState.isEditMode ? 'Exit Edit' : 'Edit Mode'}
+                </button>
+                <button
+                  onClick={addNewHexes}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Expand Map
+                </button>
+              </>
+            )}
+            <div className="text-sm text-amber-700">
+              Scale: {Math.round(scale * 100)}%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-1">
+        {/* Основная карта */}
+        <div className="flex-1 bg-green-50">
+          <Stage
+            width={canvasWidth}
+            height={canvasHeight}
+            draggable
+            scaleX={scale}
+            scaleY={scale}
+            x={pos.x}
+            y={pos.y}
+            onWheel={(e) => {
+              e.evt.preventDefault();
+              const scaleBy = 1.1;
+              const stage = e.target.getStage();
+              if (!stage) return;
+
+              const oldScale = stage.scaleX();
+              const pointer = stage.getPointerPosition();
+              if (!pointer) return;
+
+              const mousePointTo = {
+                x: (pointer.x - stage.x()) / oldScale,
+                y: (pointer.y - stage.y()) / oldScale,
+              };
+
+              const newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+              const clampedScale = Math.max(0.5, Math.min(3, newScale));
+
+              setScale(clampedScale);
+              setPos({
+                x: pointer.x - mousePointTo.x * clampedScale,
+                y: pointer.y - mousePointTo.y * clampedScale,
+              });
+            }}
+          >
+            <Layer>
+              {Array.from(mapState.hexes.entries()).map(([key, hex]) => {
+                // Используем Tile напрямую для создания гекса с координатами
+                const gridHex = new Tile({ q: hex.q, r: hex.r });
+                // Получаем пиксельные координаты через x и y свойства
+                const x = gridHex.x;
+                const y = gridHex.y;
+
+                return (
+                  <Group key={key}>
+                    <RegularPolygon
+                      x={x}
+                      y={y}
+                      sides={6}
+                      rotation={30}
+                      radius={radius}
+                      fill={getHexColor(hex)}
+                      stroke={getHexStroke(key, hex)}
+                      strokeWidth={mapState.selectedHex === key ? 3 : 1}
+                      onClick={() => handleHexClick(key)}
+                      onMouseEnter={() => setHoveredHex(key)}
+                      onMouseLeave={() => setHoveredHex(null)}
+                      shadowBlur={mapState.selectedHex === key ? 10 : 0}
+                      shadowColor="gold"
+                    />
+                    {renderHexIcon(hex, x, y)}
+                    {renderHexLabel(hex, x, y)}
+                  </Group>
+                );
+              })}
+            </Layer>
+          </Stage>
+        </div>
+
+        {/* Боковая панель с деталями */}
+        {mapState.selectedHex && (
+          <HexDetailsPanel
+            hex={mapState.hexes.get(mapState.selectedHex)!}
+            mode={mode}
+            onClose={() => setMapState(prev => ({ ...prev, selectedHex: null }))}
+          />
+        )}
+      </div>
+
+      {/* Модальное окно редактирования */}
+      {editingHex && (
+        <HexEditModal
+          hex={mapState.hexes.get(editingHex)!}
+          onSave={(data: Partial<HexData>) => handleHexSave(editingHex, data)}
+          onClose={() => setEditingHex(null)}
+        />
+      )}
+    </div>
+  );
 }
