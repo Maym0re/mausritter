@@ -324,27 +324,38 @@ export function HexGridCanvas({ mode }: HexGridCanvasProps) {
             y={pos.y}
             onWheel={(e) => {
               e.evt.preventDefault();
-              const scaleBy = 1.1;
-              const stage = e.target.getStage();
-              if (!stage) return;
 
-              const oldScale = stage.scaleX();
-              const pointer = stage.getPointerPosition();
-              if (!pointer) return;
+              // Если нажат Ctrl - это жест зума
+              if (e.evt.ctrlKey) {
+                const scaleBy = 1.1;
+                const stage = e.target.getStage();
+                if (!stage) return;
 
-              const mousePointTo = {
-                x: (pointer.x - stage.x()) / oldScale,
-                y: (pointer.y - stage.y()) / oldScale,
-              };
+                const oldScale = stage.scaleX();
+                const pointer = stage.getPointerPosition();
+                if (!pointer) return;
 
-              const newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-              const clampedScale = Math.max(0.5, Math.min(3, newScale));
+                const mousePointTo = {
+                  x: (pointer.x - stage.x()) / oldScale,
+                  y: (pointer.y - stage.y()) / oldScale,
+                };
 
-              setScale(clampedScale);
-              setPos({
-                x: pointer.x - mousePointTo.x * clampedScale,
-                y: pointer.y - mousePointTo.y * clampedScale,
-              });
+                // Инвертируем направление зума для правильного поведения на тачпаде
+                const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+                const clampedScale = Math.max(0.5, Math.min(3, newScale));
+
+                setScale(clampedScale);
+                setPos({
+                  x: pointer.x - mousePointTo.x * clampedScale,
+                  y: pointer.y - mousePointTo.y * clampedScale,
+                });
+              } else {
+                // Обычный скролл - панорамирование карты
+                setPos(prevPos => ({
+                  x: prevPos.x - e.evt.deltaX,
+                  y: prevPos.y - e.evt.deltaY,
+                }));
+              }
             }}
           >
             <Layer>
