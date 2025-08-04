@@ -1,15 +1,15 @@
 'use client';
 import React, { useState } from 'react';
-import { MouseCharacter } from '@/types/character';
+import { Character } from '@/types/character';
 import { generateRandomCharacter } from "@/lib/characterUtils";
 
 interface CharacterGeneratorProps {
   onCancel?: () => void;
-  onSave: (character: MouseCharacter) => void;
+  onSave: (character: Character) => void;
 }
 
 export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps) {
-  const [character, setCharacter] = useState<MouseCharacter | null>(null);
+  const [character, setCharacter] = useState<Character | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [editMode, setEditMode] = useState(false);
 

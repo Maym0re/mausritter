@@ -3,19 +3,19 @@ import React, { useState } from 'react';
 import { CharacterGenerator } from '@/components/CharacterGenerator';
 import { TimeTracker } from '@/components/TimeTracker';
 import { InventoryManager } from '@/components/InventoryManager';
-import { MouseCharacter } from '@/types/character';
+import { Character } from '@/types/character';
 
 export default function ToolsPage() {
   const [activeTab, setActiveTab] = useState<'characters' | 'time' | 'inventory'>('characters');
-  const [characters, setCharacters] = useState<MouseCharacter[]>([]);
+  const [characters, setCharacters] = useState<Character[]>([]);
 
-  const handleCharacterUpdate = (characterId: string, updatedCharacter: MouseCharacter) => {
+  const handleCharacterUpdate = (characterId: string, updatedCharacter: Character) => {
     setCharacters(prev =>
       prev.map(char => char.id === characterId ? updatedCharacter : char)
     );
   };
 
-  const addCharacterToParty = (character: MouseCharacter) => {
+  const addCharacterToParty = (character: Character) => {
     setCharacters(prev => [...prev, character]);
   };
 

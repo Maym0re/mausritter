@@ -1,5 +1,5 @@
 import {
-  MouseCharacter,
+  Character,
   BACKGROUND_TABLE,
   BIRTHSIGNS,
   COAT_COLORS,
@@ -35,7 +35,7 @@ export function rollD66(): number {
 }
 
 // Генерация случайного персонажа
-export function generateRandomCharacter(): MouseCharacter {
+export function generateRandomCharacter(): Character {
   // 1. Генерируем атрибуты
   const str = roll3d6KeepBest2();
   const dex = roll3d6KeepBest2();
@@ -69,7 +69,7 @@ export function generateRandomCharacter(): MouseCharacter {
   // 6. Создаем инвентарь
   const inventory = createStartingInventory(backgroundEntry, bonusItems);
 
-  const character: MouseCharacter = {
+  const character: Character = {
     id: generateId(),
     name: generateMouseName(),
 
@@ -188,7 +188,7 @@ function generateMouseName(): string {
 }
 
 // Функция для получения предмета из инвентаря
-export function getItemFromInventory(character: MouseCharacter, itemId: string): InventoryItem | null {
+export function getItemFromInventory(character: Character, itemId: string): InventoryItem | null {
   const allSlots = [
     ...character.inventory.paws,
     ...character.inventory.body,
@@ -199,7 +199,7 @@ export function getItemFromInventory(character: MouseCharacter, itemId: string):
 }
 
 // Функция для добавления предмета в инвентарь
-export function addItemToInventory(character: MouseCharacter, item: InventoryItem): boolean {
+export function addItemToInventory(character: Character, item: InventoryItem): boolean {
   // Ищем свободные слоты в порядке: pack -> body -> paws
   const { pack, body, paws } = character.inventory;
 
@@ -240,7 +240,7 @@ export function addItemToInventory(character: MouseCharacter, item: InventoryIte
 }
 
 // Функция для удаления предмета из инвентаря
-export function removeItemFromInventory(character: MouseCharacter, itemId: string): boolean {
+export function removeItemFromInventory(character: Character, itemId: string): boolean {
   const { paws, body, pack } = character.inventory;
 
   // Проверяем все слоты
@@ -270,7 +270,7 @@ export function removeItemFromInventory(character: MouseCharacter, itemId: strin
 }
 
 // Проверка на перегрузку
-export function isEncumbered(character: MouseCharacter): boolean {
+export function isEncumbered(character: Character): boolean {
   const totalSlots = 10; // 2 paws + 2 body + 6 pack
   const usedSlots = getTotalUsedSlots(character);
   const conditionSlots = character.conditions.length;
@@ -279,7 +279,7 @@ export function isEncumbered(character: MouseCharacter): boolean {
 }
 
 // Подсчет использованных слотов
-export function getTotalUsedSlots(character: MouseCharacter): number {
+export function getTotalUsedSlots(character: Character): number {
   let used = 0;
 
   [
@@ -296,7 +296,7 @@ export function getTotalUsedSlots(character: MouseCharacter): number {
 }
 
 // Получение доступных слотов
-export function getAvailableSlots(character: MouseCharacter): number {
+export function getAvailableSlots(character: Character): number {
   const totalSlots = 10;
   const usedSlots = getTotalUsedSlots(character);
   const conditionSlots = character.conditions.length;

@@ -1,6 +1,6 @@
 import { GameTime, WeatherEntry } from "@/types/time";
 
-export interface MouseCharacter {
+export interface Character {
   id: string;
   name: string;
   notes?: string;
@@ -63,7 +63,7 @@ export interface Campaign {
     email?: string;
   };
   players: CampaignPlayer[];
-  characters?: MouseCharacter[];
+  characters?: Character[];
   hexMap?: any;
   _count?: {
     players: number;

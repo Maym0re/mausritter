@@ -7,7 +7,7 @@ import {
   RestType,
   RestResult
 } from '@/types/time';
-import { MouseCharacter, CONDITIONS } from '@/types/character';
+import { Character, CONDITIONS } from '@/types/character';
 
 // Утилиты для работы со временем
 export class GameTimeManager {
@@ -103,7 +103,7 @@ export function rollD6(): number {
 }
 
 // Утилиты для отдыха
-export function performRest(character: MouseCharacter, restType: RestType): RestResult {
+export function performRest(character: Character, restType: RestType): RestResult {
   const result: RestResult = {
     type: restType,
     hpHealed: 0,
@@ -166,7 +166,7 @@ export function performRest(character: MouseCharacter, restType: RestType): Rest
 }
 
 // Применение результатов отдыха к персонажу
-export function applyRestResults(character: MouseCharacter, result: RestResult): MouseCharacter {
+export function applyRestResults(character: Character, result: RestResult): Character {
   const updated = { ...character };
 
   // Лечим HP
@@ -216,12 +216,12 @@ export function getTimeOfDay(watch: number): string {
 }
 
 // Проверка, нужно ли есть
-export function needsFood(character: MouseCharacter, daysSinceLastMeal: number): boolean {
+export function needsFood(character: Character, daysSinceLastMeal: number): boolean {
   return daysSinceLastMeal >= 1;
 }
 
 // Добавление состояния голода
-export function addHungerCondition(character: MouseCharacter): MouseCharacter {
+export function addHungerCondition(character: Character): Character {
   const updated = { ...character };
   const hasHungryCondition = character.conditions.some(c => c.id === 'hungry');
 

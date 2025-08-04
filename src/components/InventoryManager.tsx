@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useCallback } from 'react';
-import { MouseCharacter, InventoryItem, Condition } from '@/types/character';
+import { Character, InventoryItem, Condition } from '@/types/character';
 import {
   addItemToInventory,
   removeItemFromInventory,
@@ -11,8 +11,8 @@ import {
 import { ITEM_CATALOG, createItemCopy } from '@/lib/itemCatalog';
 
 interface InventoryManagerProps {
-  characters: MouseCharacter[];
-  onCharacterUpdate: (characterId: string, character: MouseCharacter) => void;
+  characters: Character[];
+  onCharacterUpdate: (characterId: string, character: Character) => void;
 }
 
 interface DraggedItem {
@@ -272,7 +272,7 @@ function CharacterInfo({
   character,
   onRemoveCondition
 }: {
-  character: MouseCharacter;
+  character: Character;
   onAddCondition?: (condition: Condition) => void;
   onRemoveCondition: (conditionId: string) => void;
 }) {
@@ -356,7 +356,7 @@ function InventoryGrid({
   onEditItem,
   onAddItem
 }: {
-  character: MouseCharacter;
+  character: Character;
   onDragStart: (item: InventoryItem, characterId: string, slotType: 'paws' | 'body' | 'pack', slotIndex: number) => void;
   onDragEnd: () => void;
   onDrop: (characterId: string, slotType: 'paws' | 'body' | 'pack', slotIndex: number) => void;

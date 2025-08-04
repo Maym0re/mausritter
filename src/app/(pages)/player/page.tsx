@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
-import { Campaign, MouseCharacter, CampaignPlayer } from '@/types/character';
+import { Campaign, Character, CampaignPlayer } from '@/types/character';
 import { CharacterGenerator } from '@/components/CharacterGenerator';
 import { InventoryManager } from '@/components/InventoryManager';
 import Link from 'next/link';
@@ -15,8 +15,8 @@ export default function PlayerPage() {
   const campaignId = searchParams.get('campaign');
 
   const [campaign, setCampaign] = useState<Campaign | null>(null);
-  const [characters, setCharacters] = useState<MouseCharacter[]>([]);
-  const [selectedCharacter, setSelectedCharacter] = useState<MouseCharacter | null>(null);
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'characters' | 'map'>('overview');
   const [showCharacterGenerator, setShowCharacterGenerator] = useState(false);
@@ -95,7 +95,7 @@ export default function PlayerPage() {
     }
   };
 
-  const createCharacter = async (characterData: MouseCharacter) => {
+  const createCharacter = async (characterData: Character) => {
     if (!campaign) return;
 
     try {
@@ -120,7 +120,7 @@ export default function PlayerPage() {
     }
   };
 
-  const updateCharacter = async (characterId: string, characterData: MouseCharacter) => {
+  const updateCharacter = async (characterId: string, characterData: Character) => {
     try {
       const response = await fetch(`/api/characters/${characterId}`, {
         method: 'PUT',

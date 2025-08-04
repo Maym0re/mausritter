@@ -1,12 +1,12 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { GameTimeManager, rollWeather, rollSeasonalEvent, getTimeOfDay, performRest, applyRestResults } from '@/lib/timeUtils';
-import { MouseCharacter } from '@/types/character';
+import { Character } from '@/types/character';
 import { WeatherEntry, RestType, GameTime } from '@/types/time';
 
 interface TimeTrackerProps {
-  characters?: MouseCharacter[];
-  onCharacterUpdate?: (characterId: string, character: MouseCharacter) => void;
+  characters?: Character[];
+  onCharacterUpdate?: (characterId: string, character: Character) => void;
   onTimeUpdate?: (newTime: GameTime, season: string, weather?: WeatherEntry | null, event?: string | null) => void;
   initialTime?: GameTime;
   initialSeason?: string;
