@@ -100,15 +100,9 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     const itemIndex = allSlots.findIndex(slot => slot?.id === item.id);
     if (itemIndex !== -1 && allSlots[itemIndex]) {
       const updatedItem = { ...allSlots[itemIndex]! };
-      updatedItem.usageDots = Math.min(updatedItem.maxUsageDots, updatedItem.usageDots + 1);
+      updatedItem.usage = Math.min(updatedItem.maxUsage ?? Infinity, (updatedItem.usage ?? 0) + 1);
 
-      // Если все точки использования заполнены, предмет уничтожается
-      if (updatedItem.usageDots >= updatedItem.maxUsageDots) {
-        removeItemFromInventory(updatedChar, item.id);
-      } else {
-        // Обновляем предмет
-        allSlots[itemIndex] = updatedItem;
-      }
+      allSlots[itemIndex] = updatedItem;
     }
 
     onCharacterUpdate(characterId, updatedChar);
@@ -118,7 +112,7 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     const character = characters.find(c => c.id === characterId);
     if (!character) return;
 
-    const repairCost = Math.floor((item.value || 0) * 0.1) * item.usageDots;
+    const repairCost = Math.floor((item.value || 0) * 0.1) * (item.usage ?? 1);
 
     if (character.pips >= repairCost) {
       const updatedChar = { ...character };
@@ -133,7 +127,7 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
       const itemIndex = allSlots.findIndex(slot => slot?.id === item.id);
       if (itemIndex !== -1 && allSlots[itemIndex]) {
         const updatedItem = { ...allSlots[itemIndex]! };
-        updatedItem.usageDots = 0;
+        updatedItem.usage = 0;
         allSlots[itemIndex] = updatedItem;
       }
 
@@ -554,11 +548,11 @@ function InventorySlot({
             {/* Точки использования */}
             <div className="flex items-center gap-1 mb-1">
               <span className="text-xs">Usage:</span>
-              {Array.from({ length: item.maxUsageDots }, (_, i) => (
+              {Array.from({ length: item.maxUsage ?? 0 }, (_, i) => (
                 <div
                   key={i}
                   className={`w-2 h-2 rounded-full border ${
-                    i < item.usageDots 
+                    i < (item.usage ?? 0) 
                       ? 'bg-red-500 border-red-500' 
                       : 'bg-white border-gray-400'
                   }`}
@@ -570,7 +564,7 @@ function InventorySlot({
               <div className="text-xs text-gray-500">Value: {item.value}p</div>
             )}
 
-            {item.usageDots >= item.maxUsageDots && (
+            {item.usage >= item.maxUsage && (
               <div className="text-xs text-red-600 font-medium">DEPLETED</div>
             )}
           </div>
@@ -587,7 +581,7 @@ function InventorySlot({
               >
                 Mark Usage
               </button>
-              {item.usageDots > 0 && item.value && (
+              {item.usage > 0 && item.value && (
                 <button
                   onClick={() => {
                     onRepairItem(characterId, item);
@@ -595,7 +589,7 @@ function InventorySlot({
                   }}
                   className="block w-full px-3 py-1 text-left text-xs hover:bg-gray-100"
                 >
-                  Repair ({Math.floor(item.value * 0.1) * item.usageDots}p)
+                  Repair ({Math.floor(item.value * 0.1) * item.usage}p)
                 </button>
               )}
               <button
@@ -769,11 +763,11 @@ function AddItemModal({
               </div>
               <div className="flex items-center gap-1 mt-2">
                 <span className="text-xs">Usage:</span>
-                {Array.from({ length: selectedTemplate.maxUsageDots }, (_, i) => (
+                {Array.from({ length: selectedTemplate.maxUsage }, (_, i) => (
                   <div
                     key={i}
                     className={`w-2 h-2 rounded-full border ${
-                      i < selectedTemplate.usageDots 
+                      i < selectedTemplate.usage 
                         ? 'bg-red-500 border-red-500' 
                         : 'bg-white border-gray-400'
                     }`}

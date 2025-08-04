@@ -5,10 +5,7 @@ import {
   WEATHER_TABLES,
   SEASONAL_EVENTS,
   RestType,
-  RestResult,
-  TravelState,
-  FatigueState,
-  TravelHazard
+  RestResult
 } from '@/types/time';
 import { MouseCharacter, CONDITIONS } from '@/types/character';
 
@@ -64,6 +61,11 @@ export class GameTimeManager {
     return { ...this.gameTime };
   }
 
+  // Установить время напрямую
+  setTime(time: GameTime): void {
+    this.gameTime = { ...time };
+  }
+
   // Получить текущий сезон на основе дней
   getCurrentSeason(): Season['name'] {
     const dayOfYear = this.gameTime.days % 365;
@@ -117,7 +119,7 @@ export function performRest(character: MouseCharacter, restType: RestType): Rest
 
       // Убираем некоторые условия
       result.conditionsCleared = character.conditions
-        .filter(c => c.clearRequirement.includes('short rest'))
+        .filter(c => c.clearRequirement?.includes('short rest'))
         .map(c => c.id);
       break;
 
@@ -138,7 +140,7 @@ export function performRest(character: MouseCharacter, restType: RestType): Rest
 
       // Убираем условия, требующие длинного отдыха
       result.conditionsCleared = character.conditions
-        .filter(c => c.clearRequirement.includes('long rest') || c.clearRequirement.includes('Watch'))
+        .filter(c => c.clearRequirement?.includes('long rest') || c.clearRequirement?.includes('Watch'))
         .map(c => c.id);
       break;
 
@@ -155,7 +157,7 @@ export function performRest(character: MouseCharacter, restType: RestType): Rest
 
       // Убираем большинство долгосрочных условий
       result.conditionsCleared = character.conditions
-        .filter(c => !c.clearRequirement.includes('permanent'))
+        .filter(c => !c.clearRequirement?.includes('permanent'))
         .map(c => c.id);
       break;
   }
@@ -192,98 +194,6 @@ export function applyRestResults(character: MouseCharacter, result: RestResult):
   );
 
   return updated;
-}
-
-// Система усталости
-export function checkFatigue(character: MouseCharacter, fatigueState: FatigueState): FatigueState {
-  const updated = { ...fatigueState };
-
-  if (!fatigueState.hasRestedToday) {
-    updated.consecutiveDaysWithoutRest += 1;
-
-    if (updated.consecutiveDaysWithoutRest >= 1) {
-      updated.isExhausted = true;
-
-      // Добавляем состояние усталости если его еще нет
-      const hasExhaustedCondition = character.conditions.some(c => c.id === 'exhausted');
-      if (!hasExhaustedCondition) {
-        const exhaustedCondition = CONDITIONS.find(c => c.id === 'exhausted');
-        if (exhaustedCondition) {
-          character.conditions.push(exhaustedCondition);
-        }
-      }
-    }
-  } else {
-    updated.consecutiveDaysWithoutRest = 0;
-    updated.isExhausted = false;
-  }
-
-  return updated;
-}
-
-// Система путешествий
-export function calculateTravelTime(
-  fromHex: string,
-  toHex: string,
-  isDifficultTerrain: boolean = false
-): number {
-  // Базовое время: 1 период на гекс
-  let watches = 1;
-
-  // Сложная местность удваивает время
-  if (isDifficultTerrain) {
-    watches = 2;
-  }
-
-  return watches;
-}
-
-// Проверка опасностей путешествия
-export function checkTravelHazards(weather: WeatherEntry): TravelHazard[] {
-  const hazards: TravelHazard[] = [];
-
-  if (weather.isPoorCondition) {
-    hazards.push({
-      name: 'Poor Weather',
-      description: `Traveling in ${weather.weather.toLowerCase()} conditions`,
-      saveType: 'str',
-      difficulty: 12,
-      consequence: 'Gain Exhausted condition'
-    });
-  }
-
-  return hazards;
-}
-
-// Случайные встречи
-export function shouldRollEncounter(
-  timeScale: 'dungeon' | 'wilderness',
-  turnsSinceLastCheck: number
-): boolean {
-  if (timeScale === 'dungeon') {
-    // В подземельях проверяем каждые 3 хода
-    return turnsSinceLastCheck >= 3;
-  } else {
-    // В дикой местности проверяем дважды в день (утром и вечером)
-    return turnsSinceLastCheck >= 2; // 2 периода = полдня
-  }
-}
-
-export function rollEncounter(): boolean {
-  // d6, на 1 происходит встреча, на 2 - предзнаменование
-  const roll = rollD6();
-  return roll === 1;
-}
-
-export function rollOmen(): boolean {
-  const roll = rollD6();
-  return roll === 2;
-}
-
-// Фуражировка
-export function forage(): number {
-  // Возвращает d3 использования рационов
-  return Math.floor(Math.random() * 3) + 1;
 }
 
 // Генерация сезонного события

@@ -68,7 +68,7 @@ export default function ToolsPage() {
         <div className="mb-8">
           {activeTab === 'characters' && (
             <div>
-              <CharacterGenerator onAddToParty={addCharacterToParty} />
+              <CharacterGenerator onSave={addCharacterToParty} />
 
               {/* Партия */}
               {characters.length > 0 && (

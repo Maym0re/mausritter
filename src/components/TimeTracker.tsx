@@ -2,18 +2,38 @@
 import React, { useState, useEffect } from 'react';
 import { GameTimeManager, rollWeather, rollSeasonalEvent, getTimeOfDay, performRest, applyRestResults } from '@/lib/timeUtils';
 import { MouseCharacter } from '@/types/character';
-import { WeatherEntry, RestType } from '@/types/time';
+import { WeatherEntry, RestType, GameTime } from '@/types/time';
 
 interface TimeTrackerProps {
   characters?: MouseCharacter[];
   onCharacterUpdate?: (characterId: string, character: MouseCharacter) => void;
+  onTimeUpdate?: (newTime: GameTime, season: string, weather?: WeatherEntry | null, event?: string | null) => void;
+  initialTime?: GameTime;
+  initialSeason?: string;
+  initialWeather?: WeatherEntry | null;
+  initialEvent?: string | null;
 }
 
-export function TimeTracker({ characters = [], onCharacterUpdate }: TimeTrackerProps) {
-  const [timeManager] = useState(() => new GameTimeManager());
-  const [currentTime, setCurrentTime] = useState(timeManager.getCurrentTime());
-  const [currentWeather, setCurrentWeather] = useState<WeatherEntry | null>(null);
-  const [todaysEvent, setTodaysEvent] = useState<string | null>(null);
+export function TimeTracker({
+  characters = [],
+  onCharacterUpdate,
+  onTimeUpdate,
+  initialTime,
+  initialSeason = 'spring',
+  initialWeather,
+  initialEvent
+}: TimeTrackerProps) {
+  const [timeManager] = useState(() => {
+    const tm = new GameTimeManager();
+    if (initialTime) {
+      // Используем новый метод setTime
+      tm.setTime(initialTime);
+    }
+    return tm;
+  });
+  const [currentTime, setCurrentTime] = useState(initialTime || timeManager.getCurrentTime());
+  const [currentWeather, setCurrentWeather] = useState<WeatherEntry | null>(initialWeather || null);
+  const [todaysEvent, setTodaysEvent] = useState<string | null>(initialEvent || null);
 
   // Обновляем время каждую секунду для отображения
   useEffect(() => {
@@ -57,6 +77,11 @@ export function TimeTracker({ characters = [], onCharacterUpdate }: TimeTrackerP
     if (type === 'watches' && amount >= 4) {
       setCurrentWeather(null);
       setTodaysEvent(null);
+    }
+
+    // Вызываем коллбэк обновления времени
+    if (onTimeUpdate) {
+      onTimeUpdate(timeManager.getCurrentTime(), timeManager.getCurrentSeason(), currentWeather, todaysEvent);
     }
   };
 

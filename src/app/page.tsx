@@ -1,104 +1,294 @@
+'use client';
+
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { Campaign } from '@/types/character';
 
 export default function HomePage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newCampaignName, setNewCampaignName] = useState('');
+  const [newCampaignDescription, setNewCampaignDescription] = useState('');
+
+  useEffect(() => {
+    if (status === 'loading') return;
+
+    if (!session) {
+      router.push('/login');
+      return;
+    }
+
+    fetchCampaigns();
+  }, [session, status, router]);
+
+  const fetchCampaigns = async () => {
+    try {
+      const response = await fetch('/api/campaigns');
+      if (response.ok) {
+        const data = await response.json();
+        setCampaigns(data);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки кампаний:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const createCampaign = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('/api/campaigns', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newCampaignName,
+          description: newCampaignDescription,
+        }),
+      });
+
+      if (response.ok) {
+        const newCampaign = await response.json();
+        setCampaigns([...campaigns, newCampaign]);
+        setShowCreateModal(false);
+        setNewCampaignName('');
+        setNewCampaignDescription('');
+      }
+    } catch (error) {
+      console.error('Ошибка создания кампании:', error);
+    }
+  };
+
+  if (status === 'loading' || isLoading) {
+    return (
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl mb-4">🐭</div>
+          <div className="text-lg text-stone-600">Загрузка...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 to-amber-100">
-      <div className="container mx-auto px-4 py-16">
-        {/* Заголовок */}
-        <div className="text-center mb-16">
-          <h1 className="text-6xl font-bold text-amber-900 mb-4">
-            🐭 Mausritter
-          </h1>
-          <p className="text-xl text-amber-700 mb-2">
-            Campaign Helper
-          </p>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Добро пожаловать в помощник для игры Mausritter! Создавайте и исследуйте
-            карты кампании в мире отважных мышей-авантюристов.
-          </p>
-        </div>
-
-        {/* Карточки режимов */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Карточка мастера */}
-          <Link href="/master">
-            <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow p-8 border-2 border-red-200 hover:border-red-400 cursor-pointer">
-              <div className="text-center">
-                <div className="text-6xl mb-4">🎲</div>
-                <h2 className="text-2xl font-bold text-red-900 mb-4">
-                  Game Master
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  Создавайте и управляйте картой кампании. Редактируйте гексы,
-                  добавляйте поселения и ориентиры, управляйте туманом войны.
-                </p>
-                <div className="bg-red-100 rounded-lg p-4">
-                  <h3 className="font-semibold text-red-900 mb-2">Возможности:</h3>
-                  <ul className="text-sm text-red-700 space-y-1">
-                    <li>• Полное редактирование карты</li>
-                    <li>• Генерация случайного контента</li>
-                    <li>• Управление видимостью для игроков</li>
-                    <li>• Расширение карты новыми гексами</li>
-                  </ul>
-                </div>
-              </div>
+    <div className="min-h-screen bg-stone-50">
+      {/* Хедер */}
+      <header className="bg-white shadow-sm border-b border-stone-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <h1 className="text-2xl font-bold text-stone-900">🐭 Mausritter</h1>
             </div>
-          </Link>
 
-          {/* Карточка игрока */}
-          <Link href="/player">
-            <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow p-8 border-2 border-blue-200 hover:border-blue-400 cursor-pointer">
-              <div className="text-center">
-                <div className="text-6xl mb-4">⚔️</div>
-                <h2 className="text-2xl font-bold text-blue-900 mb-4">
-                  Player View
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  Исследуйте мир глазами отважного мыша-авантюриста.
-                  Открывайте новые территории по мере их исследования.
-                </p>
-                <div className="bg-blue-100 rounded-lg p-4">
-                  <h3 className="font-semibold text-blue-900 mb-2">Особенности:</h3>
-                  <ul className="text-sm text-blue-700 space-y-1">
-                    <li>• Туман войны скрывает неизвестные области</li>
-                    <li>• Подробная информация об открытых локациях</li>
-                    <li>• Красивые иконки поселений и ориентиров</li>
-                    <li>• Интерактивное исследование</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
-
-        {/* Информация о Mausritter */}
-        <div className="mt-16 text-center">
-          <div className="bg-white rounded-xl shadow-lg p-8 max-w-3xl mx-auto border border-amber-200">
-            <h3 className="text-2xl font-bold text-amber-900 mb-4">
-              О Mausritter
-            </h3>
-            <p className="text-gray-600 leading-relaxed">
-              Mausritter — это ролевая игра о храбрых мышах в опасном мире.
-              Игроки берут на себя роли маленьких, отважных и отчаянных авантюристов,
-              исследующих опасные места и путешествующих по миру, который описывает мастер игры.
-            </p>
-            <div className="mt-6 flex justify-center space-x-8 text-sm text-amber-700">
-              <div className="flex items-center gap-2">
-                <span>🏰</span>
-                <span>Исследование подземелий</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span>🗺️</span>
-                <span>Путешествия по гексам</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span>🎭</span>
-                <span>Ролевая игра</span>
-              </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-stone-600">
+                Добро пожаловать, {session.user?.name || session.user?.email}!
+              </span>
+              <button
+                onClick={() => signOut()}
+                className="text-stone-600 hover:text-stone-800 font-medium"
+              >
+                Выйти
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </header>
+
+      {/* Основное содержимое */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-3xl font-bold text-stone-900">Мои кампании</h2>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="bg-stone-600 hover:bg-stone-700 text-white px-4 py-2 rounded-md font-medium"
+            >
+              Создать кампанию
+            </button>
+          </div>
+
+          {campaigns.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">🏰</div>
+              <h3 className="text-xl font-medium text-stone-900 mb-2">
+                У вас пока нет кампаний
+              </h3>
+              <p className="text-stone-600 mb-6">
+                Создайте новую кампанию, чтобы начать приключения в мире Mausritter
+              </p>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="bg-stone-600 hover:bg-stone-700 text-white px-6 py-3 rounded-md font-medium"
+              >
+                Создать первую кампанию
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {campaigns.map((campaign) => (
+                <div
+                  key={campaign.id}
+                  className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-xl font-semibold text-stone-900">
+                      {campaign.name}
+                    </h3>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      campaign.gm?.id === session.user?.id
+                        ? 'bg-purple-100 text-purple-800'
+                        : 'bg-blue-100 text-blue-800'
+                    }`}>
+                      {campaign.gm?.id === session.user?.id ? 'Мастер' : 'Игрок'}
+                    </span>
+                  </div>
+
+                  {campaign.description && (
+                    <p className="text-stone-600 mb-4 text-sm">
+                      {campaign.description}
+                    </p>
+                  )}
+
+                  <div className="text-sm text-stone-500 mb-4">
+                    <div>Игроков: {campaign.players?.length || 0}</div>
+                    <div>Персонажей: {campaign._count?.characters || 0}</div>
+                    <div>Сезон: {campaign.season}</div>
+                  </div>
+
+                  <div className="flex space-x-2">
+                    {campaign.gm?.id === session.user?.id ? (
+                      <Link
+                        href={`/master?campaign=${campaign.id}`}
+                        className="flex-1 text-center bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                      >
+                        Мастерская
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/player?campaign=${campaign.id}`}
+                        className="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                      >
+                        Играть
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Быстрые ссылки */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+          <Link
+            href="/tools"
+            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 text-center"
+          >
+            <div className="text-4xl mb-3">⚒️</div>
+            <h3 className="text-lg font-semibold text-stone-900 mb-2">Инструменты</h3>
+            <p className="text-stone-600 text-sm">
+              Генераторы персонажей, инвентарь и другие полезные инструменты
+            </p>
+          </Link>
+
+          <Link
+            href="/map"
+            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 text-center"
+          >
+            <div className="text-4xl mb-3">🗺️</div>
+            <h3 className="text-lg font-semibold text-stone-900 mb-2">Редактор карт</h3>
+            <p className="text-stone-600 text-sm">
+              Создавайте и редактируйте гексагональные карты для ваших приключений
+            </p>
+          </Link>
+
+          <a
+            href="https://mausritter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 text-center"
+          >
+            <div className="text-4xl mb-3">📚</div>
+            <h3 className="text-lg font-semibold text-stone-900 mb-2">Правила</h3>
+            <p className="text-stone-600 text-sm">
+              Официальные правила Mausritter и дополнительные материалы
+            </p>
+          </a>
+        </div>
+      </main>
+
+      {/* Модальное окно создания кампании */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-stone-900 mb-4">
+              Создать новую кампанию
+            </h3>
+
+            <form onSubmit={createCampaign} className="space-y-4">
+              <div>
+                <label htmlFor="campaignName" className="block text-sm font-medium text-gray-700">
+                  Название кампании
+                </label>
+                <input
+                  id="campaignName"
+                  type="text"
+                  required
+                  value={newCampaignName}
+                  onChange={(e) => setNewCampaignName(e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-stone-500 focus:border-stone-500"
+                  placeholder="Например: Приключения в Мышином королевстве"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="campaignDescription" className="block text-sm font-medium text-gray-700">
+                  Описание (необязательно)
+                </label>
+                <textarea
+                  id="campaignDescription"
+                  value={newCampaignDescription}
+                  onChange={(e) => setNewCampaignDescription(e.target.value)}
+                  rows={3}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-stone-500 focus:border-stone-500"
+                  placeholder="Краткое описание вашей кампании..."
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCreateModal(false);
+                    setNewCampaignName('');
+                    setNewCampaignDescription('');
+                  }}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                >
+                  Отмена
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-stone-600 hover:bg-stone-700 text-white rounded-md"
+                >
+                  Создать
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

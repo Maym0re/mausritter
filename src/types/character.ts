@@ -1,6 +1,9 @@
+import { GameTime, WeatherEntry } from "@/types/time";
+
 export interface MouseCharacter {
   id: string;
   name: string;
+  notes?: string;
 
   // Основные атрибуты
   str: number;
@@ -23,16 +26,67 @@ export interface MouseCharacter {
   coat: CoatDetails;
   physicalDetail: string;
 
-  // Инвентарь
+  // Инвентарь как JSON
   inventory: InventorySlots;
-
-  // Условия и эффекты
   conditions: Condition[];
 
-  // Заметки
-  notes: string;
+  // Игровое состояние
+  isActive: boolean;
+
+  // Связи
+  playerId: string;
+  campaignId: string;
+
+  // Временные метки
+  createdAt: Date;
+  updatedAt: Date;
 }
 
+export interface Campaign {
+  id: string;
+  name: string;
+  description?: string;
+  isActive: boolean;
+  gmId: string;
+  currentTurn: number;
+  currentTime: GameTime;
+  season: string;
+  weather?: WeatherEntry;
+  createdAt: Date;
+  updatedAt: Date;
+  todaysEvent?: string;
+
+  // Связанные данные
+  gm?: {
+    id: string;
+    name?: string;
+    email?: string;
+  };
+  players: CampaignPlayer[];
+  characters?: MouseCharacter[];
+  hexMap?: any;
+  _count?: {
+    players: number;
+    characters: number;
+  };
+}
+
+export interface CampaignPlayer {
+  id: string;
+  campaignId: string;
+  userId: string;
+  joinedAt: Date;
+
+  // Связанные данные
+  user?: {
+    id: string;
+    name?: string;
+    email?: string;
+  };
+  campaign?: Campaign;
+}
+
+// Дополнительные типы для UI
 export interface Background {
   name: string;
   itemA: string;
@@ -58,21 +112,20 @@ export interface InventorySlots {
 export interface InventoryItem {
   id: string;
   name: string;
-  type: 'weapon' | 'armor' | 'equipment' | 'spell' | 'condition';
-  size: 1 | 2; // количество слотов
-  usageDots: number;
-  maxUsageDots: number;
+  type: string;
+  size: number;
+  usage: number;
+  maxUsage: number;
   description?: string;
   value?: number;
-  effects?: string[];
 }
 
 export interface Condition {
   id: string;
   name: string;
   description: string;
-  clearRequirement: string;
-  effects?: string[];
+  clearRequirement?: string;
+  effects?: string[]
 }
 
 // Таблицы генерации из SRD
@@ -181,8 +234,8 @@ export const BASIC_EQUIPMENT: InventoryItem[] = [
     name: 'Torches',
     type: 'equipment',
     size: 1,
-    usageDots: 0,
-    maxUsageDots: 3,
+    usage: 0,
+    maxUsage: 3,
     description: 'Provides light for 6 Turns per usage dot'
   },
   {
@@ -190,8 +243,8 @@ export const BASIC_EQUIPMENT: InventoryItem[] = [
     name: 'Rations',
     type: 'equipment',
     size: 1,
-    usageDots: 0,
-    maxUsageDots: 3,
+    usage: 0,
+    maxUsage: 3,
     description: 'Food for the road. Heals all HP with Watch rest'
   }
 ];
@@ -203,8 +256,8 @@ export const WEAPONS: InventoryItem[] = [
     name: 'Dagger',
     type: 'weapon',
     size: 1,
-    usageDots: 0,
-    maxUsageDots: 3,
+    usage: 0,
+    maxUsage: 3,
     description: 'Light weapon, d6 damage',
     value: 10
   },
@@ -213,8 +266,8 @@ export const WEAPONS: InventoryItem[] = [
     name: 'Sword',
     type: 'weapon',
     size: 1,
-    usageDots: 0,
-    maxUsageDots: 3,
+    usage: 0,
+    maxUsage: 3,
     description: 'Medium weapon, d6/d8 damage',
     value: 20
   },
@@ -223,10 +276,9 @@ export const WEAPONS: InventoryItem[] = [
     name: 'Spear',
     type: 'weapon',
     size: 2,
-    usageDots: 0,
-    maxUsageDots: 3,
+    usage: 0,
+    maxUsage: 3,
     description: 'Heavy weapon, d10 damage',
     value: 40
   }
 ];
-

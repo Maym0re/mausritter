@@ -99,7 +99,12 @@ export function generateRandomCharacter(): MouseCharacter {
 
     inventory,
     conditions: [],
-    notes: ''
+    notes: '',
+    playerId: '',
+    campaignId: '',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    isActive: true,
   };
 
   return character;
@@ -140,8 +145,8 @@ function createItemFromDescription(description: string): InventoryItem {
     name: description,
     type: 'equipment',
     size: 1,
-    usageDots: 0,
-    maxUsageDots: 3,
+    usage: 0,
+    maxUsage: 3,
     description
   };
 
