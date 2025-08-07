@@ -43,12 +43,23 @@ export async function POST(
     }
 
     // Добавляем игрока к кампании
-    await prisma.campaignPlayer.create({
-      data: {
-        campaignId: id,
-        userId: session.user.id
+    try {
+      await prisma.campaignPlayer.create({
+        data: {
+          campaignId: id,
+          userId: session.user.id
+        }
+      })
+    } catch (prismaError: any) {
+      // Обрабатываем ошибку уникального ограничения
+      if (prismaError.code === 'P2002') {
+        return NextResponse.json(
+          { error: "Вы уже участвуете в этой кампании" },
+          { status: 400 }
+        )
       }
-    })
+      throw prismaError
+    }
 
     // Возвращаем обновленную кампанию
     const updatedCampaign = await prisma.campaign.findUnique({

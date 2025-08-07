@@ -7,7 +7,7 @@ import {
   PHYSICAL_DETAILS,
   BASIC_EQUIPMENT,
   WEAPONS,
-  InventoryItem
+  InventoryItem, InventorySlots
 } from '@/types/character';
 
 // Функция для броска 3d6, оставляем 2 лучших
@@ -111,11 +111,11 @@ export function generateRandomCharacter(): Character {
 }
 
 // Создание стартового инвентаря
-function createStartingInventory(backgroundEntry: { hp: number; pips: number; background: string; itemA: string; itemB: string }, bonusItems: string[]) {
+function createStartingInventory(backgroundEntry: { hp: number; pips: number; background: string; itemA: string; itemB: string }, bonusItems: string[]): InventorySlots {
   const items: InventoryItem[] = [];
 
   // Базовое снаряжение
-  items.push(...BASIC_EQUIPMENT);
+  items.push(...BASIC_EQUIPMENT.map(item => ({ ...item, id: generateId() })));
 
   // Предметы из предыстории
   items.push(createItemFromDescription(backgroundEntry.itemA));
@@ -130,12 +130,21 @@ function createStartingInventory(backgroundEntry: { hp: number; pips: number; ba
   const randomWeapon = WEAPONS[Math.floor(Math.random() * WEAPONS.length)];
   items.push({ ...randomWeapon, id: generateId() });
 
-  // Распределяем по слотам
-  return {
+  // Начинаем с пустого инвентаря
+  let currentInventory: InventorySlots = {
     paws: [null, null],
     body: [null, null],
     pack: [null, null, null, null, null, null]
   };
+
+  items.forEach(item => {
+    const result = addItemToInventory(currentInventory, item);
+    if (result.success) {
+      currentInventory = result.inventory;
+    }
+  });
+
+  return currentInventory;
 }
 
 // Создание предмета из описания
@@ -198,10 +207,16 @@ export function getItemFromInventory(character: Character, itemId: string): Inve
   return allSlots.find(item => item?.id === itemId) || null;
 }
 
-// Функция для добавления предмета в инвентарь
-export function addItemToInventory(character: Character, item: InventoryItem): boolean {
+export function addItemToInventory(inventory: InventorySlots, item: InventoryItem): { success: boolean; inventory: InventorySlots } {
+  // Создаем глубокую копию инвентаря
+  const newInventory: InventorySlots = {
+    paws: [...inventory.paws],
+    body: [...inventory.body],
+    pack: [...inventory.pack]
+  };
+
   // Ищем свободные слоты в порядке: pack -> body -> paws
-  const { pack, body, paws } = character.inventory;
+  const { pack, body, paws } = newInventory;
 
   // Проверяем pack слоты
   for (let i = 0; i < pack.length; i++) {
@@ -209,7 +224,7 @@ export function addItemToInventory(character: Character, item: InventoryItem): b
       if (item.size === 1 || (item.size === 2 && i < pack.length - 1 && !pack[i + 1])) {
         pack[i] = item;
         if (item.size === 2) pack[i + 1] = null; // резервируем второй слот
-        return true;
+        return { success: true, inventory: newInventory };
       }
     }
   }
@@ -220,7 +235,7 @@ export function addItemToInventory(character: Character, item: InventoryItem): b
       if (item.size === 1 || (item.size === 2 && i < body.length - 1 && !body[i + 1])) {
         body[i] = item;
         if (item.size === 2) body[i + 1] = null;
-        return true;
+        return { success: true, inventory: newInventory };
       }
     }
   }
@@ -231,12 +246,13 @@ export function addItemToInventory(character: Character, item: InventoryItem): b
       if (item.size === 1 || (item.size === 2 && i < paws.length - 1 && !paws[i + 1])) {
         paws[i] = item;
         if (item.size === 2) paws[i + 1] = null;
-        return true;
+        return { success: true, inventory: newInventory };
       }
     }
   }
 
-  return false; // Нет места
+  // Нет места - возвращаем исходный инвентарь
+  return { success: false, inventory };
 }
 
 // Функция для удаления предмета из инвентаря
@@ -293,6 +309,24 @@ export function getTotalUsedSlots(character: Character): number {
   });
 
   return used;
+}
+
+// Получение всех предметов из инвентаря
+export function getAllInventoryItems(inventory: InventorySlots): InventoryItem[] {
+  const items: InventoryItem[] = [];
+
+  // Собираем предметы из всех слотов
+  [
+    ...inventory.paws,
+    ...inventory.body,
+    ...inventory.pack
+  ].forEach(item => {
+    if (item) {
+      items.push(item);
+    }
+  });
+
+  return items;
 }
 
 // Получение доступных слотов

@@ -17,18 +17,9 @@ export async function GET(
 
     const { id } = await params
 
-    const campaign = await prisma.campaign.findFirst({
-      where: {
-        id,
-        OR: [
-          { gmId: session.user.id }, // Пользователь является GM
-          {
-            players: {
-              some: { userId: session.user.id } // Пользователь является игроком
-            }
-          }
-        ]
-      },
+    // Сначала проверяем, существует ли кампания
+    const campaign = await prisma.campaign.findUnique({
+      where: { id },
       include: {
         gm: {
           select: { id: true, name: true, email: true }
@@ -52,6 +43,28 @@ export async function GET(
       )
     }
 
+    // Проверяем, является ли пользователь участником кампании
+    const isGM = campaign.gmId === session.user.id
+    const isPlayer = campaign.players.some(p => p.userId === session.user.id)
+    const isParticipant = isGM || isPlayer
+
+    // Если пользователь не участник, возвращаем только базовую информацию для приглашения
+    if (!isParticipant) {
+      return NextResponse.json({
+        id: campaign.id,
+        name: campaign.name,
+        description: campaign.description,
+        isActive: campaign.isActive,
+        gm: campaign.gm,
+        players: campaign.players,
+        _count: {
+          players: campaign.players.length,
+          characters: campaign.characters.length
+        }
+      })
+    }
+
+    // Если пользователь участник, возвращаем полную информацию
     return NextResponse.json(campaign)
   } catch (error) {
     console.error("Ошибка получения кампании:", error)

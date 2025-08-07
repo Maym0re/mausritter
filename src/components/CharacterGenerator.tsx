@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Character } from '@/types/character';
-import { generateRandomCharacter } from "@/lib/characterUtils";
+import { generateRandomCharacter, getAllInventoryItems } from "@/lib/characterUtils";
 
 interface CharacterGeneratorProps {
   onCancel?: () => void;
@@ -56,14 +56,14 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 ext-stone-900">
       {!character ? (
         <div className="text-center py-8">
           <div className="text-6xl mb-4">🎲</div>
           <h3 className="text-xl font-medium text-stone-900 mb-4">
             Генератор персонажей Mausritter
           </h3>
-          <p className="text-stone-600 mb-6">
+          <p className="mb-6">
             Создайте случайного мышонка-авантюриста по правилам игры
           </p>
 
@@ -106,15 +106,15 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="font-bold text-lg">{character.str}</div>
-                <div className="text-xs text-stone-600">STR</div>
+                <div className="text-xs">STR</div>
               </div>
               <div className="text-center">
                 <div className="font-bold text-lg">{character.dex}</div>
-                <div className="text-xs text-stone-600">DEX</div>
+                <div className="text-xs">DEX</div>
               </div>
               <div className="text-center">
                 <div className="font-bold text-lg">{character.wil}</div>
-                <div className="text-xs text-stone-600">WIL</div>
+                <div className="text-xs">WIL</div>
               </div>
             </div>
           </div>
@@ -136,7 +136,7 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
               <div><strong>Pips:</strong> {character.pips}</div>
               <div><strong>Стартовые предметы:</strong></div>
               <ul className="list-disc list-inside ml-4 text-sm">
-                {Object.values(character.inventory).flatMap((item, index) => (
+	              {getAllInventoryItems(character.inventory).map((item, index) => (
                   <li key={index}>{item.name}</li>
                 ))}
               </ul>

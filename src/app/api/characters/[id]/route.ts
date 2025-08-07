@@ -41,9 +41,11 @@ export async function PUT(
     }
 
     // Обновляем персонажа
+    const { playerId, campaignId, id: characterId, createdAt, updatedAt, player, campaign, ...updateData } = characterData;
+    
     const updatedCharacter = await prisma.character.update({
       where: { id },
-      data: characterData,
+      data: updateData,
       include: {
         player: {
           select: { id: true, name: true, email: true }

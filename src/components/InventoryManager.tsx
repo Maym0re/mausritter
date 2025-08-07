@@ -1,14 +1,8 @@
 'use client';
-import React, { useState, useCallback } from 'react';
-import { Character, InventoryItem, Condition } from '@/types/character';
-import {
-  addItemToInventory,
-  removeItemFromInventory,
-  getTotalUsedSlots,
-  getAvailableSlots,
-  isEncumbered
-} from '@/lib/characterUtils';
-import { ITEM_CATALOG, createItemCopy } from '@/lib/itemCatalog';
+import React, { useCallback, useState } from 'react';
+import { Character, Condition, InventoryItem } from '@/types/character';
+import { addItemToInventory, getAvailableSlots, getTotalUsedSlots, isEncumbered } from '@/lib/characterUtils';
+import { createItemCopy, ITEM_CATALOG } from '@/lib/itemCatalog';
 
 interface InventoryManagerProps {
   characters: Character[];
@@ -160,11 +154,13 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     if (!character) return;
 
     const newItem = createItemCopy(templateItem);
-    const updatedChar = { ...character };
 
-    const success = addItemToInventory(updatedChar, newItem);
-    if (success) {
-      onCharacterUpdate(selectedCharacter, updatedChar);
+    const newInventory = addItemToInventory(character.inventory, newItem);
+    if (newInventory.success) {
+      onCharacterUpdate(selectedCharacter, {
+        ...character,
+        inventory: newInventory.inventory
+      });
       setShowAddItemModal(false);
     } else {
       alert('No space available in inventory!');
