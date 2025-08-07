@@ -35,6 +35,7 @@ export interface Character {
 
   // Связи
   playerId: string;
+  player: User;
   campaignId: string;
 
   // Временные метки
@@ -57,11 +58,7 @@ export interface Campaign {
   todaysEvent?: string;
 
   // Связанные данные
-  gm?: {
-    id: string;
-    name?: string;
-    email?: string;
-  };
+  gm?: User;
   players: CampaignPlayer[];
   characters?: Character[];
   hexMap?: any;
@@ -71,6 +68,12 @@ export interface Campaign {
   };
 }
 
+export interface User {
+  id: string;
+  name?: string;
+  email?: string;
+}
+
 export interface CampaignPlayer {
   id: string;
   campaignId: string;
@@ -78,11 +81,7 @@ export interface CampaignPlayer {
   joinedAt: Date;
 
   // Связанные данные
-  user?: {
-    id: string;
-    name?: string;
-    email?: string;
-  };
+  user?: User;
   campaign?: Campaign;
 }
 
