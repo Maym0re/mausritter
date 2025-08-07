@@ -3,8 +3,9 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
-import { Campaign } from '@/types/character';
+import { Campaign, Character } from '@/types/character';
 import { TimeTracker } from '@/components/TimeTracker';
+import { CharacterEditor } from '@/components/CharacterEditor';
 import { GameTime, WeatherEntry } from '@/types/time';
 import Link from 'next/link';
 
@@ -15,8 +16,10 @@ export default function MasterPage() {
   const campaignId = searchParams.get('campaign');
 
   const [campaign, setCampaign] = useState<Campaign | null>(null);
+  const [characters, setCharacters] = useState<Character[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'time' | 'map' | 'players'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'time' | 'map' | 'players' | 'characters'>('overview');
+  const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
 
   const fetchCampaign = useCallback(async () => {
     if (!campaignId) return;
@@ -36,6 +39,20 @@ export default function MasterPage() {
     }
   }, [campaignId, router]);
 
+  const fetchCharacters = useCallback(async () => {
+    if (!campaignId) return;
+
+    try {
+      const response = await fetch(`/api/characters?campaignId=${campaignId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setCharacters(data);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки персонажей:', error);
+    }
+  }, [campaignId]);
+
   useEffect(() => {
     if (status === 'loading') return;
 
@@ -50,7 +67,8 @@ export default function MasterPage() {
     }
 
     fetchCampaign();
-  }, [session, status, campaignId, router, fetchCampaign]);
+    fetchCharacters();
+  }, [session, status, campaignId, router, fetchCampaign, fetchCharacters]);
 
   const updateCampaignTime = async (
     newTime: GameTime,
@@ -78,6 +96,27 @@ export default function MasterPage() {
       }
     } catch (error) {
       console.error('Ошибка обновления времени:', error);
+    }
+  };
+
+  const handleSaveCharacter = async (character: Character) => {
+    try {
+      const response = await fetch(`/api/characters/${character.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ characterData: character }),
+      });
+
+      if (response.ok) {
+        const updatedCharacter = await response.json();
+        setCharacters(prev => prev.map(c => c.id === character.id ? updatedCharacter : c));
+        setEditingCharacter(null);
+      } else {
+        const error = await response.json();
+        console.error('Ошибка сохранения персонажа:', error);
+      }
+    } catch (error) {
+      console.error('Ошибка сохранения персонажа:', error);
     }
   };
 
@@ -135,6 +174,7 @@ export default function MasterPage() {
           <div className="flex space-x-8">
             {[
               { key: 'overview' as const, label: 'Обзор', icon: '📊' },
+              { key: 'characters' as const, label: 'Персонажи', icon: '🐭' },
               { key: 'time' as const, label: 'Время и погода', icon: '⏰' },
               { key: 'map' as const, label: 'Карта', icon: '🗺️' },
               { key: 'players' as const, label: 'Игроки', icon: '👥' },
@@ -182,7 +222,7 @@ export default function MasterPage() {
                     <div>Сезон: {campaign.season}</div>
                     <div>День: {(campaign.currentTime as GameTime)?.days + 1 || 1}</div>
                     <div>Игроков: {campaign.players.length}</div>
-                    <div>Персонажей: {campaign.characters?.length || 0}</div>
+                    <div>Персонажей: {characters.length}</div>
                   </div>
                 </div>
               </div>
@@ -196,10 +236,76 @@ export default function MasterPage() {
           </div>
         )}
 
+        {activeTab === 'characters' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold text-stone-900 mb-4">
+                Персонажи игроков
+              </h2>
+
+              {characters.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-4xl mb-4">🐭</div>
+                  <p className="text-stone-600">В кампании пока нет персонажей</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {characters.map((character) => (
+                    <div key={character.id} className="bg-stone-50 rounded-lg p-4 border border-stone-200">
+                      <div className="flex justify-between items-start mb-3">
+                        <div>
+                          <h3 className="font-semibold text-stone-900">{character.name}</h3>
+                          <p className="text-sm text-stone-600">
+                            Игрок: {character.player?.name || character.player?.email}
+                          </p>
+                        </div>
+                        <span className="text-xs bg-stone-200 text-stone-700 px-2 py-1 rounded">
+                          Ур. {character.level}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 mb-3 text-sm">
+                        <div className="text-center">
+                          <div className="font-medium">СИЛ</div>
+                          <div className="text-stone-600">{character.str}</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-medium">ЛОВ</div>
+                          <div className="text-stone-600">{character.dex}</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-medium">ВОЛ</div>
+                          <div className="text-stone-600">{character.wil}</div>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-between items-center mb-3 text-sm">
+                        <div>
+                          <span className="font-medium">HP:</span> {character.hp}/{character.maxHp}
+                        </div>
+                        <div>
+                          <span className="font-medium">XP:</span> {character.xp}
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => setEditingCharacter(character)}
+                        className="w-full bg-purple-600 text-white px-3 py-2 rounded-md text-sm hover:bg-purple-700 transition-colors"
+                      >
+                        Редактировать
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'time' && (
           <div className="space-y-6">
             <TimeTracker
-              characters={campaign.characters ?? []}
+              characters={characters}
               onTimeUpdate={updateCampaignTime}
               initialTime={campaign.currentTime as GameTime}
               initialSeason={campaign.season}
@@ -276,6 +382,16 @@ export default function MasterPage() {
           </div>
         )}
       </main>
+
+      {/* Модальное окно редактирования персонажа */}
+      {editingCharacter && (
+        <CharacterEditor
+          character={editingCharacter}
+          onSave={handleSaveCharacter}
+          onCancel={() => setEditingCharacter(null)}
+          isMaster={true}
+        />
+      )}
     </div>
   );
 }

@@ -29,7 +29,17 @@ export async function PUT(
     const character = await prisma.character.findFirst({
       where: {
         id,
-        playerId: session.user.id
+        OR: [
+          { playerId: session.user.id }, // Владелец персонажа
+          {
+            campaign: {
+              gmId: session.user.id // Мастер кампании
+            }
+          }
+        ]
+      },
+      include: {
+        campaign: true
       }
     })
 
@@ -61,6 +71,60 @@ export async function PUT(
     console.error("Ошибка обновления персонажа:", error)
     return NextResponse.json(
       { error: "Ошибка при обновлении персонажа" },
+      { status: 500 }
+    )
+  }
+}
+
+// Получить персонажа
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+    }
+
+    const { id } = await params
+
+    // Проверяем права доступа к персонажу
+    const character = await prisma.character.findFirst({
+      where: {
+        id,
+        OR: [
+          { playerId: session.user.id }, // Владелец персонажа
+          {
+            campaign: {
+              gmId: session.user.id // Мастер кампании
+            }
+          }
+        ]
+      },
+      include: {
+        player: {
+          select: { id: true, name: true, email: true }
+        },
+        campaign: {
+          select: { id: true, name: true }
+        }
+      }
+    })
+
+    if (!character) {
+      return NextResponse.json(
+        { error: "Персонаж не найден или нет прав доступа" },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json(character)
+  } catch (error) {
+    console.error("Ошибка получения персонажа:", error)
+    return NextResponse.json(
+      { error: "Ошибка при получении персонажа" },
       { status: 500 }
     )
   }
