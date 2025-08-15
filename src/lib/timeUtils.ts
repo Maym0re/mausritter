@@ -226,7 +226,7 @@ export function addHungerCondition(character: FullCharacter): FullCharacter {
   const hasHungryCondition = character.conditions.some(c => c.id === 'hungry');
 
   if (!hasHungryCondition) {
-    const hungryCondition = CONDITIONS.find(c => c.id === 'hungry');
+    const hungryCondition = CONDITIONS.find(c => c.name === 'Hungry');
     if (hungryCondition) {
       updated.conditions.push(hungryCondition);
     }

@@ -1,6 +1,15 @@
 'use client';
 import React, { useCallback, useState } from 'react';
-import { addItemToInventory, getAvailableSlots, getTotalUsedSlots, isEncumbered } from '@/lib/characterUtils';
+import {
+  addItemToInventory,
+  removeItemFromInventory,
+  moveItemToSlot,
+  getItemsBySlotType,
+  getInventorySlots,
+  getAvailableSlots,
+  getTotalUsedSlots,
+  isEncumbered
+} from '@/lib/characterUtils';
 import { createItemCopy, ITEM_CATALOG } from '@/lib/itemCatalog';
 import { Condition, InventoryItem, SlotType } from "@prisma/client";
 import { FullCharacter } from "@/types/character";
@@ -13,8 +22,6 @@ interface InventoryManagerProps {
 interface DraggedItem {
   item: InventoryItem;
   sourceCharacterId: string;
-  sourceSlotType: 'paws' | 'body' | 'pack';
-  sourceSlotIndex: number;
 }
 
 export function InventoryManager({ characters, onCharacterUpdate }: InventoryManagerProps) {
@@ -27,13 +34,8 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
 
   const selectedChar = characters.find(c => c.id === selectedCharacter);
 
-  const handleDragStart = useCallback((
-    item: InventoryItem,
-    characterId: string,
-    slotType: 'paws' | 'body' | 'pack',
-    slotIndex: number
-  ) => {
-    setDraggedItem({ item, sourceCharacterId: characterId, sourceSlotType: slotType, sourceSlotIndex: slotIndex });
+  const handleDragStart = useCallback((item: InventoryItem, characterId: string) => {
+    setDraggedItem({ item, sourceCharacterId: characterId });
   }, []);
 
   const handleDragEnd = useCallback(() => {
@@ -42,7 +44,7 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
 
   const handleDrop = useCallback((
     targetCharacterId: string,
-    targetSlotType: 'paws' | 'body' | 'pack',
+    targetSlotType: 'PAWS' | 'BODY' | 'PACK',
     targetSlotIndex: number
   ) => {
     if (!draggedItem) return;
@@ -52,32 +54,38 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
 
     if (!sourceChar || !targetChar) return;
 
-    // Удаляем предмет из исходного места
-    const updatedSourceChar = { ...sourceChar };
-    updatedSourceChar.inventory[draggedItem.sourceSlotType][draggedItem.sourceSlotIndex] = null;
+    // Удаляем предмет из исходного инвентаря
+    const removeResult = removeItemFromInventory(sourceChar.inventory, draggedItem.item.id);
+    if (!removeResult.success) return;
 
-    // Проверяем, можно ли поместить предмет в целевое место
-    const targetSlot = targetChar.inventory[targetSlotType][targetSlotIndex];
+    // Перемещаем предмет в целевой слот
+    const moveResult = moveItemToSlot(removeResult.inventory, draggedItem.item.id, targetSlotType, targetSlotIndex);
 
-    // Если слот занят, меняем местами
-    if (targetSlot) {
-      updatedSourceChar.inventory[draggedItem.sourceSlotType][draggedItem.sourceSlotIndex] = targetSlot;
-    }
+    if (moveResult.success) {
+      // Если это один и тот же персонаж
+      if (draggedItem.sourceCharacterId === targetCharacterId) {
+        onCharacterUpdate(targetCharacterId, {
+          ...targetChar,
+          inventory: moveResult.inventory
+        });
+      } else {
+        // Разные персонажи
+        onCharacterUpdate(draggedItem.sourceCharacterId, {
+          ...sourceChar,
+          inventory: removeResult.inventory
+        });
 
-    // Помещаем предмет в целевое место
-    const updatedTargetChar = { ...targetChar };
-    updatedTargetChar.inventory[targetSlotType][targetSlotIndex] = draggedItem.item;
-
-    // Если предмет размером 2 слота, освобождаем/занимаем дополнительный слот
-    if (draggedItem.item.size === 2) {
-      const nextIndex = targetSlotIndex + 1;
-      if (nextIndex < updatedTargetChar.inventory[targetSlotType].length) {
-        updatedTargetChar.inventory[targetSlotType][nextIndex] = null;
+        // Добавляем предмет в инвентарь целевого персонажа
+        const addResult = addItemToInventory(targetChar.inventory, draggedItem.item);
+        if (addResult.success) {
+          onCharacterUpdate(targetCharacterId, {
+            ...targetChar,
+            inventory: addResult.inventory
+          });
+        }
       }
     }
 
-    onCharacterUpdate(draggedItem.sourceCharacterId, updatedSourceChar);
-    onCharacterUpdate(targetCharacterId, updatedTargetChar);
     setDraggedItem(null);
   }, [draggedItem, characters, onCharacterUpdate]);
 
@@ -85,48 +93,54 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     const character = characters.find(c => c.id === characterId);
     if (!character) return;
 
-    const updatedChar = { ...character };
-    const allSlots = [
-      ...updatedChar.inventory.paws,
-      ...updatedChar.inventory.body,
-      ...updatedChar.inventory.pack
-    ];
+    const updatedInventory = character.inventory.map(invItem => {
+      if (invItem.id === item.id) {
+        return {
+          ...invItem,
+          usage: Math.min(invItem.maxUsage, invItem.usage + 1)
+        };
+      }
+      return invItem;
+    });
 
-    const itemIndex = allSlots.findIndex(slot => slot?.id === item.id);
-    if (itemIndex !== -1 && allSlots[itemIndex]) {
-      const updatedItem = { ...allSlots[itemIndex]! };
-      updatedItem.usage = Math.min(updatedItem.maxUsage ?? Infinity, (updatedItem.usage ?? 0) + 1);
-
-      allSlots[itemIndex] = updatedItem;
-    }
-
-    onCharacterUpdate(characterId, updatedChar);
+    onCharacterUpdate(characterId, {
+      ...character,
+      inventory: updatedInventory
+    });
   }, [characters, onCharacterUpdate]);
 
   const repairItem = useCallback((characterId: string, item: InventoryItem) => {
     const character = characters.find(c => c.id === characterId);
     if (!character) return;
 
-    const repairCost = Math.floor((item.value || 0) * 0.1) * (item.usage ?? 1);
+    const repairCost = Math.floor((item.value || 0) * 0.1) * item.usage;
 
     if (character.pips >= repairCost) {
-      const updatedChar = { ...character };
-      updatedChar.pips -= repairCost;
+      const updatedInventory = character.inventory.map(invItem => {
+        if (invItem.id === item.id) {
+          return { ...invItem, usage: 0 };
+        }
+        return invItem;
+      });
 
-      const allSlots = [
-        ...updatedChar.inventory.paws,
-        ...updatedChar.inventory.body,
-        ...updatedChar.inventory.pack
-      ];
+      onCharacterUpdate(characterId, {
+        ...character,
+        pips: character.pips - repairCost,
+        inventory: updatedInventory
+      });
+    }
+  }, [characters, onCharacterUpdate]);
 
-      const itemIndex = allSlots.findIndex(slot => slot?.id === item.id);
-      if (itemIndex !== -1 && allSlots[itemIndex]) {
-        const updatedItem = { ...allSlots[itemIndex]! };
-        updatedItem.usage = 0;
-        allSlots[itemIndex] = updatedItem;
-      }
+  const removeItem = useCallback((characterId: string, itemId: string) => {
+    const character = characters.find(c => c.id === characterId);
+    if (!character) return;
 
-      onCharacterUpdate(characterId, updatedChar);
+    const result = removeItemFromInventory(character.inventory, itemId);
+    if (result.success) {
+      onCharacterUpdate(characterId, {
+        ...character,
+        inventory: result.inventory
+      });
     }
   }, [characters, onCharacterUpdate]);
 
@@ -233,19 +247,17 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
             // Обновляем предмет в инвентаре
             const character = characters.find(c => c.id === editingItem.characterId);
             if (character) {
-              const updatedChar = { ...character };
-              const allSlots = [
-                ...updatedChar.inventory.paws,
-                ...updatedChar.inventory.body,
-                ...updatedChar.inventory.pack
-              ];
+              const updatedInventory = character.inventory.map(invItem => {
+                if (invItem.id === editingItem.item.id) {
+                  return updatedItem;
+                }
+                return invItem;
+              });
 
-              const itemIndex = allSlots.findIndex(slot => slot?.id === editingItem.item.id);
-              if (itemIndex !== -1) {
-                allSlots[itemIndex] = updatedItem;
-              }
-
-              onCharacterUpdate(editingItem.characterId, updatedChar);
+              onCharacterUpdate(editingItem.characterId, {
+                ...character,
+                inventory: updatedInventory
+              });
             }
             setEditingItem(null);
           }}
@@ -354,15 +366,18 @@ function InventoryGrid({
   onAddItem
 }: {
   character: FullCharacter;
-  onDragStart: (item: InventoryItem, characterId: string, slotType: 'paws' | 'body' | 'pack', slotIndex: number) => void;
+  onDragStart: (item: InventoryItem, characterId: string) => void;
   onDragEnd: () => void;
-  onDrop: (characterId: string, slotType: 'paws' | 'body' | 'pack', slotIndex: number) => void;
+  onDrop: (characterId: string, slotType: 'PAWS' | 'BODY' | 'PACK', slotIndex: number) => void;
   onMarkUsage: (characterId: string, item: InventoryItem) => void;
   onRepairItem: (characterId: string, item: InventoryItem) => void;
   onEditItem: (item: InventoryItem) => void;
   onAddItem: (item: InventoryItem) => void;
 }) {
   const [showAddItemModal, setShowAddItemModal] = useState(false);
+
+  // Получаем структурированное представление инвентаря
+  const inventorySlots = getInventorySlots(character.inventory);
 
   return (
     <div className="bg-white rounded-lg p-4 border border-amber-200">
@@ -379,10 +394,11 @@ function InventoryGrid({
       {/* Слоты лап */}
       <InventorySection
         title="Paws (2 slots)"
-        slots={character.inventory}
-        slotType="paws"
+        items={inventorySlots.paws}
+        slotType="PAWS"
         characterId={character.id}
         backgroundColor="bg-orange-50"
+        maxSlots={2}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onDrop={onDrop}
@@ -394,10 +410,11 @@ function InventoryGrid({
       {/* Слоты тела */}
       <InventorySection
         title="Body (2 slots)"
-        slots={character.inventory}
-        slotType="body"
+        items={inventorySlots.body}
+        slotType="BODY"
         characterId={character.id}
         backgroundColor="bg-blue-50"
+        maxSlots={2}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onDrop={onDrop}
@@ -409,10 +426,11 @@ function InventoryGrid({
       {/* Слоты рюкзака */}
       <InventorySection
         title="Pack (6 slots)"
-        slots={character.inventory}
-        slotType="pack"
+        items={inventorySlots.pack}
+        slotType="PACK"
         characterId={character.id}
         backgroundColor="bg-green-50"
+        maxSlots={6}
         gridCols="grid-cols-3"
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
@@ -436,10 +454,11 @@ function InventoryGrid({
 // Компонент секции инвентаря
 function InventorySection({
   title,
-  slots,
+  items,
   slotType,
   characterId,
   backgroundColor,
+  maxSlots,
   gridCols = "grid-cols-2",
   onDragStart,
   onDragEnd,
@@ -449,23 +468,39 @@ function InventorySection({
   onEditItem
 }: {
   title: string;
-  slots: InventoryItem[];
-  slotType: SlotType;
+  items: InventoryItem[];
+  slotType: 'PAWS' | 'BODY' | 'PACK';
   characterId: string;
   backgroundColor: string;
+  maxSlots: number;
   gridCols?: string;
-  onDragStart: (item: InventoryItem, characterId: string, slotType: SlotType, slotIndex: number) => void;
+  onDragStart: (item: InventoryItem, characterId: string) => void;
   onDragEnd: () => void;
-  onDrop: (characterId: string, slotType: SlotType, slotIndex: number) => void;
+  onDrop: (characterId: string, slotType: 'PAWS' | 'BODY' | 'PACK', slotIndex: number) => void;
   onMarkUsage: (characterId: string, item: InventoryItem) => void;
   onRepairItem: (characterId: string, item: InventoryItem) => void;
   onEditItem: (item: InventoryItem) => void;
 }) {
+  // Создаем массив слотов с учетом максимального количества и размера предметов
+  const slots: (InventoryItem | null)[] = [];
+  let currentSlotIndex = 0;
+
+  for (const item of items) {
+    // Добавляем предмет в текущий слот
+    slots[currentSlotIndex] = item;
+    currentSlotIndex += item.size;
+  }
+
+  // Заполняем оставшиеся слоты пустыми
+  while (slots.length < maxSlots) {
+    slots.push(null);
+  }
+
   return (
     <div className="mb-6">
       <h4 className="font-medium text-gray-700 mb-2">{title}</h4>
       <div className={`grid ${gridCols} gap-2`}>
-        {slots.filter((item) => item.slotType === slotType).map((item, index) => (
+        {slots.map((item, index) => (
           <InventorySlot
             key={index}
             item={item}
@@ -502,12 +537,12 @@ function InventorySlot({
 }: {
   item: InventoryItem | null;
   slotIndex: number;
-  slotType: SlotType;
+  slotType: string;
   characterId: string;
   backgroundColor: string;
-  onDragStart: (item: InventoryItem, characterId: string, slotType: SlotType, slotIndex: number) => void;
+  onDragStart: (item: InventoryItem, characterId: string) => void;
   onDragEnd: () => void;
-  onDrop: (characterId: string, slotType: SlotType, slotIndex: number) => void;
+  onDrop: (characterId: string, slotType: 'PAWS' | 'BODY' | 'PACK', slotIndex: number) => void;
   onMarkUsage: (characterId: string, item: InventoryItem) => void;
   onRepairItem: (characterId: string, item: InventoryItem) => void;
   onEditItem: (item: InventoryItem) => void;
@@ -520,12 +555,12 @@ function InventorySlot({
         item ? 'cursor-move' : 'cursor-pointer'
       }`}
       draggable={!!item}
-      onDragStart={() => item && onDragStart(item, characterId, slotType, slotIndex)}
+      onDragStart={() => item && onDragStart(item, characterId)}
       onDragEnd={onDragEnd}
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();
-        onDrop(characterId, slotType, slotIndex);
+        onDrop(characterId, slotType as 'PAWS' | 'BODY' | 'PACK', slotIndex);
       }}
       onContextMenu={(e) => {
         if (item) {

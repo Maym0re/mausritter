@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { generateRandomCharacter, getAllInventoryItems } from "@/lib/characterUtils";
+import { generateRandomCharacter } from "@/lib/characterUtils";
 import { FullCharacter } from "@/types/character";
 
 interface CharacterGeneratorProps {

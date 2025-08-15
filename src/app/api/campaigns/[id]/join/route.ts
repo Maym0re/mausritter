@@ -50,7 +50,7 @@ export async function POST(
           userId: session.user.id
         }
       })
-    } catch (prismaError: any) {
+    } catch (prismaError) {
       // Обрабатываем ошибку уникального ограничения
       if (prismaError.code === 'P2002') {
         return NextResponse.json(

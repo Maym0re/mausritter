@@ -3,19 +3,19 @@ import React, { useState } from 'react';
 import { CharacterGenerator } from '@/components/CharacterGenerator';
 import { TimeTracker } from '@/components/TimeTracker';
 import { InventoryManager } from '@/components/InventoryManager';
-import { Character } from "@prisma/client";
+import { FullCharacter } from "@/types/character";
 
 export default function ToolsPage() {
   const [activeTab, setActiveTab] = useState<'characters' | 'time' | 'inventory'>('characters');
-  const [characters, setCharacters] = useState<Character[]>([]);
+  const [characters, setCharacters] = useState<FullCharacter[]>([]);
 
-  const handleCharacterUpdate = (characterId: string, updatedCharacter: Character) => {
+  const handleCharacterUpdate = (characterId: string, updatedCharacter: FullCharacter) => {
     setCharacters(prev =>
       prev.map(char => char.id === characterId ? updatedCharacter : char)
     );
   };
 
-  const addCharacterToParty = (character: Character) => {
+  const addCharacterToParty = (character: FullCharacter) => {
     setCharacters(prev => [...prev, character]);
   };
 

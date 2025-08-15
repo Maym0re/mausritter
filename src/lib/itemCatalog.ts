@@ -1,7 +1,7 @@
-import { InventoryItem, BASIC_EQUIPMENT, WEAPONS } from '@/types/character';
+import { BASIC_EQUIPMENT, InventoryItemLite, WEAPONS } from '@/types/character';
 
 // Расширенный список предметов для добавления
-export const ITEM_CATALOG: InventoryItem[] = [
+export const ITEM_CATALOG: InventoryItemLite[] = [
   // Базовое снаряжение
   ...BASIC_EQUIPMENT,
 
@@ -10,7 +10,6 @@ export const ITEM_CATALOG: InventoryItem[] = [
 
   // Инструменты
   {
-    id: 'rope',
     name: 'Rope',
     type: 'equipment',
     size: 1,
@@ -20,7 +19,6 @@ export const ITEM_CATALOG: InventoryItem[] = [
     value: 10
   },
   {
-    id: 'lantern',
     name: 'Lantern',
     type: 'equipment',
     size: 1,
@@ -30,7 +28,6 @@ export const ITEM_CATALOG: InventoryItem[] = [
     value: 50
   },
   {
-    id: 'healing_potion',
     name: 'Healing Potion',
     type: 'equipment',
     size: 1,
@@ -40,7 +37,6 @@ export const ITEM_CATALOG: InventoryItem[] = [
     value: 100
   },
   {
-    id: 'lockpicks',
     name: 'Lockpicks',
     type: 'equipment',
     size: 1,
@@ -50,7 +46,6 @@ export const ITEM_CATALOG: InventoryItem[] = [
     value: 100
   },
   {
-    id: 'grappling_hook',
     name: 'Grappling Hook',
     type: 'equipment',
     size: 1,
@@ -62,7 +57,6 @@ export const ITEM_CATALOG: InventoryItem[] = [
 
   // Броня
   {
-    id: 'light_armor',
     name: 'Light Armor',
     type: 'armor',
     size: 1,
@@ -72,7 +66,6 @@ export const ITEM_CATALOG: InventoryItem[] = [
     value: 150
   },
   {
-    id: 'heavy_armor',
     name: 'Heavy Armor',
     type: 'armor',
     size: 2,
@@ -84,7 +77,6 @@ export const ITEM_CATALOG: InventoryItem[] = [
 
   // Заклинания
   {
-    id: 'heal_spell',
     name: 'Heal',
     type: 'spell',
     size: 1,
@@ -94,7 +86,6 @@ export const ITEM_CATALOG: InventoryItem[] = [
     value: 300
   },
   {
-    id: 'light_spell',
     name: 'Light',
     type: 'spell',
     size: 1,
@@ -104,7 +95,6 @@ export const ITEM_CATALOG: InventoryItem[] = [
     value: 200
   },
   {
-    id: 'magic_missile_spell',
     name: 'Magic Missile',
     type: 'spell',
     size: 1,
@@ -116,9 +106,8 @@ export const ITEM_CATALOG: InventoryItem[] = [
 ];
 
 // Функция для создания копии предмета с уникальным ID
-export function createItemCopy(templateItem: InventoryItem): InventoryItem {
+export function createItemCopy(templateItem: InventoryItemLite): InventoryItemLite {
   return {
     ...templateItem,
-    id: Math.random().toString(36).substr(2, 9)
   };
 }
