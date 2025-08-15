@@ -8,7 +8,7 @@ import {
 	WEAPONS,
 	FullCharacter, BackgroundInitial
 } from '@/types/character';
-import { Background, InventoryItem } from "@prisma/client";
+import { InventoryItem } from "@prisma/client";
 
 // Функция для броска 3d6, оставляем 2 лучших
 export function roll3d6KeepBest2(): number {
@@ -112,8 +112,42 @@ export function generateRandomCharacter(): FullCharacter {
     conditions: [],
     notes: '',
     playerId: '',
-    player: null,
+    player: {
+      id: '',
+      name: '',
+      email: '',
+      emailVerified: null,
+      image: null,
+      password: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
     campaignId: '',
+    campaign: {
+      id: '',
+      name: '',
+      description: null,
+      isActive: true,
+      gmId: '',
+      gm: {
+        id: '',
+        name: '',
+        email: '',
+        emailVerified: null,
+        image: null,
+        password: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      players: [],
+      gameTime: null,
+      season: 'SPRING' as const,
+      weatherEntryId: null,
+      weatherEntry: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      todaysEvent: null,
+    },
     createdAt: new Date(),
     updatedAt: new Date(),
     isActive: true,
@@ -122,34 +156,44 @@ export function generateRandomCharacter(): FullCharacter {
   return character;
 }
 
-// Создание стартового инвентаря
+// Создание стартовог�� инвентаря
 function createStartingInventory(backgroundEntry: BackgroundInitial, bonusItems: string[]): InventoryItem[] {
   const items: InventoryItem[] = [];
 
   // Базовое снаряжение
-  items.push(...BASIC_EQUIPMENT.map(item => ({ ...item, id: generateId() })));
+  items.push(...BASIC_EQUIPMENT.map(item => ({
+    ...item,
+    id: generateId(),
+    slotType: 'PACK' as const,
+    slotIndex: -1,
+    characterId: '',
+    createdAt: new Date(),
+    updatedAt: new Date()
+  })));
 
   // Предметы из предыстории
   items.push(createItemFromDescription(backgroundEntry.itemA));
   items.push(createItemFromDescription(backgroundEntry.itemB));
 
-  // Дополнительные предметы для слабых персонажей
+  // Дополнительные предмет�� для слабых персонажей
   bonusItems.forEach(itemDesc => {
     items.push(createItemFromDescription(itemDesc));
   });
 
   // Оружие по выбору (берем случайное)
   const randomWeapon = WEAPONS[Math.floor(Math.random() * WEAPONS.length)];
-  items.push({ ...randomWeapon, id: generateId() });
-
-  items.forEach(item => {
-    const result = addItemToInventory(currentInventory, item);
-    if (result.success) {
-      currentInventory = result.inventory;
-    }
+  items.push({
+    ...randomWeapon,
+    id: generateId(),
+    slotType: 'PACK' as const,
+    slotIndex: -1,
+    characterId: '',
+    createdAt: new Date(),
+    updatedAt: new Date()
   });
 
-  return currentInventory;
+  // Размещаем предметы в слотах
+  return assignItemsToSlots(items);
 }
 
 // Создание предмета из описания
@@ -170,7 +214,7 @@ function createItemFromDescription(description: string): InventoryItem {
 	  characterId: ''
   };
 
-  // Определяем тип предмета по описанию
+  // Определяем тип ��редмета по описанию
   if (description.includes('Spell:')) {
     item.type = 'spell';
     item.name = description.replace('Spell: ', '');
@@ -212,81 +256,176 @@ export function getItemFromInventory(character: FullCharacter, itemId: string): 
   return character.inventory.find(item => item?.id === itemId) || null;
 }
 
-export function addItemToInventory(inventory: InventorySlots, item: InventoryItem): { success: boolean; inventory: InventorySlots } {
-  // Создаем глубокую копию инвентаря
-  const newInventory: InventoryItem[] = []
+// Размещение предметов в слотах
+function assignItemsToSlots(items: InventoryItem[]): InventoryItem[] {
+  const result: InventoryItem[] = [];
 
-  // Ищем свободные слоты в порядке: pack -> body -> paws
-  const { pack, body, paws } = newInventory;
+  // Определяем количество слотов для каждого типа
+  const slotCapacity = {
+    PAWS: 2,
+    BODY: 2,
+    PACK: 6
+  };
 
-  // Проверяем pack слоты
-  for (let i = 0; i < pack.length; i++) {
-    if (!pack[i]) {
-      if (item.size === 1 || (item.size === 2 && i < pack.length - 1 && !pack[i + 1])) {
-        pack[i] = item;
-        if (item.size === 2) pack[i + 1] = null; // резервируем второй слот
-        return { success: true, inventory: newInventory };
+  const currentSlotIndex = {
+    PAWS: 0,
+    BODY: 0,
+    PACK: 0
+  };
+
+  for (const item of items) {
+    let placed = false;
+
+    // Пробуем разместить в порядке приоритета: PACK -> BODY -> PAWS
+    const slotTypes = ['PACK', 'BODY', 'PAWS'] as const;
+
+    for (const slotType of slotTypes) {
+      const availableSlots = slotCapacity[slotType] - currentSlotIndex[slotType];
+
+      // Проверяем, поместится ли предмет
+      if (availableSlots >= item.size) {
+        const newItem = {
+          ...item,
+          slotType,
+          slotIndex: currentSlotIndex[slotType]
+        };
+
+        result.push(newItem);
+        currentSlotIndex[slotType] += item.size;
+        placed = true;
+        break;
       }
+    }
+
+    if (!placed) {
+      console.warn(`Не удалось разместить предмет ${item.name}`);
     }
   }
 
-  // Проверяем body слоты
-  for (let i = 0; i < body.length; i++) {
-    if (!body[i]) {
-      if (item.size === 1 || (item.size === 2 && i < body.length - 1 && !body[i + 1])) {
-        body[i] = item;
-        if (item.size === 2) body[i + 1] = null;
-        return { success: true, inventory: newInventory };
+  return result;
+}
+
+// Новая функция для добавления предмета в инвентарь
+export function addItemToInventory(inventory: InventoryItem[], item: InventoryItem): { success: boolean; inventory: InventoryItem[] } {
+  // Создаем копию инвентаря
+  const newInventory = [...inventory];
+
+  // Подсчитываем занятые слоты по типам
+  const usedSlots = {
+    PAWS: 0,
+    BODY: 0,
+    PACK: 0
+  };
+
+  for (const inventoryItem of newInventory) {
+    usedSlots[inventoryItem.slotType] += inventoryItem.size;
+  }
+
+  const slotCapacity = {
+    PAWS: 2,
+    BODY: 2,
+    PACK: 6
+  };
+
+  // Пробуем разместить в порядке приоритета: PACK -> BODY -> PAWS
+  const slotTypes = ['PACK', 'BODY', 'PAWS'] as const;
+
+  for (const slotType of slotTypes) {
+    const availableSlots = slotCapacity[slotType] - usedSlots[slotType];
+
+    if (availableSlots >= item.size) {
+      // Находим индекс для размещения
+      let slotIndex = 0;
+      const itemsInSlot = newInventory.filter(i => i.slotType === slotType).sort((a, b) => a.slotIndex - b.slotIndex);
+
+      for (const existingItem of itemsInSlot) {
+        if (existingItem.slotIndex > slotIndex) {
+          break;
+        }
+        slotIndex = existingItem.slotIndex + existingItem.size;
       }
+
+      const newItem = {
+        ...item,
+        slotType,
+        slotIndex
+      };
+
+      newInventory.push(newItem);
+      return { success: true, inventory: newInventory };
     }
   }
 
-  // Проверяем paw слоты
-  for (let i = 0; i < paws.length; i++) {
-    if (!paws[i]) {
-      if (item.size === 1 || (item.size === 2 && i < paws.length - 1 && !paws[i + 1])) {
-        paws[i] = item;
-        if (item.size === 2) paws[i + 1] = null;
-        return { success: true, inventory: newInventory };
-      }
-    }
-  }
-
-  // Нет места - возвращаем исходный инвентарь
   return { success: false, inventory };
 }
 
 // Функция для удаления предмета из инвентаря
-// export function removeItemFromInventory(character: FullCharacter, itemId: string): boolean {
-//   const { paws, body, pack } = character.inventory;
-//
-//   // Проверяем все слоты
-//   const allSlots = [
-//     { slots: paws, name: 'paws' },
-//     { slots: body, name: 'body' },
-//     { slots: pack, name: 'pack' }
-//   ];
-//
-//   for (const slotGroup of allSlots) {
-//     for (let i = 0; i < slotGroup.slots.length; i++) {
-//       if (slotGroup.slots[i]?.id === itemId) {
-//         const item = slotGroup.slots[i];
-//         slotGroup.slots[i] = null;
-//
-//         // Если предмет занимал 2 слота, освобождаем второй
-//         if (item?.size === 2 && i < slotGroup.slots.length - 1) {
-//           slotGroup.slots[i + 1] = null;
-//         }
-//
-//         return true;
-//       }
-//     }
-//   }
-//
-//   return false;
-// }
+export function removeItemFromInventory(inventory: InventoryItem[], itemId: string): { success: boolean; inventory: InventoryItem[] } {
+  const itemIndex = inventory.findIndex(item => item.id === itemId);
 
-// Проверка на перегрузку
+  if (itemIndex === -1) {
+    return { success: false, inventory };
+  }
+
+  const newInventory = inventory.filter(item => item.id !== itemId);
+  return { success: true, inventory: newInventory };
+}
+
+// Функция для получения предметов по типу слота
+export function getItemsBySlotType(inventory: InventoryItem[], slotType: 'PAWS' | 'BODY' | 'PACK'): InventoryItem[] {
+  return inventory.filter(item => item.slotType === slotType).sort((a, b) => a.slotIndex - b.slotIndex);
+}
+
+// Функция для получения структурированного представления инвентаря (для UI)
+export function getInventorySlots(inventory: InventoryItem[]) {
+  return {
+    paws: getItemsBySlotType(inventory, 'PAWS'),
+    body: getItemsBySlotType(inventory, 'BODY'),
+    pack: getItemsBySlotType(inventory, 'PACK')
+  };
+}
+
+// Функция для перемещения предмета в другой слот
+export function moveItemToSlot(
+  inventory: InventoryItem[],
+  itemId: string,
+  newSlotType: 'PAWS' | 'BODY' | 'PACK',
+  newSlotIndex: number
+): { success: boolean; inventory: InventoryItem[]; error?: string } {
+  const itemIndex = inventory.findIndex(item => item.id === itemId);
+
+  if (itemIndex === -1) {
+    return { success: false, inventory, error: 'Предмет не найден' };
+  }
+
+  const item = inventory[itemIndex];
+  const newInventory = [...inventory];
+
+  // Проверяем, есть ли место в целевом слоте
+  const slotCapacity = {
+    PAWS: 2,
+    BODY: 2,
+    PACK: 6
+  };
+
+  const itemsInTargetSlot = newInventory.filter(i => i.slotType === newSlotType && i.id !== itemId);
+  const usedSlotsInTarget = itemsInTargetSlot.reduce((sum, i) => sum + i.size, 0);
+
+  if (usedSlotsInTarget + item.size > slotCapacity[newSlotType]) {
+    return { success: false, inventory, error: 'Недостаточно места в целевом слоте' };
+  }
+
+  // Обновляем предмет
+  newInventory[itemIndex] = {
+    ...item,
+    slotType: newSlotType,
+    slotIndex: newSlotIndex
+  };
+
+  return { success: true, inventory: newInventory };
+}
+
+// Проверка н�� перегрузку
 export function isEncumbered(character: FullCharacter): boolean {
   const totalSlots = 10; // 2 paws + 2 body + 6 pack
   const usedSlots = getTotalUsedSlots(character);
