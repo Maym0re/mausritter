@@ -1,12 +1,19 @@
+import { Prisma, WeatherEntry } from "@prisma/client";
+import type { Character as PrismaCharacter, GameTime as PrismaGameTime } from "@prisma/client";
+
+export const gameTimeLight = Prisma.validator<Prisma.GameTimeInclude>()({
+  campaign: true,
+});
+
+export type GameTime = Prisma.GameTimeGetPayload<{ include: typeof gameTimeLight }>;
+
+export type GameTimeCore = Pick<PrismaGameTime, 'rounds' | 'turns' | 'watches' | 'days'>;
+
+export type WeatherEntryLight = Pick<WeatherEntry, 'roll' | 'weather' | 'isPoorCondition'>;
+
 // Система времени из SRD
 export type TimeScale = 'round' | 'turn' | 'watch';
 
-export interface GameTime {
-  rounds: number;    // Боевые раунды (< 1 минуты)
-  turns: number;     // Ходы исследования (~10 минут)
-  watches: number;   // Периоды путешествий (~6 часов)
-  days: number;      // Дни
-}
 
 export interface Season {
   name: 'spring' | 'summer' | 'autumn' | 'winter';
@@ -14,11 +21,11 @@ export interface Season {
   events: SeasonalEvent[];
 }
 
-export interface WeatherEntry {
-  roll: number;
-  weather: string;
-  isPoorCondition: boolean; // Требует STR сейв или Exhausted
-}
+// export interface WeatherEntry {
+//   roll: number;
+//   weather: string;
+//   isPoorCondition: boolean; // Требует STR сейв или Exhausted
+// }
 
 export interface SeasonalEvent {
   description: string;
@@ -35,7 +42,7 @@ export interface TravelState {
 }
 
 // Погодные таблицы из SRD
-export const WEATHER_TABLES: Record<Season['name'], WeatherEntry[]> = {
+export const WEATHER_TABLES: Record<Season['name'], WeatherEntryLight[]> = {
   spring: [
     { roll: 2, weather: 'Rain storm', isPoorCondition: true },
     { roll: 3, weather: 'Drizzle', isPoorCondition: false },

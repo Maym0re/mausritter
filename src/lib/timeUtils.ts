@@ -1,17 +1,17 @@
 import {
-  GameTime,
-  Season,
-  WeatherEntry,
-  WEATHER_TABLES,
-  SEASONAL_EVENTS,
-  RestType,
-  RestResult
+	Season,
+	WEATHER_TABLES,
+	SEASONAL_EVENTS,
+	RestType,
+	RestResult,
+	GameTimeCore, WeatherEntryLight
 } from '@/types/time';
-import { Character, CONDITIONS } from '@/types/character';
+import { CONDITIONS, FullCharacter } from '@/types/character';
+import { WeatherEntry } from "@prisma/client";
 
 // Утилиты для работы со временем
 export class GameTimeManager {
-  private gameTime: GameTime = {
+  private gameTime: GameTimeCore = {
     rounds: 0,
     turns: 0,
     watches: 0,
@@ -57,12 +57,12 @@ export class GameTimeManager {
     }
   }
 
-  getCurrentTime(): GameTime {
+  getCurrentTime(): GameTimeCore {
     return { ...this.gameTime };
   }
 
   // Установить время напрямую
-  setTime(time: GameTime): void {
+  setTime(time: GameTimeCore): void {
     this.gameTime = { ...time };
   }
 
@@ -91,7 +91,7 @@ export class GameTimeManager {
 }
 
 // Утилиты для погоды
-export function rollWeather(season: Season['name']): WeatherEntry {
+export function rollWeather(season: Season['name']): WeatherEntryLight {
   const roll = rollD6() + rollD6();
   const weatherTable = WEATHER_TABLES[season];
 
@@ -103,7 +103,7 @@ export function rollD6(): number {
 }
 
 // Утилиты для отдыха
-export function performRest(character: Character, restType: RestType): RestResult {
+export function performRest(character: FullCharacter, restType: RestType): RestResult {
   const result: RestResult = {
     type: restType,
     hpHealed: 0,
@@ -166,7 +166,7 @@ export function performRest(character: Character, restType: RestType): RestResul
 }
 
 // Применение результатов отдыха к персонажу
-export function applyRestResults(character: Character, result: RestResult): Character {
+export function applyRestResults(character: FullCharacter, result: RestResult): FullCharacter {
   const updated = { ...character };
 
   // Лечим HP
@@ -216,12 +216,12 @@ export function getTimeOfDay(watch: number): string {
 }
 
 // Проверка, нужно ли есть
-export function needsFood(character: Character, daysSinceLastMeal: number): boolean {
+export function needsFood(character: FullCharacter, daysSinceLastMeal: number): boolean {
   return daysSinceLastMeal >= 1;
 }
 
 // Добавление состояния голода
-export function addHungerCondition(character: Character): Character {
+export function addHungerCondition(character: FullCharacter): FullCharacter {
   const updated = { ...character };
   const hasHungryCondition = character.conditions.some(c => c.id === 'hungry');
 

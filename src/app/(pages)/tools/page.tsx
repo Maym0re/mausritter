@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { CharacterGenerator } from '@/components/CharacterGenerator';
 import { TimeTracker } from '@/components/TimeTracker';
 import { InventoryManager } from '@/components/InventoryManager';
-import { Character } from '@/types/character';
+import { Character } from "@prisma/client";
 
 export default function ToolsPage() {
   const [activeTab, setActiveTab] = useState<'characters' | 'time' | 'inventory'>('characters');
@@ -80,7 +80,7 @@ export default function ToolsPage() {
                       <div key={character.id} className="p-4 border border-amber-200 rounded-lg bg-amber-50">
                         <h4 className="font-bold text-amber-900 mb-2">{character.name}</h4>
                         <div className="text-sm text-amber-800">
-                          <p><strong>Background:</strong> {character.background.name}</p>
+                          <p><strong>Background:</strong> {character.background?.name}</p>
                           <p><strong>HP:</strong> {character.hp}/{character.maxHp}</p>
                           <p><strong>Attributes:</strong> STR {character.str} | DEX {character.dex} | WIL {character.wil}</p>
                           <p><strong>Pips:</strong> {character.pips}</p>

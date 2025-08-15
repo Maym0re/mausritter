@@ -1,12 +1,13 @@
 'use client';
 import React, { useCallback, useState } from 'react';
-import { Character, Condition, InventoryItem } from '@/types/character';
 import { addItemToInventory, getAvailableSlots, getTotalUsedSlots, isEncumbered } from '@/lib/characterUtils';
 import { createItemCopy, ITEM_CATALOG } from '@/lib/itemCatalog';
+import { Condition, InventoryItem, SlotType } from "@prisma/client";
+import { FullCharacter } from "@/types/character";
 
 interface InventoryManagerProps {
-  characters: Character[];
-  onCharacterUpdate: (characterId: string, character: Character) => void;
+  characters: FullCharacter[];
+  onCharacterUpdate: (characterId: string, character: FullCharacter) => void;
 }
 
 interface DraggedItem {
@@ -268,7 +269,7 @@ function CharacterInfo({
   character,
   onRemoveCondition
 }: {
-  character: Character;
+  character: FullCharacter;
   onAddCondition?: (condition: Condition) => void;
   onRemoveCondition: (conditionId: string) => void;
 }) {
@@ -352,7 +353,7 @@ function InventoryGrid({
   onEditItem,
   onAddItem
 }: {
-  character: Character;
+  character: FullCharacter;
   onDragStart: (item: InventoryItem, characterId: string, slotType: 'paws' | 'body' | 'pack', slotIndex: number) => void;
   onDragEnd: () => void;
   onDrop: (characterId: string, slotType: 'paws' | 'body' | 'pack', slotIndex: number) => void;
@@ -378,7 +379,7 @@ function InventoryGrid({
       {/* Слоты лап */}
       <InventorySection
         title="Paws (2 slots)"
-        slots={character.inventory.paws}
+        slots={character.inventory}
         slotType="paws"
         characterId={character.id}
         backgroundColor="bg-orange-50"
@@ -393,7 +394,7 @@ function InventoryGrid({
       {/* Слоты тела */}
       <InventorySection
         title="Body (2 slots)"
-        slots={character.inventory.body}
+        slots={character.inventory}
         slotType="body"
         characterId={character.id}
         backgroundColor="bg-blue-50"
@@ -408,7 +409,7 @@ function InventoryGrid({
       {/* Слоты рюкзака */}
       <InventorySection
         title="Pack (6 slots)"
-        slots={character.inventory.pack}
+        slots={character.inventory}
         slotType="pack"
         characterId={character.id}
         backgroundColor="bg-green-50"
@@ -448,14 +449,14 @@ function InventorySection({
   onEditItem
 }: {
   title: string;
-  slots: (InventoryItem | null)[];
-  slotType: 'paws' | 'body' | 'pack';
+  slots: InventoryItem[];
+  slotType: SlotType;
   characterId: string;
   backgroundColor: string;
   gridCols?: string;
-  onDragStart: (item: InventoryItem, characterId: string, slotType: 'paws' | 'body' | 'pack', slotIndex: number) => void;
+  onDragStart: (item: InventoryItem, characterId: string, slotType: SlotType, slotIndex: number) => void;
   onDragEnd: () => void;
-  onDrop: (characterId: string, slotType: 'paws' | 'body' | 'pack', slotIndex: number) => void;
+  onDrop: (characterId: string, slotType: SlotType, slotIndex: number) => void;
   onMarkUsage: (characterId: string, item: InventoryItem) => void;
   onRepairItem: (characterId: string, item: InventoryItem) => void;
   onEditItem: (item: InventoryItem) => void;
@@ -464,7 +465,7 @@ function InventorySection({
     <div className="mb-6">
       <h4 className="font-medium text-gray-700 mb-2">{title}</h4>
       <div className={`grid ${gridCols} gap-2`}>
-        {slots.map((item, index) => (
+        {slots.filter((item) => item.slotType === slotType).map((item, index) => (
           <InventorySlot
             key={index}
             item={item}
@@ -501,12 +502,12 @@ function InventorySlot({
 }: {
   item: InventoryItem | null;
   slotIndex: number;
-  slotType: 'paws' | 'body' | 'pack';
+  slotType: SlotType;
   characterId: string;
   backgroundColor: string;
-  onDragStart: (item: InventoryItem, characterId: string, slotType: 'paws' | 'body' | 'pack', slotIndex: number) => void;
+  onDragStart: (item: InventoryItem, characterId: string, slotType: SlotType, slotIndex: number) => void;
   onDragEnd: () => void;
-  onDrop: (characterId: string, slotType: 'paws' | 'body' | 'pack', slotIndex: number) => void;
+  onDrop: (characterId: string, slotType: SlotType, slotIndex: number) => void;
   onMarkUsage: (characterId: string, item: InventoryItem) => void;
   onRepairItem: (characterId: string, item: InventoryItem) => void;
   onEditItem: (item: InventoryItem) => void;

@@ -4,7 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Campaign } from '@/types/character';
+import { Campaign } from "@prisma/client";
 
 export default function HomePage() {
   const { data: session, status } = useSession();

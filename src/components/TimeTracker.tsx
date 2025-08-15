@@ -1,16 +1,16 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { GameTimeManager, rollWeather, rollSeasonalEvent, getTimeOfDay, performRest, applyRestResults } from '@/lib/timeUtils';
-import { Character } from '@/types/character';
-import { WeatherEntry, RestType, GameTime } from '@/types/time';
+import { GameTime, GameTimeCore, RestType, WeatherEntryLight } from "@/types/time";
+import { FullCharacter } from "@/types/character";
 
 interface TimeTrackerProps {
-  characters?: Character[];
-  onCharacterUpdate?: (characterId: string, character: Character) => void;
-  onTimeUpdate?: (newTime: GameTime, season: string, weather?: WeatherEntry | null, event?: string | null) => void;
-  initialTime?: GameTime;
+  characters?: FullCharacter[];
+  onCharacterUpdate?: (characterId: string, character: FullCharacter) => void;
+  onTimeUpdate?: (newTime: GameTimeCore, season: string, weather?: WeatherEntryLight | null, event?: string | null) => void;
+  initialTime?: GameTime | null;
   initialSeason?: string;
-  initialWeather?: WeatherEntry | null;
+  initialWeather?: WeatherEntryLight | null;
   initialEvent?: string | null;
 }
 
@@ -32,7 +32,7 @@ export function TimeTracker({
     return tm;
   });
   const [currentTime, setCurrentTime] = useState(initialTime || timeManager.getCurrentTime());
-  const [currentWeather, setCurrentWeather] = useState<WeatherEntry | null>(initialWeather || null);
+  const [currentWeather, setCurrentWeather] = useState<WeatherEntryLight | null>(initialWeather || null);
   const [todaysEvent, setTodaysEvent] = useState<string | null>(initialEvent || null);
 
   // Обновляем время каждую секунду для отображения

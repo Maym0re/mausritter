@@ -1,16 +1,16 @@
 'use client';
 import React, { useState } from 'react';
-import { Character } from '@/types/character';
+import { FullCharacter } from "@/types/character";
 
 interface CharacterEditorProps {
-  character: Character;
-  onSave: (character: Character) => void;
+  character: FullCharacter;
+  onSave: (character: FullCharacter) => void;
   onCancel: () => void;
   isMaster?: boolean;
 }
 
 export function CharacterEditor({ character, onSave, onCancel, isMaster = false }: CharacterEditorProps) {
-  const [editedCharacter, setEditedCharacter] = useState<Character>({ ...character });
+  const [editedCharacter, setEditedCharacter] = useState<FullCharacter>({ ...character });
   const [isSaving, setIsSaving] = useState(false);
 
   const handleAttributeChange = (attr: 'str' | 'dex' | 'wil', value: number) => {
@@ -199,10 +199,10 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
                 <strong>Происхождение:</strong> {editedCharacter.background?.name || 'Не указано'}
               </div>
               <div>
-                <strong>Знак рождения:</strong> {editedCharacter.birthsign?.name || 'Не указано'}
+                <strong>Знак рождения:</strong> {editedCharacter.birthsign?.sign || 'Не указано'}
               </div>
               <div>
-                <strong>Цвет шерсти:</strong> {editedCharacter.coat?.name || 'Не указано'}
+                <strong>Цвет шерсти:</strong> {editedCharacter.coat?.color || 'Не указано'}
               </div>
               <div>
                 <strong>Особенность:</strong> {editedCharacter.physicalDetail || 'Не указано'}

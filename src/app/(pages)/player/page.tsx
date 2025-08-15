@@ -3,10 +3,11 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
-import { Campaign, Character, CampaignPlayer } from '@/types/character';
 import { CharacterGenerator } from '@/components/CharacterGenerator';
 import { InventoryManager } from '@/components/InventoryManager';
 import Link from 'next/link';
+import { CampaignPlayer, Character } from "@prisma/client";
+import { FullCampaign, FullCharacter } from "@/types/character";
 
 export default function PlayerPage() {
   const { data: session, status } = useSession();
@@ -14,9 +15,9 @@ export default function PlayerPage() {
   const searchParams = useSearchParams();
   const campaignId = searchParams.get('campaign');
 
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
+  const [campaign, setCampaign] = useState<FullCampaign | null>(null);
+  const [characters, setCharacters] = useState<FullCharacter[]>([]);
+  const [selectedCharacter, setSelectedCharacter] = useState<FullCharacter | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'characters' | 'map'>('overview');
   const [showCharacterGenerator, setShowCharacterGenerator] = useState(false);
@@ -95,7 +96,7 @@ export default function PlayerPage() {
     }
   };
 
-  const createCharacter = async (characterData: Character) => {
+  const createCharacter = async (characterData: FullCharacter) => {
     if (!campaign) return;
 
     try {

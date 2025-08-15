@@ -1,14 +1,14 @@
 import {
-  Character,
-  BACKGROUND_TABLE,
-  BIRTHSIGNS,
-  COAT_COLORS,
-  COAT_PATTERNS,
-  PHYSICAL_DETAILS,
-  BASIC_EQUIPMENT,
-  WEAPONS,
-  InventoryItem, InventorySlots
+	BACKGROUND_TABLE,
+	BIRTHSIGNS,
+	COAT_COLORS,
+	COAT_PATTERNS,
+	PHYSICAL_DETAILS,
+	BASIC_EQUIPMENT,
+	WEAPONS,
+	FullCharacter, BackgroundInitial
 } from '@/types/character';
+import { Background, InventoryItem } from "@prisma/client";
 
 // Функция для броска 3d6, оставляем 2 лучших
 export function roll3d6KeepBest2(): number {
@@ -35,7 +35,7 @@ export function rollD66(): number {
 }
 
 // Генерация случайного персонажа
-export function generateRandomCharacter(): Character {
+export function generateRandomCharacter(): FullCharacter {
   // 1. Генерируем атрибуты
   const str = roll3d6KeepBest2();
   const dex = roll3d6KeepBest2();
@@ -69,7 +69,7 @@ export function generateRandomCharacter(): Character {
   // 6. Создаем инвентарь
   const inventory = createStartingInventory(backgroundEntry, bonusItems);
 
-  const character: Character = {
+	const character: FullCharacter = {
     id: generateId(),
     name: generateMouseName(),
 
@@ -86,14 +86,25 @@ export function generateRandomCharacter(): Character {
     grit: 0,
 
     background: {
-      name: backgroundEntry.background,
+			id: '',
+      name: backgroundEntry.name,
       itemA: backgroundEntry.itemA,
-      itemB: backgroundEntry.itemB
+      itemB: backgroundEntry.itemB,
+	    createdAt: new Date(),
+	    updatedAt: new Date()
     },
-    birthsign,
+    birthsign : {
+			...birthsign,
+	    id: '',
+	    createdAt: new Date(),
+	    updatedAt: new Date(),
+    },
     coat: {
       color: coatColor,
-      pattern: coatPattern
+      pattern: coatPattern,
+	    id: '',
+	    createdAt: new Date(),
+	    updatedAt: new Date(),
     },
     physicalDetail,
 
@@ -101,6 +112,7 @@ export function generateRandomCharacter(): Character {
     conditions: [],
     notes: '',
     playerId: '',
+    player: null,
     campaignId: '',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -111,7 +123,7 @@ export function generateRandomCharacter(): Character {
 }
 
 // Создание стартового инвентаря
-function createStartingInventory(backgroundEntry: { hp: number; pips: number; background: string; itemA: string; itemB: string }, bonusItems: string[]): InventorySlots {
+function createStartingInventory(backgroundEntry: BackgroundInitial, bonusItems: string[]): InventoryItem[] {
   const items: InventoryItem[] = [];
 
   // Базовое снаряжение
@@ -129,13 +141,6 @@ function createStartingInventory(backgroundEntry: { hp: number; pips: number; ba
   // Оружие по выбору (берем случайное)
   const randomWeapon = WEAPONS[Math.floor(Math.random() * WEAPONS.length)];
   items.push({ ...randomWeapon, id: generateId() });
-
-  // Начинаем с пустого инвентаря
-  let currentInventory: InventorySlots = {
-    paws: [null, null],
-    body: [null, null],
-    pack: [null, null, null, null, null, null]
-  };
 
   items.forEach(item => {
     const result = addItemToInventory(currentInventory, item);
@@ -156,7 +161,13 @@ function createItemFromDescription(description: string): InventoryItem {
     size: 1,
     usage: 0,
     maxUsage: 3,
-    description
+    description,
+	  value: 1,
+    createdAt: new Date(),
+		updatedAt: new Date(),
+	  slotType: 'PACK',
+	  slotIndex: -1,
+	  characterId: ''
   };
 
   // Определяем тип предмета по описанию
@@ -197,23 +208,13 @@ function generateMouseName(): string {
 }
 
 // Функция для получения предмета из инвентаря
-export function getItemFromInventory(character: Character, itemId: string): InventoryItem | null {
-  const allSlots = [
-    ...character.inventory.paws,
-    ...character.inventory.body,
-    ...character.inventory.pack
-  ];
-
-  return allSlots.find(item => item?.id === itemId) || null;
+export function getItemFromInventory(character: FullCharacter, itemId: string): InventoryItem | null {
+  return character.inventory.find(item => item?.id === itemId) || null;
 }
 
 export function addItemToInventory(inventory: InventorySlots, item: InventoryItem): { success: boolean; inventory: InventorySlots } {
   // Создаем глубокую копию инвентаря
-  const newInventory: InventorySlots = {
-    paws: [...inventory.paws],
-    body: [...inventory.body],
-    pack: [...inventory.pack]
-  };
+  const newInventory: InventoryItem[] = []
 
   // Ищем свободные слоты в порядке: pack -> body -> paws
   const { pack, body, paws } = newInventory;
@@ -256,37 +257,37 @@ export function addItemToInventory(inventory: InventorySlots, item: InventoryIte
 }
 
 // Функция для удаления предмета из инвентаря
-export function removeItemFromInventory(character: Character, itemId: string): boolean {
-  const { paws, body, pack } = character.inventory;
-
-  // Проверяем все слоты
-  const allSlots = [
-    { slots: paws, name: 'paws' },
-    { slots: body, name: 'body' },
-    { slots: pack, name: 'pack' }
-  ];
-
-  for (const slotGroup of allSlots) {
-    for (let i = 0; i < slotGroup.slots.length; i++) {
-      if (slotGroup.slots[i]?.id === itemId) {
-        const item = slotGroup.slots[i];
-        slotGroup.slots[i] = null;
-
-        // Если предмет занимал 2 слота, освобождаем второй
-        if (item?.size === 2 && i < slotGroup.slots.length - 1) {
-          slotGroup.slots[i + 1] = null;
-        }
-
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
+// export function removeItemFromInventory(character: FullCharacter, itemId: string): boolean {
+//   const { paws, body, pack } = character.inventory;
+//
+//   // Проверяем все слоты
+//   const allSlots = [
+//     { slots: paws, name: 'paws' },
+//     { slots: body, name: 'body' },
+//     { slots: pack, name: 'pack' }
+//   ];
+//
+//   for (const slotGroup of allSlots) {
+//     for (let i = 0; i < slotGroup.slots.length; i++) {
+//       if (slotGroup.slots[i]?.id === itemId) {
+//         const item = slotGroup.slots[i];
+//         slotGroup.slots[i] = null;
+//
+//         // Если предмет занимал 2 слота, освобождаем второй
+//         if (item?.size === 2 && i < slotGroup.slots.length - 1) {
+//           slotGroup.slots[i + 1] = null;
+//         }
+//
+//         return true;
+//       }
+//     }
+//   }
+//
+//   return false;
+// }
 
 // Проверка на перегрузку
-export function isEncumbered(character: Character): boolean {
+export function isEncumbered(character: FullCharacter): boolean {
   const totalSlots = 10; // 2 paws + 2 body + 6 pack
   const usedSlots = getTotalUsedSlots(character);
   const conditionSlots = character.conditions.length;
@@ -295,14 +296,10 @@ export function isEncumbered(character: Character): boolean {
 }
 
 // Подсчет использованных слотов
-export function getTotalUsedSlots(character: Character): number {
+export function getTotalUsedSlots(character: FullCharacter): number {
   let used = 0;
 
-  [
-    ...character.inventory.paws,
-    ...character.inventory.body,
-    ...character.inventory.pack
-  ].forEach(item => {
+  character.inventory.forEach(item => {
     if (item) {
       used += item.size;
     }
@@ -311,26 +308,8 @@ export function getTotalUsedSlots(character: Character): number {
   return used;
 }
 
-// Получение всех предметов из инвентаря
-export function getAllInventoryItems(inventory: InventorySlots): InventoryItem[] {
-  const items: InventoryItem[] = [];
-
-  // Собираем предметы из всех слотов
-  [
-    ...inventory.paws,
-    ...inventory.body,
-    ...inventory.pack
-  ].forEach(item => {
-    if (item) {
-      items.push(item);
-    }
-  });
-
-  return items;
-}
-
 // Получение доступных слотов
-export function getAvailableSlots(character: Character): number {
+export function getAvailableSlots(character: FullCharacter): number {
   const totalSlots = 10;
   const usedSlots = getTotalUsedSlots(character);
   const conditionSlots = character.conditions.length;

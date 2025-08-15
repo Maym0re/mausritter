@@ -1,15 +1,15 @@
 'use client';
 import React, { useState } from 'react';
-import { Character } from '@/types/character';
 import { generateRandomCharacter, getAllInventoryItems } from "@/lib/characterUtils";
+import { FullCharacter } from "@/types/character";
 
 interface CharacterGeneratorProps {
   onCancel?: () => void;
-  onSave: (character: Character) => void;
+  onSave: (character: FullCharacter) => void;
 }
 
 export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps) {
-  const [character, setCharacter] = useState<Character | null>(null);
+  const [character, setCharacter] = useState<FullCharacter | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
@@ -136,7 +136,7 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
               <div><strong>Pips:</strong> {character.pips}</div>
               <div><strong>Стартовые предметы:</strong></div>
               <ul className="list-disc list-inside ml-4 text-sm">
-	              {getAllInventoryItems(character.inventory).map((item, index) => (
+	              {character.inventory.map((item, index) => (
                   <li key={index}>{item.name}</li>
                 ))}
               </ul>

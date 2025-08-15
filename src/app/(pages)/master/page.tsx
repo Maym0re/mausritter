@@ -3,11 +3,11 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
-import { Campaign, Character } from '@/types/character';
 import { TimeTracker } from '@/components/TimeTracker';
 import { CharacterEditor } from '@/components/CharacterEditor';
-import { GameTime, WeatherEntry } from '@/types/time';
+import { GameTime, GameTimeCore, WeatherEntryLight } from '@/types/time';
 import Link from 'next/link';
+import { FullCampaign, FullCharacter } from "@/types/character";
 
 export default function MasterPage() {
   const { data: session, status } = useSession();
@@ -15,11 +15,11 @@ export default function MasterPage() {
   const searchParams = useSearchParams();
   const campaignId = searchParams.get('campaign');
 
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
-  const [characters, setCharacters] = useState<Character[]>([]);
+  const [campaign, setCampaign] = useState<FullCampaign | null>(null);
+  const [characters, setCharacters] = useState<FullCharacter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'time' | 'map' | 'players' | 'characters'>('overview');
-  const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
+  const [editingCharacter, setEditingCharacter] = useState<FullCharacter | null>(null);
 
   const fetchCampaign = useCallback(async () => {
     if (!campaignId) return;
@@ -71,9 +71,9 @@ export default function MasterPage() {
   }, [session, status, campaignId, router, fetchCampaign, fetchCharacters]);
 
   const updateCampaignTime = async (
-    newTime: GameTime,
+    newTime: GameTimeCore,
     season: string,
-    weather?: WeatherEntry | null,
+    weather?: WeatherEntryLight | null,
     event?: string | null
   ) => {
     if (!campaign) return;
@@ -99,7 +99,7 @@ export default function MasterPage() {
     }
   };
 
-  const handleSaveCharacter = async (character: Character) => {
+  const handleSaveCharacter = async (character: FullCharacter) => {
     try {
       const response = await fetch(`/api/characters/${character.id}`, {
         method: 'PUT',
@@ -136,7 +136,7 @@ export default function MasterPage() {
   }
 
   // Проверяем, что пользователь - мастер этой кампании
-  if (campaign.gm?.id !== session.user.id) {
+  if (campaign.gmId !== session.user.id) {
     router.push('/');
     return null;
   }
@@ -220,7 +220,7 @@ export default function MasterPage() {
                   <h3 className="font-medium text-stone-900 mb-2">Игровое состояние</h3>
                   <div className="space-y-2 text-sm text-stone-600">
                     <div>Сезон: {campaign.season}</div>
-                    <div>День: {(campaign.currentTime as GameTime)?.days + 1 || 1}</div>
+                    <div>День: {(campaign.gameTime?.days ?? 0) + 1 || 1}</div>
                     <div>Игроков: {campaign.players.length}</div>
                     <div>Персонажей: {characters.length}</div>
                   </div>
@@ -307,9 +307,9 @@ export default function MasterPage() {
             <TimeTracker
               characters={characters}
               onTimeUpdate={updateCampaignTime}
-              initialTime={campaign.currentTime as GameTime}
+              initialTime={campaign.gameTime || undefined}
               initialSeason={campaign.season}
-              initialWeather={campaign.weather as WeatherEntry | null}
+              initialWeather={campaign.weatherEntry}
               initialEvent={campaign.todaysEvent}
             />
           </div>

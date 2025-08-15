@@ -6,8 +6,30 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SlotType {
+  PAWS
+  BODY
+  PACK
+}
+
+enum SeasonName {
+  SPRING
+  SUMMER
+  AUTUMN
+  WINTER
+}
+
+enum SettlementSize {
+  FARM
+  CROSSROADS
+  HAMLET
+  VILLAGE
+  TOWN
+  CITY
 }
 
 model Account {
@@ -48,7 +70,7 @@ model User {
   sessions      Session[]
 
   // Game-related fields
-  ownedCampaigns Campaign[] @relation("CampaignOwner")
+  ownedCampaigns Campaign[]       @relation("CampaignOwner")
   characters     Character[]
   playerIn       CampaignPlayer[]
 
@@ -57,27 +79,27 @@ model User {
 }
 
 model Campaign {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
   description String?
-  isActive    Boolean  @default(true)
+  isActive    Boolean @default(true)
 
   // Game Master
-  gmId        String
-  gm          User     @relation("CampaignOwner", fields: [gmId], references: [id], onDelete: Cascade)
+  gmId String
+  gm   User   @relation("CampaignOwner", fields: [gmId], references: [id], onDelete: Cascade)
 
   // Players
-  players     CampaignPlayer[]
-  characters  Character[]
+  players    CampaignPlayer[]
+  characters Character[]
 
   // Game state
-  currentTurn Int      @default(0)
-  currentTime Json     @default("{}")
-  season      String   @default("Spring")
-  weather     Json?
+  gameTime       GameTime?
+  season         SeasonName    @default(SPRING)
+  weatherEntryId String?
+  weatherEntry   WeatherEntry? @relation(fields: [weatherEntryId], references: [id], onDelete: SetNull)
 
   // Map data
-  hexMap      HexMap?
+  hexMap HexMap?
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -89,73 +111,255 @@ model CampaignPlayer {
   campaignId String
   userId     String
 
-  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  joinedAt   DateTime @default(now())
+  joinedAt DateTime @default(now())
 
   @@unique([campaignId, userId])
 }
 
 model Character {
-  id          String   @id @default(cuid())
-  name        String
-  notes       String?
+  id    String  @id @default(cuid())
+  name  String
+  notes String?
 
   // Owner
-  playerId    String
-  player      User     @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  playerId String
+  player   User   @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
   // Campaign
-  campaignId  String
-  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   // Attributes
-  str         Int      @default(10)
-  dex         Int      @default(10)
-  wil         Int      @default(10)
+  str Int @default(10)
+  dex Int @default(10)
+  wil Int @default(10)
 
   // Health
-  hp          Int      @default(6)
-  maxHp       Int      @default(6)
+  hp    Int @default(6)
+  maxHp Int @default(6)
 
   // Character details
-  background     Json     @default("{}")
-  birthsign      Json     @default("{}")
-  coat           Json     @default("{}")
-  physicalDetail String
+  backgroundId String
+  birthsignId  String
+  coatId       String
+
+  background     Background @relation(fields: [backgroundId], references: [id], onDelete: Cascade)
+  birthsign      Birthsign  @relation(fields: [birthsignId], references: [id], onDelete: Cascade)
+  coat           Coat       @relation(fields: [coatId], references: [id], onDelete: Cascade)
+  physicalDetail String?
 
   // Game mechanics
-  level       Int      @default(1)
-  xp          Int      @default(0)
-  grit        Int      @default(0)
-  pips        Int      @default(0)
+  level Int @default(1)
+  xp    Int @default(0)
+  grit  Int @default(0)
+  pips  Int @default(0)
 
-  // Inventory as JSON
-  inventory   Json     @default("[]")
-  conditions  Json     @default("[]")
+  inventory  InventoryItem[]
+  conditions Condition[]     @relation("CharacterConditions")
 
-  isActive    Boolean  @default(true)
+  isActive Boolean @default(true)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Background {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  itemA      String
+  itemB      String
+  characters Character[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Birthsign {
+  id          String      @id @default(cuid())
+  sign        String      @unique
+  disposition String
+  characters  Character[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Coat {
+  id         String      @id @default(cuid())
+  color      String
+  pattern    String
+  characters Character[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([color, pattern])
+}
+
+model Condition {
+  id               String      @id @default(cuid())
+  name             String      @unique
+  description      String
+  clearRequirement String?
+  effects          String[]
+  characters       Character[] @relation("CharacterConditions")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InventoryItem {
+  id          String    @id @default(cuid())
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  name        String
+  type        String
+  size        Int
+  usage       Int       @default(0)
+  maxUsage    Int
+  description String?
+  value       Int?
+  slotType    SlotType
+  slotIndex   Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([characterId, slotType, slotIndex])
 }
 
 model HexMap {
-  id         String @id @default(cuid())
-  campaignId String @unique
+  id         String   @id @default(cuid())
+  campaignId String   @unique
   campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   // Map settings
-  size       Int    @default(5) // 5x5 grid
-  centerX    Int    @default(2)
-  centerY    Int    @default(2)
+  size    Int @default(5) // 5x5 grid
+  centerX Int @default(2)
+  centerY Int @default(2)
 
   // Hex data as JSON
-  hexes      Json   @default("{}")
+  cells HexCell[]
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HexType {
+  id          String @id
+  name        String
+  color       String
+  description String
+
+  landmarks Landmark[]
+  HexCell   HexCell[]
+}
+
+model Landmark {
+  id          String @id
+  name        String
+  description String
+
+  hexTypeId String
+  hexType   HexType @relation(fields: [hexTypeId], references: [id], onDelete: Cascade)
+
+  details LandmarkDetail[]
+  HexCell HexCell[]
+}
+
+model LandmarkDetail {
+  id          String    @id
+  description String
+  effect      String?
+  Landmark    Landmark? @relation(fields: [landmarkId], references: [id])
+  landmarkId  String?
+  HexCell     HexCell[]
+}
+
+model Settlement {
+  id          String         @id
+  name        String
+  size        SettlementSize
+  governance  String
+  inhabitants String
+  feature     String
+  industry    String
+  event       String
+  population  Int
+  HexCell     HexCell[]
+}
+
+model HexCell {
+  id String @id @default(cuid())
+
+  hexMapId String
+  hexMap   HexMap @relation(fields: [hexMapId], references: [id], onDelete: Cascade)
+
+  q Int
+  r Int
+  s Int
+
+  hexTypeId String
+  hexType   HexType @relation(fields: [hexTypeId], references: [id], onDelete: Restrict)
+
+  landmarkId String?
+  landmark   Landmark? @relation(fields: [landmarkId], references: [id], onDelete: SetNull)
+
+  landmarkDetailId String?
+  landmarkDetail   LandmarkDetail? @relation(fields: [landmarkDetailId], references: [id], onDelete: SetNull)
+
+  settlementId String?
+  settlement   Settlement? @relation(fields: [settlementId], references: [id], onDelete: SetNull)
+
+  isRevealed Boolean @default(false)
+  notes      String  @default("")
+  customName String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([hexMapId, q, r, s])
+  @@index([hexMapId])
+  @@index([hexTypeId])
+  @@index([landmarkId])
+  @@index([settlementId])
+}
+
+model GameTime {
+  id         String   @id @default(cuid())
+  campaignId String   @unique
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  rounds  Int @default(0)
+  turns   Int @default(0)
+  watches Int @default(0)
+  days    Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WeatherEntry {
+  id              String     @id @default(cuid())
+  season          SeasonName
+  roll            Int
+  weather         String
+  isPoorCondition Boolean
+  Campaign        Campaign[]
+
+  @@unique([season, roll])
+  @@index([season])
+}
+
+model SeasonalEvent {
+  id          String     @id @default(cuid())
+  season      SeasonName
+  description String
+  effect      String?
+
+  @@index([season])
 }
 
 model VerificationToken {
