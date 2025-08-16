@@ -109,7 +109,11 @@ export async function GET(
         },
         campaign: {
           select: { id: true, name: true }
-        }
+        },
+	      background: true,
+	      birthsign: true,
+	      coat: true,
+	      inventory: true,
       }
     })
 

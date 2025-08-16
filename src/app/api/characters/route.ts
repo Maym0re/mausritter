@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
 // Создать нового персонажа
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
@@ -106,11 +106,71 @@ export async function POST(request: NextRequest) {
     }
 
     // Создаем персонажа
+    const {
+      id,
+      playerId,
+      player,
+      createdAt,
+      updatedAt,
+      isActive,
+      background,
+      birthsign,
+      coat,
+      inventory,
+      conditions,
+      ...characterDataForCreate
+    } = characterData;
+
+    console.log('Session user ID:', session.user.id);
+    console.log('Character data before filtering:', characterData);
+    console.log('Character data for create:', characterDataForCreate);
+
+    // Создаем или находим background
+    const backgroundRecord = await prisma.background.upsert({
+      where: { name: background.name },
+      update: {},
+      create: {
+        name: background.name,
+        itemA: background.itemA,
+        itemB: background.itemB
+      }
+    });
+
+    // Создаем или находим birthsign
+    const birthsignRecord = await prisma.birthsign.upsert({
+      where: { sign: birthsign.sign },
+      update: {},
+      create: {
+        sign: birthsign.sign,
+        disposition: birthsign.disposition
+      }
+    });
+
+    // Создаем или находим coat
+    const coatRecord = await prisma.coat.upsert({
+      where: {
+        color_pattern: {
+          color: coat.color,
+          pattern: coat.pattern
+        }
+      },
+      update: {},
+      create: {
+        color: coat.color,
+        pattern: coat.pattern
+      }
+    });
+
+    // Создаем персонажа
     const character = await prisma.character.create({
       data: {
-        ...characterData,
+        ...characterDataForCreate,
         playerId: session.user.id,
-        campaignId
+        campaignId: campaign.id,
+        backgroundId: backgroundRecord.id,
+        birthsignId: birthsignRecord.id,
+        coatId: coatRecord.id,
+        isActive: true
       },
       include: {
         player: {
@@ -118,11 +178,50 @@ export async function POST(request: NextRequest) {
         },
         campaign: {
           select: { id: true, name: true }
-        }
+        },
+        background: true,
+        birthsign: true,
+        coat: true
       }
-    })
+    });
 
-    return NextResponse.json(character, { status: 201 })
+    // Создаем предметы инвентаря
+    if (inventory && inventory.length > 0) {
+      await prisma.inventoryItem.createMany({
+        data: inventory.map((item: any) => ({
+          characterId: character.id,
+          name: item.name,
+          type: item.type,
+          size: item.size,
+          usage: item.usage || 0,
+          maxUsage: item.maxUsage || 3,
+          description: item.description,
+          value: item.value,
+          slotType: item.slotType,
+          slotIndex: item.slotIndex
+        }))
+      });
+    }
+
+    // Получаем полный персонаж с инвентарем
+    const fullCharacter = await prisma.character.findUnique({
+      where: { id: character.id },
+      include: {
+        player: {
+          select: { id: true, name: true, email: true }
+        },
+        campaign: {
+          select: { id: true, name: true }
+        },
+        background: true,
+        birthsign: true,
+        coat: true,
+        inventory: true,
+        conditions: true
+      }
+    });
+
+    return NextResponse.json(fullCharacter, { status: 201 })
   } catch (error) {
     console.error("Ошибка создания персонажа:", error)
     return NextResponse.json(
