@@ -39,8 +39,8 @@ export type BackgroundInitial = BackgroundLite & {
 	pips: number;
 }
 
-export type InventoryItemLite = Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt' | 'slotType' | 'slotIndex' | 'characterId'>;
-export type ConditionLite = Omit<Condition, 'id' | 'createdAt' | 'updatedAt'>;
+export type InventoryItemLite = Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt' | 'characterId'>;
+export type ConditionLite = Omit<Condition, 'createdAt' | 'updatedAt'>;
 
 // Таблицы генерации из SRD
 export const BACKGROUND_TABLE: BackgroundInitial[] = [
@@ -106,30 +106,35 @@ export const PHYSICAL_DETAILS = [
 // Условия из SRD
 export const CONDITIONS: ConditionLite[] = [
 	{
+		id: 'injured',
 		name: 'Injured',
 		description: 'Incapacitated until tended to by an ally and take a short rest',
 		clearRequirement: 'Tended to by ally + short rest',
 		effects: []
 	},
 	{
+		id: 'exhausted',
 		name: 'Exhausted',
 		description: 'Cannot run, makes all saves with Disadvantage',
 		clearRequirement: 'Long rest',
 		effects: ['No running', 'Disadvantage on all saves']
 	},
 	{
+		id: 'frightened',
 		name: 'Frightened',
 		description: 'Must make WIL save to approach the source of fear',
 		clearRequirement: 'Short rest away from source',
 		effects: ['WIL save to approach fear source']
 	},
 	{
+		id: 'hungry',
 		name: 'Hungry',
 		description: 'Has not eaten for a day',
 		clearRequirement: 'Eat a meal',
 		effects: ['Disadvantage on STR saves']
 	},
 	{
+		id: 'drained',
 		name: 'Drained',
 		description: 'Magical energy depleted',
 		clearRequirement: 'Long rest',
@@ -147,6 +152,8 @@ export const BASIC_EQUIPMENT: InventoryItemLite[] = [
 		maxUsage: 3,
 		description: 'Provides light for 6 Turns per usage dot',
 		value: 10,
+		slotType: 'PACK',
+		slotIndex: 0
 	},
 	{
 		name: 'Rations',
@@ -156,6 +163,8 @@ export const BASIC_EQUIPMENT: InventoryItemLite[] = [
 		maxUsage: 3,
 		description: 'Food for the road. Heals all HP with Watch rest',
 		value: 5,
+		slotType: 'PACK',
+		slotIndex: 0
 	}
 ];
 
@@ -168,7 +177,9 @@ export const WEAPONS: InventoryItemLite[] = [
 		usage: 0,
 		maxUsage: 3,
 		description: 'Light weapon, d6 damage',
-		value: 10
+		value: 10,
+		slotType: 'PAWS',
+		slotIndex: 0
 	},
 	{
 		name: 'Sword',
@@ -177,7 +188,9 @@ export const WEAPONS: InventoryItemLite[] = [
 		usage: 0,
 		maxUsage: 3,
 		description: 'Medium weapon, d6/d8 damage',
-		value: 20
+		value: 20,
+		slotType: 'PAWS',
+		slotIndex: 0
 	},
 	{
 		name: 'Spear',
@@ -186,6 +199,8 @@ export const WEAPONS: InventoryItemLite[] = [
 		usage: 0,
 		maxUsage: 3,
 		description: 'Heavy weapon, d10 damage',
-		value: 40
+		value: 40,
+		slotType: 'PAWS',
+		slotIndex: 0
 	}
 ];

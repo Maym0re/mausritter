@@ -4,15 +4,14 @@ import {
   addItemToInventory,
   removeItemFromInventory,
   moveItemToSlot,
-  getItemsBySlotType,
   getInventorySlots,
   getAvailableSlots,
   getTotalUsedSlots,
   isEncumbered
 } from '@/lib/characterUtils';
 import { createItemCopy, ITEM_CATALOG } from '@/lib/itemCatalog';
-import { Condition, InventoryItem, SlotType } from "@prisma/client";
-import { FullCharacter } from "@/types/character";
+import { Condition, InventoryItem } from "@prisma/client";
+import { FullCharacter, InventoryItemLite } from "@/types/character";
 
 interface InventoryManagerProps {
   characters: FullCharacter[];
@@ -20,7 +19,7 @@ interface InventoryManagerProps {
 }
 
 interface DraggedItem {
-  item: InventoryItem;
+  item: InventoryItemLite;
   sourceCharacterId: string;
 }
 
@@ -30,11 +29,11 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
   );
   const [draggedItem, setDraggedItem] = useState<DraggedItem | null>(null);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
-  const [editingItem, setEditingItem] = useState<{ characterId: string; item: InventoryItem } | null>(null);
+  const [editingItem, setEditingItem] = useState<{ characterId: string; item: InventoryItemLite } | null>(null);
 
   const selectedChar = characters.find(c => c.id === selectedCharacter);
 
-  const handleDragStart = useCallback((item: InventoryItem, characterId: string) => {
+  const handleDragStart = useCallback((item: InventoryItemLite, characterId: string) => {
     setDraggedItem({ item, sourceCharacterId: characterId });
   }, []);
 
@@ -55,11 +54,11 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     if (!sourceChar || !targetChar) return;
 
     // Удаляем предмет из исходного инвентаря
-    const removeResult = removeItemFromInventory(sourceChar.inventory, draggedItem.item.id);
+    const removeResult = removeItemFromInventory(sourceChar.inventory, draggedItem.item.name);
     if (!removeResult.success) return;
 
     // Перемещаем предмет в целевой слот
-    const moveResult = moveItemToSlot(removeResult.inventory, draggedItem.item.id, targetSlotType, targetSlotIndex);
+    const moveResult = moveItemToSlot(removeResult.inventory, draggedItem.item.name, targetSlotType, targetSlotIndex);
 
     if (moveResult.success) {
       // Если это один и тот же персонаж
@@ -89,12 +88,12 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     setDraggedItem(null);
   }, [draggedItem, characters, onCharacterUpdate]);
 
-  const markUsage = useCallback((characterId: string, item: InventoryItem) => {
+  const markUsage = useCallback((characterId: string, item: InventoryItemLite) => {
     const character = characters.find(c => c.id === characterId);
     if (!character) return;
 
     const updatedInventory = character.inventory.map(invItem => {
-      if (invItem.id === item.id) {
+      if (invItem.name === item.name) {
         return {
           ...invItem,
           usage: Math.min(invItem.maxUsage, invItem.usage + 1)
@@ -109,7 +108,7 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     });
   }, [characters, onCharacterUpdate]);
 
-  const repairItem = useCallback((characterId: string, item: InventoryItem) => {
+  const repairItem = useCallback((characterId: string, item: InventoryItemLite) => {
     const character = characters.find(c => c.id === characterId);
     if (!character) return;
 
@@ -117,7 +116,7 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
 
     if (character.pips >= repairCost) {
       const updatedInventory = character.inventory.map(invItem => {
-        if (invItem.id === item.id) {
+        if (invItem.name === item.name) {
           return { ...invItem, usage: 0 };
         }
         return invItem;
@@ -162,7 +161,7 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     onCharacterUpdate(characterId, updatedChar);
   }, [characters, onCharacterUpdate]);
 
-  const handleAddItem = useCallback((templateItem: InventoryItem) => {
+  const handleAddItem = useCallback((templateItem: InventoryItemLite) => {
     if (!selectedCharacter) return;
 
     const character = characters.find(c => c.id === selectedCharacter);
@@ -248,7 +247,7 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
             const character = characters.find(c => c.id === editingItem.characterId);
             if (character) {
               const updatedInventory = character.inventory.map(invItem => {
-                if (invItem.id === editingItem.item.id) {
+                if (invItem.name === editingItem.item.name) {
                   return updatedItem;
                 }
                 return invItem;
@@ -366,13 +365,13 @@ function InventoryGrid({
   onAddItem
 }: {
   character: FullCharacter;
-  onDragStart: (item: InventoryItem, characterId: string) => void;
+  onDragStart: (item: InventoryItemLite, characterId: string) => void;
   onDragEnd: () => void;
   onDrop: (characterId: string, slotType: 'PAWS' | 'BODY' | 'PACK', slotIndex: number) => void;
-  onMarkUsage: (characterId: string, item: InventoryItem) => void;
-  onRepairItem: (characterId: string, item: InventoryItem) => void;
-  onEditItem: (item: InventoryItem) => void;
-  onAddItem: (item: InventoryItem) => void;
+  onMarkUsage: (characterId: string, item: InventoryItemLite) => void;
+  onRepairItem: (characterId: string, item: InventoryItemLite) => void;
+  onEditItem: (item: InventoryItemLite) => void;
+  onAddItem: (item: InventoryItemLite) => void;
 }) {
   const [showAddItemModal, setShowAddItemModal] = useState(false);
 
@@ -655,11 +654,11 @@ function ItemEditModal({
   onSave,
   onClose
 }: {
-  item: InventoryItem;
-  onSave: (item: InventoryItem) => void;
+  item: InventoryItemLite;
+  onSave: (item: InventoryItemLite) => void;
   onClose: () => void;
 }) {
-  const [editedItem, setEditedItem] = useState<InventoryItem>({ ...item });
+  const [editedItem, setEditedItem] = useState<InventoryItemLite>({ ...item });
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -749,10 +748,10 @@ function AddItemModal({
   onAddItem,
   onClose
 }: {
-  onAddItem: (item: InventoryItem) => void;
+  onAddItem: (item: InventoryItemLite) => void;
   onClose: () => void;
 }) {
-  const [selectedTemplate, setSelectedTemplate] = useState<InventoryItem | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<InventoryItemLite | null>(null);
 
   const handleAdd = () => {
     if (selectedTemplate) {
@@ -768,17 +767,17 @@ function AddItemModal({
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Select Item Template</label>
           <select
-            value={selectedTemplate?.id || ''}
+            value={selectedTemplate?.name || ''}
             onChange={(e) => {
-              const itemId = e.target.value;
-              const item = ITEM_CATALOG.find(i => i.id === itemId) || null;
+              const itemName = e.target.value;
+              const item = ITEM_CATALOG.find(i => i.name === itemName) || null;
               setSelectedTemplate(item);
             }}
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
           >
             <option value="">-- Select an item --</option>
             {ITEM_CATALOG.map(item => (
-              <option key={item.id} value={item.id}>
+              <option key={item.name} value={item.name}>
                 {item.name} ({item.type})
               </option>
             ))}

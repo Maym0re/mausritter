@@ -52,7 +52,7 @@ export async function PUT(
       )
     }
 
-    // Обновляем персонажа - исключаем только системные поля
+    // Обновляем персонажа - исключаем только системные поля и связанные объекты
     const {
       playerId,
       campaignId,
@@ -65,6 +65,7 @@ export async function PUT(
       birthsign,
       coat,
       inventory,
+      conditions,
       ...updateData
     } = characterData;
 
@@ -84,6 +85,7 @@ export async function PUT(
         birthsign: true,
         coat: true,
         inventory: true,
+	      conditions: true,
       }
     })
 

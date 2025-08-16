@@ -58,7 +58,7 @@ async function seedCharacterDictionaries() {
   // Background — берём уникальные по имени
   const uniqueBackgrounds = Array.from(
     new Map(
-      BACKGROUND_TABLE.map(b => [b.background, { name: b.background, itemA: b.itemA, itemB: b.itemB }]),
+      BACKGROUND_TABLE.map(b => [b.name, { name: b.name, itemA: b.itemA, itemB: b.itemB }]),
     ).values(),
   );
 

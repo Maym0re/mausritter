@@ -6,7 +6,7 @@ import {
 	PHYSICAL_DETAILS,
 	BASIC_EQUIPMENT,
 	WEAPONS,
-	FullCharacter, BackgroundInitial
+	FullCharacter, BackgroundInitial, InventoryItemLite
 } from '@/types/character';
 import { InventoryItem } from "@prisma/client";
 
@@ -269,7 +269,7 @@ function assignItemsToSlots(items: InventoryItem[]): InventoryItem[] {
 }
 
 // Новая функция для добавления предмета в инвентарь
-export function addItemToInventory(inventory: InventoryItem[], item: InventoryItem): { success: boolean; inventory: InventoryItem[] } {
+export function addItemToInventory(inventory: InventoryItemLite[], item: InventoryItemLite): { success: boolean; inventory: InventoryItemLite[] } {
   // Создаем копию инвентаря
   const newInventory = [...inventory];
 

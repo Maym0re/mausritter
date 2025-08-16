@@ -16,7 +16,9 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
     usage: 0,
     maxUsage: 3,
     description: 'Strong rope for climbing',
-    value: 10
+    value: 10,
+	  slotType: 'PACK',
+	  slotIndex: 0
   },
   {
     name: 'Lantern',
@@ -25,7 +27,9 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
     usage: 0,
     maxUsage: 3,
     description: 'Provides light for 6 Turns per usage dot',
-    value: 50
+    value: 50,
+	  slotType: 'PACK',
+	  slotIndex: 0
   },
   {
     name: 'Healing Potion',
@@ -34,7 +38,9 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
     usage: 0,
     maxUsage: 1,
     description: 'Restores d6+2 HP when consumed',
-    value: 100
+    value: 100,
+	  slotType: 'PACK',
+	  slotIndex: 0,
   },
   {
     name: 'Lockpicks',
@@ -43,7 +49,9 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
     usage: 0,
     maxUsage: 3,
     description: 'Used to pick locks',
-    value: 100
+    value: 100,
+	  slotType: 'PACK',
+	  slotIndex: 0
   },
   {
     name: 'Grappling Hook',
@@ -52,7 +60,9 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
     usage: 0,
     maxUsage: 3,
     description: 'Hook for climbing or swinging',
-    value: 50
+    value: 50,
+	  slotType: 'PACK',
+	  slotIndex: 0
   },
 
   // Броня
@@ -63,7 +73,9 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
     usage: 0,
     maxUsage: 3,
     description: 'Prevents 1 damage, worn in off paw and body slot',
-    value: 150
+    value: 150,
+	  slotType: 'BODY',
+	  slotIndex: 0
   },
   {
     name: 'Heavy Armor',
@@ -72,7 +84,9 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
     usage: 0,
     maxUsage: 3,
     description: 'Prevents 1 damage, worn in two body slots',
-    value: 500
+    value: 500,
+	  slotType: 'BODY',
+	  slotIndex: 0
   },
 
   // Заклинания
@@ -83,7 +97,9 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
     usage: 0,
     maxUsage: 3,
     description: 'Heal [SUM] STR damage and remove Injured Condition',
-    value: 300
+    value: 300,
+	  slotType: 'PACK',
+	  slotIndex: 0
   },
   {
     name: 'Light',
@@ -92,7 +108,9 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
     usage: 0,
     maxUsage: 3,
     description: 'Create light as bright as torch for [SUM] turns',
-    value: 200
+    value: 200,
+	  slotType: 'PACK',
+	  slotIndex: 0
   },
   {
     name: 'Magic Missile',
@@ -101,7 +119,9 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
     usage: 0,
     maxUsage: 3,
     description: 'Deal [SUM] + [DICE] damage to creature within sight',
-    value: 400
+    value: 400,
+	  slotType: 'PACK',
+	  slotIndex: 0
   }
 ];
 
