@@ -31,7 +31,18 @@ export async function GET(
             }
           }
         },
-        characters: true,
+        characters: {
+					include: {
+						player: {
+							select: { id: true, name: true, email: true }
+						},
+						background: true,
+						birthsign: true,
+						coat: true,
+						inventory: true,
+						conditions: true,
+					}
+        },
         hexMap: true
       }
     })

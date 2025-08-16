@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
             }
           }
         ]
-      }
+      },
     })
 
     if (!campaign) {
@@ -44,14 +44,19 @@ export async function GET(request: NextRequest) {
         campaignId,
         isActive: true
       },
-      include: {
-        player: {
-          select: { id: true, name: true, email: true }
-        },
-        campaign: {
-          select: { id: true, name: true }
-        }
-      },
+	    include: {
+		    player: {
+			    select: { id: true, name: true, email: true }
+		    },
+		    campaign: {
+			    select: { id: true, name: true }
+		    },
+		    background: true,
+		    birthsign: true,
+		    coat: true,
+		    inventory: true,
+		    conditions: true,
+	    },
       orderBy: { createdAt: "desc" }
     })
 

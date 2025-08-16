@@ -18,6 +18,8 @@ export async function PUT(
     const { id } = await params
     const { characterData } = await request.json()
 
+    console.log('PUT Request data:', { characterData, sessionUserId: session.user.id })
+
     if (!characterData) {
       return NextResponse.json(
         { error: "Данные персонажа обязательны" },
@@ -50,9 +52,24 @@ export async function PUT(
       )
     }
 
-    // Обновляем персонажа
-    const { playerId, campaignId, id: characterId, createdAt, updatedAt, player, campaign, ...updateData } = characterData;
-    
+    // Обновляем персонажа - исключаем только системные поля
+    const {
+      playerId,
+      campaignId,
+      id: characterId,
+      createdAt,
+      updatedAt,
+      player,
+      campaign,
+      background,
+      birthsign,
+      coat,
+      inventory,
+      ...updateData
+    } = characterData;
+
+    console.log('Update data:', updateData)
+
     const updatedCharacter = await prisma.character.update({
       where: { id },
       data: updateData,
@@ -62,9 +79,15 @@ export async function PUT(
         },
         campaign: {
           select: { id: true, name: true }
-        }
+        },
+        background: true,
+        birthsign: true,
+        coat: true,
+        inventory: true,
       }
     })
+
+    console.log('Updated character result:', updatedCharacter)
 
     return NextResponse.json(updatedCharacter)
   } catch (error) {
@@ -90,6 +113,8 @@ export async function GET(
 
     const { id } = await params
 
+    console.log('GET Request:', { id, sessionUserId: session.user.id })
+
     // Проверяем права доступа к персонажу
     const character = await prisma.character.findFirst({
       where: {
@@ -110,12 +135,15 @@ export async function GET(
         campaign: {
           select: { id: true, name: true }
         },
-	      background: true,
-	      birthsign: true,
-	      coat: true,
-	      inventory: true,
+        background: true,
+        birthsign: true,
+        coat: true,
+        inventory: true,
+	      conditions: true,
       }
     })
+
+    console.log('GET Character result:', character)
 
     if (!character) {
       return NextResponse.json(
