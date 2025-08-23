@@ -51,11 +51,15 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     const sourceChar = characters.find(c => c.id === draggedItem.sourceCharacterId);
     const targetChar = characters.find(c => c.id === targetCharacterId);
 
-    if (!sourceChar || !targetChar) return;
+    if (!sourceChar || !targetChar) {
+      return;
+    }
 
     // Удаляем предмет из исходного инвентаря
     const removeResult = removeItemFromInventory(sourceChar.inventory, draggedItem.item.name);
-    if (!removeResult.success) return;
+    if (!removeResult.success) {
+      return;
+    }
 
     // Перемещаем предмет в целевой слот
     const moveResult = moveItemToSlot(removeResult.inventory, draggedItem.item.name, targetSlotType, targetSlotIndex);

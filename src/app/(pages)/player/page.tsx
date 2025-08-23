@@ -355,7 +355,7 @@ export default function PlayerPage() {
                   <div className="lg:col-span-2">
                     <InventoryManager
                       characters={[selectedCharacter]}
-                      onCharacterUpdate={(updatedCharacter, character) => updateCharacter(selectedCharacter.id, character)}
+                      onCharacterUpdate={(characterId, updatedCharacter) => updateCharacter(characterId, updatedCharacter)}
                     />
                   </div>
                 )}

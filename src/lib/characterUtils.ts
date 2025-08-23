@@ -323,14 +323,14 @@ export function addItemToInventory(inventory: InventoryItemLite[], item: Invento
 }
 
 // Функция для удаления предмета из инвентаря
-export function removeItemFromInventory(inventory: InventoryItem[], itemId: string): { success: boolean; inventory: InventoryItem[] } {
-  const itemIndex = inventory.findIndex(item => item.id === itemId);
+export function removeItemFromInventory(inventory: InventoryItem[], itemName: string): { success: boolean; inventory: InventoryItem[] } {
+  const itemIndex = inventory.findIndex(item => item.name === itemName);
 
   if (itemIndex === -1) {
     return { success: false, inventory };
   }
 
-  const newInventory = inventory.filter(item => item.id !== itemId);
+  const newInventory = inventory.filter(item => item.name !== itemName);
   return { success: true, inventory: newInventory };
 }
 
@@ -351,11 +351,11 @@ export function getInventorySlots(inventory: InventoryItem[]) {
 // Функция для перемещения предмета в другой слот
 export function moveItemToSlot(
   inventory: InventoryItem[],
-  itemId: string,
+  itemName: string,
   newSlotType: 'PAWS' | 'BODY' | 'PACK',
   newSlotIndex: number
 ): { success: boolean; inventory: InventoryItem[]; error?: string } {
-  const itemIndex = inventory.findIndex(item => item.id === itemId);
+  const itemIndex = inventory.findIndex(item => item.name === itemName);
 
   if (itemIndex === -1) {
     return { success: false, inventory, error: 'Предмет не найден' };
@@ -371,7 +371,7 @@ export function moveItemToSlot(
     PACK: 6
   };
 
-  const itemsInTargetSlot = newInventory.filter(i => i.slotType === newSlotType && i.id !== itemId);
+  const itemsInTargetSlot = newInventory.filter(i => i.slotType === newSlotType && i.name !== itemName);
   const usedSlotsInTarget = itemsInTargetSlot.reduce((sum, i) => sum + i.size, 0);
 
   if (usedSlotsInTarget + item.size > slotCapacity[newSlotType]) {
