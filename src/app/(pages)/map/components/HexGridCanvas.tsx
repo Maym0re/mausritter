@@ -9,9 +9,10 @@ import { HexDetailsPanel } from "./HexDetailsPanel";
 
 interface HexGridCanvasProps {
   mode: 'master' | 'player';
+  campaignId: string;
 }
 
-export function HexGridCanvas({ mode }: HexGridCanvasProps) {
+export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
   const [scale, setScale] = useState(1);
   const [pos, setPos] = useState({ x: 400, y: 300 });
   const [mapState, setMapState] = useState<MapState>({
@@ -22,6 +23,9 @@ export function HexGridCanvas({ mode }: HexGridCanvasProps) {
   });
   const [editingHex, setEditingHex] = useState<string | null>(null);
   const [hoveredHex, setHoveredHex] = useState<string | null>(null);
+  const [mapData, setMapData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [hexTypes, setHexTypes] = useState<any[]>([]);
 
   // Состояние для размеров canvas
   const [canvasSize, setCanvasSize] = useState({ width: 1000, height: 700 });
@@ -29,115 +33,201 @@ export function HexGridCanvas({ mode }: HexGridCanvasProps) {
   const radius = 35;
   const mapRadius = 2;
 
+  // Загрузка данных карты из базы данных
+  useEffect(() => {
+    if (campaignId) {
+      loadMapData();
+      loadHexTypes();
+    }
+  }, [campaignId]);
+
+  const loadMapData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/maps?campaignId=${campaignId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setMapData(data);
+
+        // Преобразуем данные ячеек в Map
+        const hexesMap = new Map<string, HexData>();
+
+        if (data.cells && data.cells.length > 0) {
+          data.cells.forEach((cell: any) => {
+            const key = hexKey(cell.q, cell.r);
+            hexesMap.set(key, {
+              q: cell.q,
+              r: cell.r,
+              s: cell.s,
+              hexType: cell.hexType,
+              landmark: cell.landmark,
+              landmarkDetail: cell.landmarkDetail,
+              settlement: cell.settlement,
+              isRevealed: mode === 'master' ? true : cell.isRevealed,
+              notes: cell.notes || '',
+              customName: cell.customName
+            });
+          });
+        }
+
+        setMapState(prev => ({ ...prev, hexes: hexesMap }));
+      }
+    } catch (error) {
+      console.error('Failed to load map data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadHexTypes = async () => {
+    try {
+      const response = await fetch('/api/maps/types');
+      if (response.ok) {
+        const data = await response.json();
+        setHexTypes(data);
+      }
+    } catch (error) {
+      console.error('Failed to load hex types:', error);
+    }
+  };
+
+  // Сохранение данных карты в базу данных
+  const saveMapData = async () => {
+    try {
+      setLoading(true);
+      const hexesArray = Array.from(mapState.hexes.entries()).map(([key, hex]) => ({
+        q: hex.q,
+        r: hex.r,
+        s: hex.s,
+        hexType: hex.hexType,
+        landmark: hex.landmark,
+        landmarkDetail: hex.landmarkDetail,
+        settlement: hex.settlement,
+        isRevealed: hex.isRevealed,
+        notes: hex.notes,
+        customName: hex.customName
+      }));
+
+      const response = await fetch(`/api/maps?campaignId=${campaignId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ cells: hexesArray }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save map data');
+      }
+
+      // Обновляем состояние карты с новыми данными из базы
+      loadMapData();
+    } catch (error) {
+      console.error('Error saving map data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Хук для отслеживания размеров окна
   useEffect(() => {
     const updateCanvasSize = () => {
-      // Получаем размеры viewport
       const width = window.innerWidth;
       const height = window.innerHeight;
-
-      // Вычитаем примерную высоту хедера/навигации (если есть)
-      const headerHeight = 120; // Примерная высота верхней панели с кнопками
+      const headerHeight = 120;
       const availableHeight = height - headerHeight;
 
       const newWidth = width;
-      const newHeight = Math.max(availableHeight, 400); // Минимальная высота 400px
+      const newHeight = Math.max(availableHeight, 400);
 
       setCanvasSize({
         width: newWidth,
         height: newHeight
       });
 
-      // Обновляем начальную позицию для центрирования карты
       setPos({
         x: newWidth / 2,
         y: newHeight / 2
       });
     };
 
-    // Устанавливаем начальные размеры
     updateCanvasSize();
-
-    // Слушаем изменения размера окна
     window.addEventListener('resize', updateCanvasSize);
-
-    // Очищаем слушатель при размонтировании
     return () => window.removeEventListener('resize', updateCanvasSize);
   }, []);
 
-  // Мемоизируем создание Tile и grid чтобы избежать бесконечного цикла
+  // Мемоизируем создание Tile и grid
   const { Tile, grid } = useMemo(() => {
     const Tile = defineHex({
       dimensions: radius,
-      orientation: Orientation.FLAT, // плоская сторона вверх
+      orientation: Orientation.FLAT,
     });
 
     const grid = new Grid(Tile, spiral({ radius: mapRadius }));
-
     return { Tile, grid };
   }, [radius, mapRadius]);
 
-  // Инициализация карты
-  useEffect(() => {
-    const initialHexes = new Map<string, HexData>();
+  // Обновляем ячейку в базе данных
+  const updateHexCell = async (hexKey: string, updates: Partial<HexData>) => {
+    if (!mapData?.id) return;
 
-    grid.forEach((hex) => {
-      const { q, r, s } = hex;
-      const key = hexKey(q, r);
+    const hex = mapState.hexes.get(hexKey);
+    if (!hex) return;
 
-      // Центральный гекс всегда поселение
-      if (q === 0 && r === 0) {
-        const hexType = HEX_TYPES.find(t => t.id === 'countryside')!;
-        initialHexes.set(key, {
-          q, r, s,
-          hexType,
-          settlement: generateSettlement(),
-          isRevealed: true,
-          notes: "Starting settlement",
-          customName: "Acorndale"
-        });
-      } else {
-        // Генерируем случайный контент для остальных гексов
-        const hexType = getRandomHexType();
-        const landmark = getRandomLandmark(hexType.id);
-        const landmarkDetail = getRandomLandmarkDetail();
+    try {
+      const response = await fetch('/api/maps/cells', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          hexMapId: mapData.id,
+          q: hex.q,
+          r: hex.r,
+          s: hex.s,
+          hexTypeId: updates.hexType?.id || hex.hexType?.id,
+          landmarkId: updates.landmark?.id || hex.landmark?.id,
+          landmarkDetailId: updates.landmarkDetail?.id || hex.landmarkDetail?.id,
+          settlementId: updates.settlement?.id || hex.settlement?.id,
+          isRevealed: updates.isRevealed !== undefined ? updates.isRevealed : hex.isRevealed,
+          notes: updates.notes !== undefined ? updates.notes : hex.notes,
+          customName: updates.customName !== undefined ? updates.customName : hex.customName,
+        }),
+      });
 
-        initialHexes.set(key, {
-          q, r, s,
-          hexType,
-          landmark,
-          landmarkDetail,
-          settlement: Math.random() < 0.3 ? generateSettlement() : undefined,
-          isRevealed: mode === 'master',
-          notes: ""
-        });
+      if (!response.ok) {
+        throw new Error('Failed to update hex cell');
       }
-    });
+    } catch (error) {
+      console.error('Error updating hex cell:', error);
+    }
+  };
 
-    setMapState(prev => ({ ...prev, hexes: initialHexes }));
-  }, [mode, grid]); // теперь grid стабильный
-
-  const handleHexClick = useCallback((hexKey: string) => {
+  const handleHexClick = useCallback(async (hexKey: string) => {
     if (mode === 'master') {
       if (mapState.isEditMode) {
         setEditingHex(hexKey);
       } else {
         // Переключаем видимость для игроков
-        setMapState(prev => {
-          const newHexes = new Map(prev.hexes);
-          const hex = newHexes.get(hexKey);
-          if (hex) {
-            newHexes.set(hexKey, { ...hex, isRevealed: !hex.isRevealed });
-          }
-          return { ...prev, hexes: newHexes };
-        });
+        const hex = mapState.hexes.get(hexKey);
+        if (hex) {
+          const newRevealed = !hex.isRevealed;
+          setMapState(prev => {
+            const newHexes = new Map(prev.hexes);
+            newHexes.set(hexKey, { ...hex, isRevealed: newRevealed });
+            return { ...prev, hexes: newHexes };
+          });
+
+          // Обновляем в базе данных
+          await updateHexCell(hexKey, { isRevealed: newRevealed });
+        }
       }
     }
 
     setMapState(prev => ({ ...prev, selectedHex: hexKey }));
-  }, [mode, mapState.isEditMode]);
+  }, [mode, mapState.isEditMode, mapState.hexes, mapData?.id]);
 
-  const handleHexSave = useCallback((hexKey: string, hexData: Partial<HexData>) => {
+  const handleHexSave = useCallback(async (hexKey: string, hexData: Partial<HexData>) => {
     setMapState(prev => {
       const newHexes = new Map(prev.hexes);
       const existing = newHexes.get(hexKey);
@@ -146,10 +236,15 @@ export function HexGridCanvas({ mode }: HexGridCanvasProps) {
       }
       return { ...prev, hexes: newHexes };
     });
-    setEditingHex(null);
-  }, []);
 
-  const addNewHexes = useCallback(() => {
+    // Обновляем в базе данных
+    await updateHexCell(hexKey, hexData);
+    setEditingHex(null);
+  }, [mapData?.id]);
+
+  const addNewHexes = useCallback(async () => {
+    if (!mapData?.id) return;
+
     setMapState(prev => {
       const newHexes = new Map(prev.hexes);
       const existingCoords = Array.from(newHexes.keys()).map(key => {
@@ -168,7 +263,7 @@ export function HexGridCanvas({ mode }: HexGridCanvasProps) {
         });
       });
 
-      // Добавляем новые гексы
+      // Добавляем новые гексы локально
       potentialNew.forEach(key => {
         const [q, r] = key.split(',').map(Number);
         const hexType = getRandomHexType();
@@ -186,9 +281,73 @@ export function HexGridCanvas({ mode }: HexGridCanvasProps) {
         });
       });
 
+      // Создаем новые ячейки в базе данных
+      potentialNew.forEach(async (key) => {
+        const [q, r] = key.split(',').map(Number);
+        try {
+          await fetch('/api/maps/cells', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              hexMapId: mapData.id,
+              q,
+              r,
+              s: -(q + r),
+              hexTypeId: 'countryside'
+            }),
+          });
+        } catch (error) {
+          console.error('Error creating hex cell:', error);
+        }
+      });
+
       return { ...prev, hexes: newHexes };
     });
-  }, [mode]);
+  }, [mode, mapData?.id]);
+
+  // Отображение загрузки
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-amber-900"></div>
+          <p className="mt-4 text-amber-900">Загрузка карты...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Если карты нет и это не мастер
+  if (!mapData?.id && mode === 'player') {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Карта не создана</h2>
+          <p className="text-gray-600">Мастер еще не создал карту для этой кампании.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Если карты нет и это мастер
+  if (!mapData?.id && mode === 'master') {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Создайте карту</h2>
+          <p className="text-gray-600 mb-6">Для начала создайте карту для вашей кампании.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors"
+          >
+            Обновить страницу
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const getHexColor = (hex: HexData) => {
     if (!hex.isRevealed && mode === 'player') {
