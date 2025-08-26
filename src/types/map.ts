@@ -3,6 +3,7 @@ export interface HexType {
   name: string;
   color: string;
   description: string;
+  icon?: string; // Добавляем поле для иконки
 }
 
 export interface Landmark {
@@ -50,12 +51,50 @@ export interface MapState {
   isEditMode: boolean;
 }
 
-// Предопределенные типы из SRD
+// Предопределенные типы из SRD с черно-белой палитрой
 export const HEX_TYPES: HexType[] = [
-  { id: 'countryside', name: 'Countryside', color: '#90EE90', description: 'Open fields and farmland' },
-  { id: 'forest', name: 'Forest', color: '#228B22', description: 'Dense woodland' },
-  { id: 'river', name: 'River', color: '#4169E1', description: 'Flowing water' },
-  { id: 'human_town', name: 'Human Town', color: '#A0A0A0', description: 'Human settlement' },
+  {
+    id: 'countryside',
+    name: 'Countryside',
+    color: '#F5F5F5', // Светло-серый
+    description: 'Open fields and farmland',
+    icon: 'GiWheat'
+  },
+  {
+    id: 'forest',
+    name: 'Forest',
+    color: '#D3D3D3', // Средне-серый
+    description: 'Dense woodland',
+    icon: 'GiPineTree'
+  },
+  {
+    id: 'river',
+    name: 'River',
+    color: '#C0C0C0', // Серебристый
+    description: 'Flowing water',
+    icon: 'GiWaterDrop'
+  },
+  {
+    id: 'human_town',
+    name: 'Human Town',
+    color: '#A9A9A9', // Темно-серый
+    description: 'Human settlement',
+    icon: 'GiTownHall'
+  },
+  {
+    id: 'mountains',
+    name: 'Mountains',
+    color: '#808080', // Серый
+    description: 'Rocky peaks and cliffs',
+    icon: 'GiMountainPeak'
+  },
+  {
+    id: 'swamp',
+    name: 'Swamp',
+    color: '#696969', // Dim gray
+    description: 'Marshy wetlands',
+    icon: 'GiSwamp'
+  }
 ];
 
 // Полный список ориентиров из SRD

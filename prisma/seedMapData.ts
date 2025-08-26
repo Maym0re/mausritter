@@ -10,37 +10,37 @@ async function seedMapData() {
     {
       id: 'countryside',
       name: 'Countryside',
-      color: '#90EE90',
+      color: '#F5F5F5', // Светло-серый
       description: 'Open fields and farmland'
     },
     {
       id: 'forest',
       name: 'Forest',
-      color: '#228B22',
+      color: '#D3D3D3', // Средне-серый
       description: 'Dense woodland'
     },
     {
       id: 'river',
       name: 'River',
-      color: '#4169E1',
+      color: '#C0C0C0', // Серебристый
       description: 'Flowing water'
     },
     {
       id: 'human_town',
       name: 'Human Town',
-      color: '#A0A0A0',
+      color: '#A9A9A9', // Темно-серый
       description: 'Human settlement'
     },
     {
       id: 'mountains',
       name: 'Mountains',
-      color: '#8B7355',
+      color: '#808080', // Серый
       description: 'Rocky peaks and cliffs'
     },
     {
       id: 'swamp',
       name: 'Swamp',
-      color: '#556B2F',
+      color: '#696969', // Dim gray
       description: 'Marshy wetlands'
     }
   ];

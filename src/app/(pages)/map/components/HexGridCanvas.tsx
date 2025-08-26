@@ -2,14 +2,25 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Stage, Layer, Group, RegularPolygon, Text, Circle } from "react-konva";
 import { defineHex, Grid, Orientation, spiral } from "honeycomb-grid";
-import { HexData, MapState, HEX_TYPES } from "@/types/map";
+import { HexData, MapState, HexType } from "@/types/map";
 import { hexKey, getRandomHexType, getRandomLandmark, getRandomLandmarkDetail, generateSettlement, getNeighborCoords } from "@/lib/mapUtils";
+import { getHexTypeIconUrl, getLandmarkIconUrl, iconDataUrls } from "@/lib/iconUtils";
+import { HexIcon } from "@/components/HexIcon";
 import { HexEditModal } from "./HexEditModal";
 import { HexDetailsPanel } from "./HexDetailsPanel";
 
 interface HexGridCanvasProps {
   mode: 'master' | 'player';
   campaignId: string;
+}
+
+interface MapData {
+  id: string | null;
+  campaignId: string;
+  size: number;
+  centerX: number;
+  centerY: number;
+  cells: any[];
 }
 
 export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
@@ -23,11 +34,8 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
   });
   const [editingHex, setEditingHex] = useState<string | null>(null);
   const [hoveredHex, setHoveredHex] = useState<string | null>(null);
-  const [mapData, setMapData] = useState<any>(null);
+  const [mapData, setMapData] = useState<MapData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [hexTypes, setHexTypes] = useState<any[]>([]);
-
-  // Состояние для размеров canvas
   const [canvasSize, setCanvasSize] = useState({ width: 1000, height: 700 });
 
   const radius = 35;
@@ -84,7 +92,7 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
       const response = await fetch('/api/maps/types');
       if (response.ok) {
         const data = await response.json();
-        setHexTypes(data);
+        console.log('Loaded hex types:', data); // Просто логируем для отладки
       }
     } catch (error) {
       console.error('Failed to load hex types:', error);
@@ -351,16 +359,16 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
 
   const getHexColor = (hex: HexData) => {
     if (!hex.isRevealed && mode === 'player') {
-      return '#2a2a2a'; // Туман войны
+      return '#1a1a1a'; // Темный для тумана войны
     }
     return hex.hexType.color;
   };
 
   const getHexStroke = (hexKey: string, hex: HexData) => {
-    if (mapState.selectedHex === hexKey) return '#FFD700';
-    if (hoveredHex === hexKey) return '#FFA500';
+    if (mapState.selectedHex === hexKey) return '#000000'; // Черная обводка для выбранного
+    if (hoveredHex === hexKey) return '#333333'; // Темно-серая для наведения
     if (!hex.isRevealed && mode === 'player') return '#404040';
-    return '#8B4513';
+    return '#000000'; // Черная обводка для всех остальных
   };
 
   const renderHexLabel = (hex: HexData, x: number, y: number) => {
@@ -381,10 +389,10 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
     return (
       <Text
         x={x - label.length * 3}
-        y={y - 6}
+        y={y + 20} // Сместим текст ниже иконки
         text={label}
-        fontSize={10}
-        fill="#2F4F4F"
+        fontSize={9}
+        fill="#000000" // Черный текст
         fontWeight="bold"
         fontFamily="serif"
       />
@@ -394,52 +402,49 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
   const renderHexIcon = (hex: HexData, x: number, y: number) => {
     if (!hex.isRevealed && mode === 'player') return null;
 
+    // Определяем иконку и размер в зависимости от содержимого
+    let iconUrl: string;
+    let iconSize = 16;
+
     if (hex.settlement) {
-      // Рисуем домик для поселений
-      return (
-        <Group>
-          <RegularPolygon
-            x={x}
-            y={y - 10}
-            sides={4}
-            radius={8}
-            fill="#8B4513"
-            rotation={45}
-          />
-          <RegularPolygon
-            x={x}
-            y={y - 18}
-            sides={3}
-            radius={6}
-            fill="#CD853F"
-          />
-        </Group>
-      );
+      iconUrl = iconDataUrls.settlement;
+      iconSize = 20;
+    } else if (hex.landmark) {
+      iconUrl = getLandmarkIconUrl(hex.landmark.name);
+      iconSize = 18;
+    } else {
+      iconUrl = getHexTypeIconUrl(hex.hexType.id);
+      iconSize = 16;
     }
 
-    if (hex.landmark) {
-      // Простая иконка для ориентиров
-      return (
+    return (
+      <Group>
+        {/* Белый фон для иконки */}
         <Circle
           x={x}
-          y={y - 8}
-          radius={4}
-          fill="#4169E1"
-          stroke="#000"
+          y={y - 5}
+          radius={iconSize / 2 + 2}
+          fill="white"
+          stroke="#000000"
           strokeWidth={1}
         />
-      );
-    }
-
-    return null;
+        {/* SVG иконка */}
+        <HexIcon
+          iconUrl={iconUrl}
+          x={x}
+          y={y - 5}
+          size={iconSize}
+        />
+      </Group>
+    );
   };
 
   return (
     <div className="flex flex-col h-full">
-      {/* Панель управления */}
-      <div className="bg-amber-50 border-b-2 border-amber-200 p-4 shadow-md">
+      {/* Панель управления с обновленным стилем */}
+      <div className="bg-gray-100 border-b-2 border-gray-300 p-4 shadow-md">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-amber-900">
+          <h2 className="text-2xl font-bold text-gray-900">
             {mode === 'master' ? 'Game Master Map' : 'Player Map'}
           </h2>
           <div className="flex gap-4">
@@ -449,21 +454,21 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
                   onClick={() => setMapState(prev => ({ ...prev, isEditMode: !prev.isEditMode }))}
                   className={`px-4 py-2 rounded-md font-medium transition-colors ${
                     mapState.isEditMode 
-                      ? 'bg-green-600 text-white hover:bg-green-700' 
-                      : 'bg-amber-600 text-white hover:bg-amber-700'
+                      ? 'bg-gray-800 text-white hover:bg-gray-900' 
+                      : 'bg-gray-600 text-white hover:bg-gray-700'
                   }`}
                 >
                   {mapState.isEditMode ? 'Exit Edit' : 'Edit Mode'}
                 </button>
                 <button
                   onClick={addNewHexes}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition-colors"
                 >
                   Expand Map
                 </button>
               </>
             )}
-            <div className="text-sm text-amber-700">
+            <div className="text-sm text-gray-700">
               Scale: {Math.round(scale * 100)}%
             </div>
           </div>
@@ -471,8 +476,7 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
       </div>
 
       <div className="flex flex-1">
-        {/* Основная карта */}
-        <div className="flex-1 bg-green-50">
+        <div className="flex-1 bg-gray-50">
           <Stage
             width={canvasSize.width}
             height={canvasSize.height}
