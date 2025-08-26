@@ -15,6 +15,18 @@ export default function FullscreenDiceLayer() {
   const [error, setError] = useState<string | null>(null);
   const [rolling, setRolling] = useState(false);
   const [open, setOpen] = useState(true);
+  const [diceColor, setDiceColor] = useState<string>('default');
+  const [autoClear, setAutoClear] = useState(true);
+  const clearTimeoutRef = useRef<number | null>(null);
+
+  const colorOptions: { id: string; name: string; filter: string; preview: string }[] = [
+    { id: 'default', name: 'Стандарт', filter: 'none', preview: '#e5e7eb' },
+    { id: 'amber', name: 'Янтарь', filter: 'hue-rotate(25deg) saturate(1.25)', preview: '#f59e0b' },
+    { id: 'emerald', name: 'Изумруд', filter: 'hue-rotate(115deg) saturate(1.35)', preview: '#059669' },
+    { id: 'sapphire', name: 'Сапфир', filter: 'hue-rotate(205deg) saturate(1.4)', preview: '#2563eb' },
+    { id: 'amethyst', name: 'Аметист', filter: 'hue-rotate(275deg) saturate(1.4)', preview: '#7c3aed' },
+    { id: 'crimson', name: 'Багряный', filter: 'hue-rotate(-15deg) saturate(1.45)', preview: '#dc2626' },
+  ];
 
   const normalizeNotation = (input: string): string => {
     return input.replace(/(^|[^0-9a-z])d(%|[0-9]+)/gi, (full, p1: string, p2: string) => `${p1}1d${p2}`);
@@ -61,8 +73,18 @@ export default function FullscreenDiceLayer() {
       }
     };
 
+    const applyColorFilter = () => {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const canvas = container.querySelector('canvas') as HTMLCanvasElement | null;
+      if (!canvas) return;
+      const option = colorOptions.find(c => c.id === diceColor);
+      canvas.style.filter = option ? option.filter : 'none';
+    };
+
     // Ставим размеры сразу до init
     applySize();
+    applyColorFilter();
 
     (async () => {
       try {
@@ -82,6 +104,7 @@ export default function FullscreenDiceLayer() {
         await instance.init();
         applySize();
         adjustCanvasResolution();
+        applyColorFilter();
         onResize = () => { applySize(); adjustCanvasResolution(); };
         window.addEventListener('resize', onResize);
         if (cancelled) {
@@ -105,6 +128,16 @@ export default function FullscreenDiceLayer() {
     };
   }, []);
 
+  // Применяем цвет при смене diceColor после инициализации
+  useEffect(() => {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const canvas = container.querySelector('canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+    const option = colorOptions.find(c => c.id === diceColor);
+    canvas.style.filter = option ? option.filter : 'none';
+  }, [diceColor]);
+
   const roll = useCallback(async (n?: string) => {
     const expr = normalizeNotation((n || notation).trim());
     if (!expr || !boxRef.current) return;
@@ -113,14 +146,18 @@ export default function FullscreenDiceLayer() {
     try {
       const res = await boxRef.current.roll(expr);
       if (res?.error) setError(res.error);
-      // Автоочистка сцены через несколько секунд (опционально)
-      setTimeout(() => { try { boxRef.current?.clear(); } catch {} }, 8000);
+      if (autoClear) {
+        if (clearTimeoutRef.current) window.clearTimeout(clearTimeoutRef.current);
+        clearTimeoutRef.current = window.setTimeout(() => {
+          try { boxRef.current?.clear(); } catch {}
+        }, 8000);
+      }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setRolling(false);
     }
-  }, [notation]);
+  }, [notation, autoClear]);
 
   // Горячие клавиши: D d20, Escape скрыть панель (убран повтор R)
   useEffect(() => {
@@ -160,10 +197,46 @@ export default function FullscreenDiceLayer() {
                 <button
                   key={p}
                   type="button"
-                  onClick={() => { setNotation(p); roll(p); }}
-                  className="px-2 py-1 text-xs rounded bg-stone-200 hover:bg-stone-300"
+                  onClick={e => { setNotation(p); if (e.shiftKey) roll(p); }}
+                  className="px-2 py-1 text-xs rounded bg-stone-200 hover:bg-stone-300 relative group"
+                  title="Клик: выбрать • Shift+клик: сразу бросить"
                 >{p}</button>
               ))}
+            </div>
+            {/* Блок выбора цвета */}
+            <div className="space-y-1">
+              <div className="text-xs font-medium text-stone-600 flex items-center justify-between">
+                <span>Цвет</span>
+                <span className="text-[10px] text-stone-400">фильтр canvas</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {colorOptions.map(opt => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    aria-label={opt.name}
+                    title={opt.name}
+                    onClick={() => setDiceColor(opt.id)}
+                    className={`w-6 h-6 rounded-full border flex items-center justify-center relative transition ring-offset-1 ${diceColor===opt.id? 'ring-2 ring-stone-600 border-stone-700':'border-stone-300 hover:border-stone-500'}`}
+                    style={{ background: opt.preview }}
+                  >
+                    {diceColor===opt.id && <span className="w-2 h-2 bg-white rounded-full" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {/* Автоочистка */}
+            <div className="flex items-center gap-2 text-xs">
+              <label className="flex items-center gap-1 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  className="rounded border-stone-300"
+                  checked={autoClear}
+                  onChange={e => setAutoClear(e.target.checked)}
+                />
+                Автоочистка
+              </label>
+              {!autoClear && <span className="text-[10px] text-stone-400">ручная очистка</span>}
             </div>
             <div className="space-y-1">
               <label className="text-xs font-medium text-stone-600">Нотация</label>
@@ -189,7 +262,7 @@ export default function FullscreenDiceLayer() {
             </div>
             {loading && <div className="text-xs text-stone-500">Инициализация...</div>}
             {error && <div className="text-xs text-red-600 break-all">{error}</div>}
-            <div className="text-[10px] text-stone-400 pt-1">D d20 • Esc скрыть</div>
+            <div className="text-[10px] text-stone-400 pt-1">D d20 • Esc скрыть • Shift+клик пресета = бросок</div>
           </div>
         )}
       </div>
