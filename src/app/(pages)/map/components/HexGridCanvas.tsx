@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Stage, Layer, Group, RegularPolygon, Text, Circle, Image as KonvaImage } from "react-konva";
+import { Transformer } from "react-konva";
 import { defineHex, Grid, Orientation, spiral } from "honeycomb-grid";
 import { HexData, MapState, HexType } from "@/types/map";
 import { hexKey, getRandomHexType, getRandomLandmark, getRandomLandmarkDetail, generateSettlement, getNeighborCoords } from "@/lib/mapUtils";
@@ -39,10 +40,13 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
   const [canvasSize, setCanvasSize] = useState({ width: 1000, height: 700 });
 
   // ====== ДОБАВЛЕНО: изображения на canvas ======
-  interface CanvasImage { id: string; img: HTMLImageElement; x: number; y: number; }
+  interface CanvasImage { id: string; img: HTMLImageElement; x: number; y: number; width: number; height: number; }
   const [images, setImages] = useState<CanvasImage[]>([]);
+  const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
   const stageRef = useRef<import('konva').Stage | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const transformerRef = useRef<import('konva').Transformer | null>(null);
+  const selectedImageRef = useRef<import('konva').Image | null>(null);
   const MAX_IMG_W = 1024;
   const MAX_IMG_H = 1024;
   const JPEG_QUALITY = 0.85;
@@ -64,7 +68,7 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
   const loadImage = (dataUrl: string, x: number, y: number) => new Promise<void>(res => {
     const img = new Image();
     img.onload = () => {
-      setImages(prev => [...prev, { id: crypto.randomUUID(), img, x: x - img.width / 2, y: y - img.height / 2 }]);
+      setImages(prev => [...prev, { id: crypto.randomUUID(), img, x: x - img.width / 2, y: y - img.height / 2, width: img.width, height: img.height }]);
       res();
     };
     img.src = dataUrl;
@@ -84,13 +88,13 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
     return c.toDataURL('image/jpeg', JPEG_QUALITY);
   };
 
-  const handleFiles = async (files: FileList, clientX?: number, clientY?: number) => {
+  const handleFiles = useCallback(async (files: FileList, clientX?: number, clientY?: number) => {
     const { x, y } = getStageCoords(clientX, clientY);
     for (const f of Array.from(files)) {
       if (!f.type.startsWith('image/')) continue;
       try { const dataUrl = await compressFile(f); await loadImage(dataUrl, x, y); } catch (e) { console.error('Image load error', e); }
     }
-  };
+  }, [compressFile]);
 
   useEffect(() => {
     const onPaste = (e: ClipboardEvent) => {
@@ -102,9 +106,19 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
         }
       }
     };
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedImageId) {
+        setImages(prev => prev.filter(i => i.id !== selectedImageId));
+        setSelectedImageId(null);
+      }
+    };
     document.addEventListener('paste', onPaste);
-    return () => document.removeEventListener('paste', onPaste);
-  }, []);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('paste', onPaste);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [compressFile, selectedImageId]);
 
   useEffect(() => {
     const el = containerRef.current; if (!el) return;
@@ -112,8 +126,21 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
     const drop = (e: DragEvent) => { e.preventDefault(); if (e.dataTransfer?.files) handleFiles(e.dataTransfer.files, e.clientX, e.clientY); };
     el.addEventListener('dragover', over); el.addEventListener('drop', drop);
     return () => { el.removeEventListener('dragover', over); el.removeEventListener('drop', drop); };
-  }, []);
+  }, [handleFiles]);
   // ====== КОНЕЦ ДОБАВЛЕНИЯ ======
+
+  // Подключение Transformer к выбранному изображению (перемещено выше ранних return)
+  useEffect(() => {
+    const transformer = transformerRef.current;
+    const node = selectedImageRef.current;
+    if (transformer && node) {
+      transformer.nodes([node]);
+      transformer.getLayer()?.batchDraw();
+    } else if (transformer) {
+      transformer.nodes([]);
+      transformer.getLayer()?.batchDraw();
+    }
+  }, [selectedImageId, images]);
 
   const radius = 35;
   const mapRadius = 2;
@@ -543,6 +570,14 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
                 >
                   Expand Map
                 </button>
+                {selectedImageId && (
+                  <button
+                    onClick={() => { setImages(prev => prev.filter(i => i.id !== selectedImageId)); setSelectedImageId(null); }}
+                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                  >
+                    Delete Image (Del)
+                  </button>
+                )}
               </>
             )}
             <div className="text-sm text-gray-700">
@@ -575,6 +610,30 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
                 setPos({ x: pointer.x - mousePointTo.x * clamped, y: pointer.y - mousePointTo.y * clamped });
               } else {
                 setPos(p => ({ x: p.x - e.evt.deltaX, y: p.y - e.evt.deltaY }));
+              }
+            }}
+            onMouseDown={(e) => {
+              const stage = e.target.getStage();
+              const target = e.target as any;
+              const isStage = target === stage;
+              const isImage = target.getClassName && target.getClassName() === 'Image';
+              const parent = target.getParent && target.getParent();
+              const isTransformer = (target.getClassName && target.getClassName() === 'Transformer') || (parent && parent.getClassName && parent.getClassName() === 'Transformer');
+              if ((isStage || (!isImage && !isTransformer)) && selectedImageId) {
+                setSelectedImageId(null);
+                selectedImageRef.current = null;
+              }
+            }}
+            onTouchStart={(e) => {
+              const stage = e.target.getStage();
+              const target = e.target as any;
+              const isStage = target === stage;
+              const isImage = target.getClassName && target.getClassName() === 'Image';
+              const parent = target.getParent && target.getParent();
+              const isTransformer = (target.getClassName && target.getClassName() === 'Transformer') || (parent && parent.getClassName && parent.getClassName() === 'Transformer');
+              if ((isStage || (!isImage && !isTransformer)) && selectedImageId) {
+                setSelectedImageId(null);
+                selectedImageRef.current = null;
               }
             }}
           >
@@ -618,13 +677,35 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
                   image={img.img}
                   x={img.x}
                   y={img.y}
+                  width={img.width}
+                  height={img.height}
+                  name="canvas-image"
                   draggable
+                  onClick={(e) => { setSelectedImageId(img.id); selectedImageRef.current = e.target as any; }}
+                  onTap={(e) => { setSelectedImageId(img.id); selectedImageRef.current = e.target as any; }}
                   onDragEnd={e => {
                     const { x, y } = e.target.position();
                     setImages(prev => prev.map(p => p.id === img.id ? { ...p, x, y } : p));
                   }}
+                  onTransformEnd={e => {
+                    const node = e.target as any;
+                    const scaleX = node.scaleX();
+                    const scaleY = node.scaleY();
+                    const newWidth = Math.max(10, node.width() * scaleX);
+                    const newHeight = Math.max(10, node.height() * scaleY);
+                    node.scaleX(1); node.scaleY(1);
+                    setImages(prev => prev.map(p => p.id === img.id ? { ...p, width: newWidth, height: newHeight, x: node.x(), y: node.y() } : p));
+                  }}
                 />
               ))}
+              <Transformer
+                ref={transformerRef}
+                rotateEnabled={false}
+                enabledAnchors={["top-left","top-right","bottom-left","bottom-right"]}
+                anchorSize={10}
+                borderDash={[4,4]}
+                keepRatio={true}
+              />
             </Layer>
           </Stage>
         </div>
