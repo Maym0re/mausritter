@@ -1,6 +1,6 @@
 'use client';
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Stage, Layer, Group, RegularPolygon, Text, Circle } from "react-konva";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { Stage, Layer, Group, RegularPolygon, Text, Circle, Image as KonvaImage } from "react-konva";
 import { defineHex, Grid, Orientation, spiral } from "honeycomb-grid";
 import { HexData, MapState, HexType } from "@/types/map";
 import { hexKey, getRandomHexType, getRandomLandmark, getRandomLandmarkDetail, generateSettlement, getNeighborCoords } from "@/lib/mapUtils";
@@ -37,6 +37,83 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
   const [mapData, setMapData] = useState<MapData | null>(null);
   const [loading, setLoading] = useState(true);
   const [canvasSize, setCanvasSize] = useState({ width: 1000, height: 700 });
+
+  // ====== ДОБАВЛЕНО: изображения на canvas ======
+  interface CanvasImage { id: string; img: HTMLImageElement; x: number; y: number; }
+  const [images, setImages] = useState<CanvasImage[]>([]);
+  const stageRef = useRef<import('konva').Stage | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const MAX_IMG_W = 1024;
+  const MAX_IMG_H = 1024;
+  const JPEG_QUALITY = 0.85;
+
+  const getStageCoords = (clientX?: number, clientY?: number) => {
+    const stage = stageRef.current;
+    if (!stage) return { x: 0, y: 0 };
+    const scaleVal = stage.scaleX();
+    if (clientX !== undefined && clientY !== undefined) {
+      const rect = stage.container().getBoundingClientRect();
+      const px = clientX - rect.left; const py = clientY - rect.top;
+      return { x: (px - stage.x()) / scaleVal, y: (py - stage.y()) / scaleVal };
+    }
+    const p = stage.getPointerPosition();
+    if (!p) return { x: 0, y: 0 };
+    return { x: (p.x - stage.x()) / scaleVal, y: (p.y - stage.y()) / scaleVal };
+  };
+
+  const loadImage = (dataUrl: string, x: number, y: number) => new Promise<void>(res => {
+    const img = new Image();
+    img.onload = () => {
+      setImages(prev => [...prev, { id: crypto.randomUUID(), img, x: x - img.width / 2, y: y - img.height / 2 }]);
+      res();
+    };
+    img.src = dataUrl;
+  });
+
+  const compressFile = async (file: File): Promise<string> => {
+    const needResize = file.size > 700 * 1024; // >700KB
+    const fileToDataURL = (f: Blob) => new Promise<string>(r => { const fr = new FileReader(); fr.onload = () => r(fr.result as string); fr.readAsDataURL(f); });
+    if (!needResize) return fileToDataURL(file);
+    const bitmap = await createImageBitmap(file);
+    const ratio = Math.min(1, MAX_IMG_W / bitmap.width, MAX_IMG_H / bitmap.height);
+    const w = Math.round(bitmap.width * ratio); const h = Math.round(bitmap.height * ratio);
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const ctx = c.getContext('2d'); if (!ctx) return fileToDataURL(file);
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    return c.toDataURL('image/jpeg', JPEG_QUALITY);
+  };
+
+  const handleFiles = async (files: FileList, clientX?: number, clientY?: number) => {
+    const { x, y } = getStageCoords(clientX, clientY);
+    for (const f of Array.from(files)) {
+      if (!f.type.startsWith('image/')) continue;
+      try { const dataUrl = await compressFile(f); await loadImage(dataUrl, x, y); } catch (e) { console.error('Image load error', e); }
+    }
+  };
+
+  useEffect(() => {
+    const onPaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items; if (!items) return;
+      const { x, y } = getStageCoords();
+      for (const it of items) {
+        if (it.kind === 'file' && it.type.startsWith('image/')) {
+          const file = it.getAsFile(); if (file) compressFile(file).then(d => loadImage(d, x, y));
+        }
+      }
+    };
+    document.addEventListener('paste', onPaste);
+    return () => document.removeEventListener('paste', onPaste);
+  }, []);
+
+  useEffect(() => {
+    const el = containerRef.current; if (!el) return;
+    const over = (e: DragEvent) => { e.preventDefault(); };
+    const drop = (e: DragEvent) => { e.preventDefault(); if (e.dataTransfer?.files) handleFiles(e.dataTransfer.files, e.clientX, e.clientY); };
+    el.addEventListener('dragover', over); el.addEventListener('drop', drop);
+    return () => { el.removeEventListener('dragover', over); el.removeEventListener('drop', drop); };
+  }, []);
+  // ====== КОНЕЦ ДОБАВЛЕНИЯ ======
 
   const radius = 35;
   const mapRadius = 2;
@@ -440,7 +517,7 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" ref={containerRef}>
       {/* Панель управления с обновленным стилем */}
       <div className="bg-gray-100 border-b-2 border-gray-300 p-4 shadow-md">
         <div className="flex justify-between items-center">
@@ -478,6 +555,7 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
       <div className="flex flex-1">
         <div className="flex-1 bg-gray-50">
           <Stage
+            ref={stageRef}
             width={canvasSize.width}
             height={canvasSize.height}
             draggable
@@ -487,40 +565,20 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
             y={pos.y}
             onWheel={(e) => {
               e.evt.preventDefault();
-
-              // Если нажат Ctrl - это жест зума
               if (e.evt.ctrlKey) {
-                const scaleBy = 1.1;
-                const stage = e.target.getStage();
-                if (!stage) return;
-
-                const oldScale = stage.scaleX();
-                const pointer = stage.getPointerPosition();
-                if (!pointer) return;
-
-                const mousePointTo = {
-                  x: (pointer.x - stage.x()) / oldScale,
-                  y: (pointer.y - stage.y()) / oldScale,
-                };
-
-                // Инвертируем направление зума для правильного поведения на тачпаде
+                const scaleBy = 1.1; const stage = e.target.getStage(); if (!stage) return;
+                const oldScale = stage.scaleX(); const pointer = stage.getPointerPosition(); if (!pointer) return;
+                const mousePointTo = { x: (pointer.x - stage.x()) / oldScale, y: (pointer.y - stage.y()) / oldScale };
                 const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
-                const clampedScale = Math.max(0.5, Math.min(3, newScale));
-
-                setScale(clampedScale);
-                setPos({
-                  x: pointer.x - mousePointTo.x * clampedScale,
-                  y: pointer.y - mousePointTo.y * clampedScale,
-                });
+                const clamped = Math.max(0.5, Math.min(3, newScale));
+                setScale(clamped);
+                setPos({ x: pointer.x - mousePointTo.x * clamped, y: pointer.y - mousePointTo.y * clamped });
               } else {
-                // Обычный скролл - панорамирование карты
-                setPos(prevPos => ({
-                  x: prevPos.x - e.evt.deltaX,
-                  y: prevPos.y - e.evt.deltaY,
-                }));
+                setPos(p => ({ x: p.x - e.evt.deltaX, y: p.y - e.evt.deltaY }));
               }
             }}
           >
+            {/* Слой гексов */}
             <Layer>
               {Array.from(mapState.hexes.entries()).map(([key, hex]) => {
                 // Используем Tile напрямую для создания гекса с координатами
@@ -551,6 +609,22 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
                   </Group>
                 );
               })}
+            </Layer>
+            {/* Слой изображений */}
+            <Layer>
+              {images.map(img => (
+                <KonvaImage
+                  key={img.id}
+                  image={img.img}
+                  x={img.x}
+                  y={img.y}
+                  draggable
+                  onDragEnd={e => {
+                    const { x, y } = e.target.position();
+                    setImages(prev => prev.map(p => p.id === img.id ? { ...p, x, y } : p));
+                  }}
+                />
+              ))}
             </Layer>
           </Stage>
         </div>
