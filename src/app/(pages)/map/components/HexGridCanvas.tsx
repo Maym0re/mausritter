@@ -41,6 +41,7 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 	const [loading, setLoading] = useState(true);
 	const [canvasSize, setCanvasSize] = useState({width: 1000, height: 700});
 	const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
+	const [isAddHexMode, setIsAddHexMode] = useState(false);
 
 	const stageRef = useRef<import('konva').Stage | null>(null);
 	const containerRef = useRef<HTMLDivElement | null>(null);
@@ -233,6 +234,65 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 		});
 	}, [mode, mapData?.id]);
 
+	// Создание одного нового гекса по координатам (примыкающего)
+	const createHexAt = useCallback(async (q: number, r: number) => {
+		if (!mapData?.id) return;
+		const key = hexKey(q, r);
+		if (mapState.hexes.has(key)) return; // уже есть
+		const ht = getRandomHexType();
+		const lm = getRandomLandmark(ht.id);
+		const ld = getRandomLandmarkDetail();
+		setMapState(p => {
+			const nh = new Map(p.hexes);
+			nh.set(key, {
+				q,
+				r,
+				s: -(q + r),
+				hexType: ht,
+				landmark: lm,
+				landmarkDetail: ld,
+				settlement: Math.random() < 0.2 ? generateSettlement() : undefined,
+				isRevealed: mode === 'master',
+				notes: ''
+			});
+			return { ...p, hexes: nh };
+		});
+		try {
+			await fetch('/api/maps/cells', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					hexMapId: mapData.id,
+					q,
+					r,
+					s: -(q + r),
+					hexTypeId: 'countryside'
+				})
+			});
+		} catch (e) {
+			console.error('createHexAt error', e);
+		}
+	}, [mapData?.id, mapState.hexes, mode]);
+
+	// Потенциальные координаты для добавления (граница)
+	const potentialHexes = useMemo(() => {
+		if (!isAddHexMode) return [] as { q:number; r:number }[];
+		const occupied = mapState.hexes;
+		const border = new Map<string, { q:number; r:number; count:number }>();
+		occupied.forEach(h => {
+			getNeighborCoords(h.q, h.r).forEach(n => {
+				const k = hexKey(n.q, n.r);
+				if (!occupied.has(k)) {
+					const prev = border.get(k) || { q: n.q, r: n.r, count: 0 };
+					prev.count += 1;
+					border.set(k, prev);
+				}
+			});
+		});
+		// Можно фильтровать по count>=1 (у нас всегда так) — оставляем всё
+		return Array.from(border.values()).map(v => ({ q: v.q, r: v.r }));
+	}, [isAddHexMode, mapState.hexes]);
+
 	// Отображение загрузки
 	if (loading) {
 		return (
@@ -314,6 +374,8 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 							<button onClick={addNewHexes}
 							        className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800">Expand Map
 							</button>
+							<button onClick={() => setIsAddHexMode(m => !m)}
+							        className={`px-4 py-2 rounded-md text-white ${isAddHexMode ? 'bg-amber-700 hover:bg-amber-800' : 'bg-amber-600 hover:bg-amber-700'}`}>{isAddHexMode ? 'Finish Adding' : 'Add Hex'}</button>
 							{selectedImageId && <button onClick={() => {
 								imagesLayerRef.current?.deleteSelected();
 							}} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete Image</button>}
@@ -355,16 +417,49 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 								const h = new Tile({q: hex.q, r: hex.r});
 								const x = h.x;
 								const y = h.y;
-								return (<Group key={key}><RegularPolygon x={x} y={y} sides={6} rotation={30} radius={radius}
-								                                         fill={getHexColor(hex)} stroke={getHexStroke(key, hex)}
-								                                         strokeWidth={mapState.selectedHex === key ? 3 : 1}
-								                                         onClick={() => handleHexClick(key)}
-								                                         onMouseEnter={() => setHoveredHex(key)}
-								                                         onMouseLeave={() => setHoveredHex(null)}
-								                                         shadowBlur={mapState.selectedHex === key ? 10 : 0}
-								                                         shadowColor="gold"/>{renderHexIcon(hex, x, y)}{renderHexLabel(hex, x, y)}
+								return (<Group key={key}>
+									<RegularPolygon x={x}
+									                y={y}
+									                sides={6}
+									                rotation={30}
+									                radius={radius}
+									                fill={getHexColor(hex)}
+									                stroke={getHexStroke(key, hex)}
+									                strokeWidth={mapState.selectedHex === key ? 3 : 1}
+									                onClick={() => handleHexClick(key)}
+									                onMouseEnter={() => setHoveredHex(key)}
+									                onMouseLeave={() => setHoveredHex(null)}
+									                shadowBlur={mapState.selectedHex === key ? 10 : 0}
+									                shadowColor="gold"/>
+									{renderHexIcon(hex, x, y)}{renderHexLabel(hex, x, y)}
 								</Group>);
 							})}
+							{isAddHexMode && potentialHexes.map(ph => {
+                const temp = new Tile({ q: ph.q, r: ph.r });
+                const x = temp.x; const y = temp.y;
+                const k = hexKey(ph.q, ph.r);
+                return (
+                  <Group
+                    key={`potential-${k}`}
+                    onClick={() => createHexAt(ph.q, ph.r)}
+                    onMouseEnter={() => setHoveredHex(k)}
+                    onMouseLeave={() => setHoveredHex(null)}
+                  >
+                    <RegularPolygon
+                      x={x}
+                      y={y}
+                      sides={6}
+                      rotation={30}
+                      radius={radius}
+                      fill={'rgba(255,255,255,0.15)'}
+                      stroke={'#888'}
+                      dash={[4,4]}
+                      strokeWidth={2}
+                    />
+                    <Text x={x-6} y={y-9} text="+" fontSize={20} fill="#555" listening={false} />
+                  </Group>
+                );
+              })}
 						</Layer>
 						<CanvasImagesLayer ref={imagesLayerRef} stageRef={stageRef} containerRef={containerRef}
 						                   editable={mode === 'master'} onSelectionChange={setSelectedImageId}/>
