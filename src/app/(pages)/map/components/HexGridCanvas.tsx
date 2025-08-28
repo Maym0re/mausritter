@@ -110,6 +110,7 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
       if ((e.key === 'Delete' || e.key === 'Backspace') && selectedImageId) {
         setImages(prev => prev.filter(i => i.id !== selectedImageId));
         setSelectedImageId(null);
+        selectedImageRef.current = null;
       }
     };
     document.addEventListener('paste', onPaste);
@@ -127,17 +128,16 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
     el.addEventListener('dragover', over); el.addEventListener('drop', drop);
     return () => { el.removeEventListener('dragover', over); el.removeEventListener('drop', drop); };
   }, [handleFiles]);
-  // ====== КОНЕЦ ДОБАВЛЕНИЯ ======
 
-  // Подключение Transformer к выбранному изображению (перемещено выше ранних return)
   useEffect(() => {
     const transformer = transformerRef.current;
     const node = selectedImageRef.current;
-    if (transformer && node) {
-      transformer.nodes([node]);
-      transformer.getLayer()?.batchDraw();
-    } else if (transformer) {
-      transformer.nodes([]);
+    if (transformer) {
+      if (node && node.getStage()) {
+        transformer.nodes([node]);
+      } else {
+        transformer.nodes([]);
+      }
       transformer.getLayer()?.batchDraw();
     }
   }, [selectedImageId, images]);
@@ -572,7 +572,7 @@ export function HexGridCanvas({ mode, campaignId }: HexGridCanvasProps) {
                 </button>
                 {selectedImageId && (
                   <button
-                    onClick={() => { setImages(prev => prev.filter(i => i.id !== selectedImageId)); setSelectedImageId(null); }}
+                    onClick={() => { setImages(prev => prev.filter(i => i.id !== selectedImageId)); setSelectedImageId(null); selectedImageRef.current = null; }}
                     className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
                   >
                     Delete Image (Del)
