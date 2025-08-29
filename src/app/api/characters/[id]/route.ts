@@ -31,14 +31,12 @@ export async function PUT(
     const character = await prisma.character.findFirst({
       where: {
         id,
-        OR: [
-          { playerId: session.user.id }, // Владелец персонажа
-          {
-            campaign: {
-              gmId: session.user.id // Мастер кампании
-            }
-          }
-        ]
+        campaign: {
+          OR: [
+            { gmId: session.user.id },
+            { players: { some: { userId: session.user.id } } }
+          ]
+        }
       },
       include: {
         campaign: true
@@ -121,14 +119,12 @@ export async function GET(
     const character = await prisma.character.findFirst({
       where: {
         id,
-        OR: [
-          { playerId: session.user.id }, // Владелец персонажа
-          {
-            campaign: {
-              gmId: session.user.id // Мастер кампании
-            }
-          }
-        ]
+        campaign: {
+          OR: [
+            { gmId: session.user.id },
+            { players: { some: { userId: session.user.id } } }
+          ]
+        }
       },
       include: {
         player: {
@@ -182,7 +178,12 @@ export async function DELETE(
     const character = await prisma.character.findFirst({
       where: {
         id,
-        playerId: session.user.id
+        campaign: {
+          OR: [
+            { gmId: session.user.id },
+            { players: { some: { userId: session.user.id } } }
+          ]
+        }
       }
     })
 
