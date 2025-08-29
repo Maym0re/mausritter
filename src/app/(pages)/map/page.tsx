@@ -67,30 +67,6 @@ export default function MapPage() {
 
   return (
     <div className="h-screen w-screen overflow-hidden">
-      {/* Выбор кампании */}
-      <div className="bg-white border-b border-gray-200 p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <label className="text-sm font-medium text-gray-700">Кампания:</label>
-            <select
-              value={selectedCampaign || ''}
-              onChange={(e) => handleCampaignSelect(e.target.value)}
-              className="block w-64 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-            >
-              {campaigns.map((campaign) => (
-                <option key={campaign.id} value={campaign.id}>
-                  {campaign.name} ({campaign.gmId === session?.user?.id ? 'Мастер' : 'Игрок'})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {userRole === 'master' && selectedCampaign && (
-            <MapManager campaignId={selectedCampaign} />
-          )}
-        </div>
-      </div>
-
       {/* Карта */}
       {selectedCampaign && userRole && (
         <HexGridCanvas
