@@ -36,6 +36,7 @@ function getLandmarksForType(typeId: string) {
 }
 
 export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowProps) {
+  const isGM = mode === 'master';
   const [form, setForm] = useState<FormState>(() => ({
     customName: hex.customName || '',
     hexTypeId: hex.hexType.id,
@@ -77,6 +78,10 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
   };
 
   const handleSave = () => {
+    if (!isGM) {
+      onSave({ notes: form.notes });
+      return;
+    }
     const hexType = HEX_TYPES.find(t => t.id === form.hexTypeId)!;
     const landmark = landmarks.find(l => l.id === form.landmarkId);
     const landmarkDetail = LANDMARK_DETAILS.find(d => d.id === form.landmarkDetailId);
@@ -92,7 +97,7 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
       landmarkDetail,
       settlement,
       notes: form.notes,
-      masterNotes: mode === 'master' ? form.masterNotes : undefined,
+      masterNotes: form.masterNotes,
       isRevealed: form.isRevealed,
     });
   };
@@ -115,42 +120,42 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block mb-1 font-medium">Custom Name</label>
-            <input value={form.customName} onChange={e=>handleChange('customName', e.target.value)} className="w-full border rounded px-2 py-1" />
+            <input value={form.customName} onChange={e=>handleChange('customName', e.target.value)} className="w-full border rounded px-2 py-1 disabled:bg-gray-100" readOnly={!isGM} />
           </div>
           <div>
             <label className="block mb-1 font-medium">Hex Type</label>
-            <select value={form.hexTypeId} onChange={e=>handleChange('hexTypeId', e.target.value)} className="w-full border rounded px-2 py-1">
+            <select value={form.hexTypeId} onChange={e=>handleChange('hexTypeId', e.target.value)} className="w-full border rounded px-2 py-1 disabled:bg-gray-100" disabled={!isGM}>
               {HEX_TYPES.map(t=> <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div>
             <label className="block mb-1 font-medium">Landmark</label>
-            <select value={form.landmarkId} onChange={e=>handleChange('landmarkId', e.target.value)} className="w-full border rounded px-2 py-1">
+            <select value={form.landmarkId} onChange={e=>handleChange('landmarkId', e.target.value)} className="w-full border rounded px-2 py-1 disabled:bg-gray-100" disabled={!isGM}>
               <option value="">— none —</option>
               {landmarks.map(l=> <option key={l.id} value={l.id}>{l.name}</option>)}
             </select>
           </div>
           <div>
             <label className="block mb-1 font-medium">Landmark Detail</label>
-            <select value={form.landmarkDetailId} onChange={e=>handleChange('landmarkDetailId', e.target.value)} className="w-full border rounded px-2 py-1">
+            <select value={form.landmarkDetailId} onChange={e=>handleChange('landmarkDetailId', e.target.value)} className="w-full border rounded px-2 py-1 disabled:bg-gray-100" disabled={!isGM}>
               <option value="">— none —</option>
               {LANDMARK_DETAILS.map(d=> <option key={d.id} value={d.id}>{d.description.substring(0,45)}...</option>)}
             </select>
           </div>
           <div className="col-span-2 flex items-center gap-3">
-            <label className="flex items-center gap-1"><input type="checkbox" checked={form.isRevealed} onChange={e=>handleChange('isRevealed', e.target.checked)} /> <span>Revealed</span></label>
-            <label className="flex items-center gap-1"><input type="checkbox" checked={form.hasSettlement} onChange={e=>handleChange('hasSettlement', e.target.checked)} /> <span>Settlement</span></label>
-            {form.hasSettlement && <button type="button" onClick={handleGenerateSettlement} className="ml-auto px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">🎲</button>}
+            <label className="flex items-center gap-1 opacity-{!isGM?50:100}"><input type="checkbox" checked={form.isRevealed} onChange={e=>handleChange('isRevealed', e.target.checked)} disabled={!isGM} /> <span>Revealed</span></label>
+            <label className="flex items-center gap-1"><input type="checkbox" checked={form.hasSettlement} onChange={e=>handleChange('hasSettlement', e.target.checked)} disabled={!isGM} /> <span>Settlement</span></label>
+            {form.hasSettlement && <button type="button" disabled={!isGM} onClick={handleGenerateSettlement} className="ml-auto px-2 py-1 bg-blue-500 disabled:bg-blue-300 text-white rounded hover:bg-blue-600">🎲</button>}
           </div>
           {form.hasSettlement && (
             <>
               <div>
                 <label className="block mb-1 font-medium">Settlement Name</label>
-                <input value={form.settlementName} onChange={e=>handleChange('settlementName', e.target.value)} className="w-full border rounded px-2 py-1" />
+                <input value={form.settlementName} onChange={e=>handleChange('settlementName', e.target.value)} className="w-full border rounded px-2 py-1 disabled:bg-gray-100" readOnly={!isGM} />
               </div>
               <div>
                 <label className="block mb-1 font-medium">Settlement Size</label>
-                <select value={form.settlementSize} onChange={e=>handleChange('settlementSize', e.target.value as any)} className="w-full border rounded px-2 py-1">
+                <select value={form.settlementSize} onChange={e=>handleChange('settlementSize', e.target.value as any)} className="w-full border rounded px-2 py-1 disabled:bg-gray-100" disabled={!isGM}>
                   <option value="farm">Farm</option>
                   <option value="crossroads">Crossroads</option>
                   <option value="hamlet">Hamlet</option>
@@ -165,7 +170,7 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
             <label className="block mb-1 font-medium">Notes</label>
             <textarea value={form.notes} onChange={e=>handleChange('notes', e.target.value)} className="w-full border rounded px-2 py-1 h-20" />
           </div>
-          {mode === 'master' && (
+          {isGM && (
             <div className="col-span-2">
               <label className="block mb-1 font-medium">Master Notes</label>
               <textarea value={form.masterNotes} onChange={e=>handleChange('masterNotes', e.target.value)} className="w-full border rounded px-2 py-1 h-24" />
@@ -176,4 +181,3 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
     </DraggableResizableWindow>
   );
 }
-

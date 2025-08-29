@@ -42,14 +42,23 @@ export async function PUT(request: NextRequest) {
     const isPlayer = campaign.players.some(p => p.userId === session.user.id);
     if (!isGM && !isPlayer) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
-    // masterNotes может менять только ГМ
-    if (!isGM && masterNotes !== undefined) {
-      return NextResponse.json({ error: 'Only GM can edit masterNotes' }, { status: 403 });
+    // Игрок может менять только notes
+    if (!isGM) {
+      const attemptedOtherChange = [hexTypeId, landmarkId, landmarkDetailId, settlementId, customName, masterNotes, isRevealed]
+        .some(v => v !== undefined && v !== null);
+      if (attemptedOtherChange) {
+        return NextResponse.json({ error: 'Only GM can edit anything except notes' }, { status: 403 });
+      }
+    }
+
+    // masterNotes и isRevealed может менять только ГМ (доп.проверка)
+    if (!isGM && (masterNotes !== undefined || isRevealed !== undefined)) {
+      return NextResponse.json({ error: 'Only GM can edit masterNotes or isRevealed' }, { status: 403 });
     }
 
     const hexCell = await prisma.hexCell.upsert({
       where: { hexMapId_q_r_s: { hexMapId, q, r, s } },
-      update: {
+      update: isGM ? {
         ...(hexTypeId && { hexTypeId }),
         ...(landmarkId !== undefined && { landmarkId }),
         ...(landmarkDetailId !== undefined && { landmarkDetailId }),
@@ -57,7 +66,9 @@ export async function PUT(request: NextRequest) {
         ...(isRevealed !== undefined && { isRevealed }),
         ...(notes !== undefined && { notes }),
         ...(customName !== undefined && { customName }),
-        ...(masterNotes !== undefined && isGM && { masterNotes })
+        ...(masterNotes !== undefined && { masterNotes })
+      } : {
+        ...(notes !== undefined && { notes })
       },
       create: {
         hexMapId,
@@ -65,13 +76,13 @@ export async function PUT(request: NextRequest) {
         r,
         s,
         hexTypeId: hexTypeId || 'countryside',
-        landmarkId,
-        landmarkDetailId,
-        settlementId,
-        isRevealed: isRevealed ?? false,
+        landmarkId: isGM ? landmarkId : undefined,
+        landmarkDetailId: isGM ? landmarkDetailId : undefined,
+        settlementId: isGM ? settlementId : undefined,
+        isRevealed: isGM ? (isRevealed ?? false) : false,
         notes: notes || '',
-        customName,
-        masterNotes: masterNotes && isGM ? masterNotes : ''
+        customName: isGM ? customName : undefined,
+        masterNotes: isGM && masterNotes ? masterNotes : ''
       },
       include: { hexType: true, landmark: true, landmarkDetail: true, settlement: true }
     });
