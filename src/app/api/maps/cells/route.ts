@@ -170,3 +170,46 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+// DELETE /api/maps/cells - удалить ячейку карты
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { hexMapId, q, r, s } = body;
+
+    if (!hexMapId || q === undefined || r === undefined || s === undefined) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Проверяем карту и кампанию
+    const hexMap = await prisma.hexMap.findUnique({
+      where: { id: hexMapId },
+      include: { campaign: true }
+    });
+    if (!hexMap) {
+      return NextResponse.json({ error: 'Map not found' }, { status: 404 });
+    }
+
+    // Только ГМ
+    if (hexMap.campaign.gmId !== session.user.id) {
+      return NextResponse.json({ error: 'Only GM can delete hex cells' }, { status: 403 });
+    }
+
+    // Удаляем
+    await prisma.hexCell.delete({
+      where: {
+        hexMapId_q_r_s: { hexMapId, q, r, s }
+      }
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting hex cell:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

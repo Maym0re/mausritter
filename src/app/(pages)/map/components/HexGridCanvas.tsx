@@ -186,53 +186,27 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 		setEditingHex(null);
 	}, [mapData?.id]);
 
-	const addNewHexes = useCallback(async () => {
+	// Удаление гекса (перенесено выше ранних return)
+	const handleHexDelete = useCallback(async (k: string) => {
 		if (!mapData?.id) return;
+		const hex = mapState.hexes.get(k);
+		if (!hex) return;
 		setMapState(p => {
 			const nh = new Map(p.hexes);
-			const existing = Array.from(nh.keys()).map(key => {
-				const [q, r] = key.split(',').map(Number);
-				return {q, r};
-			});
-			const potentials = new Set<string>();
-			existing.forEach(({q, r}) => {
-				getNeighborCoords(q, r).forEach(({q: nq, r: nr}) => {
-					const key = hexKey(nq, nr);
-					if (!nh.has(key)) potentials.add(key);
-				});
-			});
-			potentials.forEach(key => {
-				const [q, r] = key.split(',').map(Number);
-				const ht = getRandomHexType();
-				const lm = getRandomLandmark(ht.id);
-				const ld = getRandomLandmarkDetail();
-				nh.set(key, {
-					q,
-					r,
-					s: -(q + r),
-					hexType: ht,
-					landmark: lm,
-					landmarkDetail: ld,
-					settlement: Math.random() < 0.2 ? generateSettlement() : undefined,
-					isRevealed: mode === 'master',
-					notes: ''
-				});
-				fetch('/api/maps/cells', {
-					method: 'POST',
-					headers: {'Content-Type': 'application/json'},
-					body: JSON.stringify({
-						hexMapId: mapData.id,
-						q,
-						r,
-						s: -(q + r),
-						hexTypeId: 'countryside'
-					})
-				}).catch(() => {
-				});
-			});
-			return {...p, hexes: nh};
+			nh.delete(k);
+			return { ...p, hexes: nh, selectedHex: p.selectedHex === k ? null : p.selectedHex };
 		});
-	}, [mode, mapData?.id]);
+		setEditingHex(null);
+		try {
+			await fetch('/api/maps/cells', {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ hexMapId: mapData.id, q: hex.q, r: hex.r, s: hex.s })
+			});
+		} catch (e) {
+			console.error('Failed delete hex', e);
+		}
+	}, [mapData?.id, mapState.hexes]);
 
 	// Создание одного нового гекса по координатам (примыкающего)
 	const createHexAt = useCallback(async (q: number, r: number) => {
@@ -366,6 +340,9 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 			iconUrl={iconUrl} x={x} y={y - 5} size={size}/></Group>);
 	};
 
+	// Удаление гекса
+	// (старое размещение удалено)
+
 	return (
 		<div className="flex flex-col h-full" ref={containerRef}>
 			<div className="bg-gray-100 border-b-2 border-gray-300 p-4 shadow-md">
@@ -375,9 +352,6 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 						{mode === 'master' && (<>
 							<button onClick={() => setMapState(p => ({...p, isEditMode: !p.isEditMode}))}
 							        className={`px-4 py-2 rounded-md text-white ${mapState.isEditMode ? 'bg-gray-800 hover:bg-gray-900' : 'bg-gray-600 hover:bg-gray-700'}`}>{mapState.isEditMode ? 'Exit Edit' : 'Edit Mode'}</button>
-							<button onClick={addNewHexes}
-							        className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800">Expand Map
-							</button>
 							<button onClick={() => setIsAddHexMode(m => !m)}
 							        className={`px-4 py-2 rounded-md text-white ${isAddHexMode ? 'bg-amber-700 hover:bg-amber-800' : 'bg-amber-600 hover:bg-amber-700'}`}>{isAddHexMode ? 'Finish Adding' : 'Add Hex'}</button>
 							{selectedImageId && <button onClick={() => {
@@ -475,6 +449,7 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 			</div>
 			{editingHex && <HexEditModal hex={mapState.hexes.get(editingHex)!}
                                    onSave={(d: Partial<HexData>) => handleHexSave(editingHex, d)}
+                                   onDelete={() => handleHexDelete(editingHex)}
                                    onClose={() => setEditingHex(null)}/>}
 		</div>
 	);

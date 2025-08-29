@@ -7,6 +7,7 @@ import { generateSettlement } from '@/lib/mapUtils';
 interface HexEditModalProps {
   hex: HexData;
   onSave: (data: Partial<HexData>) => void;
+  onDelete?: () => void;
   onClose: () => void;
 }
 
@@ -21,7 +22,7 @@ interface FormData {
   notes: string;
 }
 
-export function HexEditModal({ hex, onSave, onClose }: HexEditModalProps) {
+export function HexEditModal({ hex, onSave, onDelete, onClose }: HexEditModalProps) {
   const { control, handleSubmit, watch, setValue } = useForm<FormData>({
     defaultValues: {
       customName: hex.customName || '',
@@ -286,6 +287,17 @@ export function HexEditModal({ hex, onSave, onClose }: HexEditModalProps) {
 
           {/* Футер */}
           <div className="flex justify-end gap-3 p-6 border-t border-gray-200">
+            {onDelete && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm('Удалить этот гекс?')) onDelete();
+                }}
+                className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-md"
+              >
+                🗑 Удалить
+              </button>
+            )}
             <button
               type="button"
               onClick={onClose}
