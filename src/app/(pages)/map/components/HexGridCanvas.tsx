@@ -236,43 +236,47 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 
 	// Создание одного нового гекса по координатам (примыкающего)
 	const createHexAt = useCallback(async (q: number, r: number) => {
-		if (!mapData?.id) return;
-		const key = hexKey(q, r);
-		if (mapState.hexes.has(key)) return; // уже есть
-		const ht = getRandomHexType();
-		const lm = getRandomLandmark(ht.id);
-		const ld = getRandomLandmarkDetail();
-		setMapState(p => {
-			const nh = new Map(p.hexes);
-			nh.set(key, {
-				q,
-				r,
-				s: -(q + r),
-				hexType: ht,
-				landmark: lm,
-				landmarkDetail: ld,
-				settlement: Math.random() < 0.2 ? generateSettlement() : undefined,
-				isRevealed: mode === 'master',
-				notes: ''
-			});
-			return { ...p, hexes: nh };
-		});
-		try {
-			await fetch('/api/maps/cells', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					hexMapId: mapData.id,
-					q,
-					r,
-					s: -(q + r),
-					hexTypeId: 'countryside'
-				})
-			});
-		} catch (e) {
-			console.error('createHexAt error', e);
-		}
-	}, [mapData?.id, mapState.hexes, mode]);
+    if (!mapData?.id) return;
+    const key = hexKey(q, r);
+    if (mapState.hexes.has(key)) return; // уже есть
+    const ht = getRandomHexType();
+    const lm = getRandomLandmark(ht.id);
+    const ld = getRandomLandmarkDetail();
+    setMapState(p => {
+      const nh = new Map(p.hexes);
+      nh.set(key, {
+        q,
+        r,
+        s: -(q + r),
+        hexType: ht,
+        landmark: lm,
+        landmarkDetail: ld,
+        settlement: Math.random() < 0.2 ? generateSettlement() : undefined,
+        isRevealed: mode === 'master',
+        notes: ''
+      });
+      return { ...p, hexes: nh, selectedHex: key };
+    });
+    // Отключаем режим добавления чтобы убрать подсветку других потенциальных гексов
+    setIsAddHexMode(false);
+    // Открываем модалку редактирования сразу после создания
+    setEditingHex(key);
+    try {
+      await fetch('/api/maps/cells', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          hexMapId: mapData.id,
+          q,
+          r,
+          s: -(q + r),
+          hexTypeId: ht.id // сохраняем реальный тип вместо фиксированного
+        })
+      });
+    } catch (e) {
+      console.error('createHexAt error', e);
+    }
+  }, [mapData?.id, mapState.hexes, mode]);
 
 	// Потенциальные координаты для добавления (граница)
 	const potentialHexes = useMemo(() => {
