@@ -15,6 +15,7 @@ export default function MapPage() {
   const [userRole, setUserRole] = useState<'master' | 'player' | null>(null);
   const [showCharacters, setShowCharacters] = useState(false);
   const [showTime, setShowTime] = useState(false);
+  const [isAddHexMode, setIsAddHexMode] = useState(false);
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -77,6 +78,8 @@ export default function MapPage() {
         <HexGridCanvas
           mode={userRole}
           campaignId={selectedCampaign}
+          isAddHexMode={isAddHexMode}
+          onAddHexModeChange={setIsAddHexMode}
         />
       )}
 
@@ -106,6 +109,7 @@ export default function MapPage() {
       <div className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1100] border border-stone-700">
         <button onClick={()=>setShowCharacters(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showCharacters? 'bg-purple-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>Персонажи</button>
         <button onClick={()=>setShowTime(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showTime? 'bg-blue-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>Время</button>
+        {userRole==='master' && <button onClick={()=>setIsAddHexMode(m=>!m)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${isAddHexMode? 'bg-amber-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{isAddHexMode? 'Finish Add':'Add Hex'}</button>}
         <div className="w-px h-6 bg-stone-700" />
         <button disabled className="text-xs px-3 py-1.5 rounded-full bg-stone-800 text-stone-500 cursor-default">+</button>
       </div>

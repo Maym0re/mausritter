@@ -42,13 +42,13 @@ export interface HexData {
   isRevealed: boolean;
   notes: string;
   customName?: string;
+  masterNotes?: string; // скрыто для игроков
 }
 
 export interface MapState {
   hexes: Map<string, HexData>;
   selectedHex: string | null;
   mode: 'master' | 'player';
-  isEditMode: boolean;
 }
 
 // Предопределенные типы из SRD с черно-белой палитрой

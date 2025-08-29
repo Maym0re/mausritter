@@ -313,9 +313,10 @@ model HexCell {
   settlementId String?
   settlement   Settlement? @relation(fields: [settlementId], references: [id], onDelete: SetNull)
 
-  isRevealed Boolean @default(false)
-  notes      String  @default("")
-  customName String?
+  isRevealed  Boolean @default(false)
+  notes       String  @default("")
+  customName  String?
+  masterNotes String  @default("")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

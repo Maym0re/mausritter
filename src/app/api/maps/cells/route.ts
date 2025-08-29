@@ -23,54 +23,32 @@ export async function PUT(request: NextRequest) {
       settlementId,
       isRevealed,
       notes,
-      customName
+      customName,
+      masterNotes
     } = body;
 
     if (!hexMapId || q === undefined || r === undefined || s === undefined) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Проверяем доступ к карте
     const hexMap = await prisma.hexMap.findUnique({
       where: { id: hexMapId },
-      include: { campaign: true }
+      include: { campaign: { include: { players: true } } }
     });
+    if (!hexMap) return NextResponse.json({ error: 'Map not found' }, { status: 404 });
 
-    if (!hexMap) {
-      return NextResponse.json({ error: 'Map not found' }, { status: 404 });
-    }
-
-    // Проверяем права доступа
-    const campaign = await prisma.campaign.findFirst({
-      where: {
-        id: hexMap.campaignId,
-        OR: [
-          { gmId: session.user.id },
-          { players: { some: { userId: session.user.id } } }
-        ]
-      }
-    });
-
-    if (!campaign) {
-      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
-    }
-
-    // Только мастер может редактировать содержимое ячеек
+    const campaign = hexMap.campaign;
     const isGM = campaign.gmId === session.user.id;
-    if (!isGM && (hexTypeId || landmarkId || landmarkDetailId || settlementId || notes !== undefined || customName !== undefined)) {
-      return NextResponse.json({ error: 'Only GM can edit hex content' }, { status: 403 });
+    const isPlayer = campaign.players.some(p => p.userId === session.user.id);
+    if (!isGM && !isPlayer) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+
+    // masterNotes может менять только ГМ
+    if (!isGM && masterNotes !== undefined) {
+      return NextResponse.json({ error: 'Only GM can edit masterNotes' }, { status: 403 });
     }
 
-    // Обновляем или создаем ячейку
     const hexCell = await prisma.hexCell.upsert({
-      where: {
-        hexMapId_q_r_s: {
-          hexMapId,
-          q,
-          r,
-          s
-        }
-      },
+      where: { hexMapId_q_r_s: { hexMapId, q, r, s } },
       update: {
         ...(hexTypeId && { hexTypeId }),
         ...(landmarkId !== undefined && { landmarkId }),
@@ -78,7 +56,8 @@ export async function PUT(request: NextRequest) {
         ...(settlementId !== undefined && { settlementId }),
         ...(isRevealed !== undefined && { isRevealed }),
         ...(notes !== undefined && { notes }),
-        ...(customName !== undefined && { customName })
+        ...(customName !== undefined && { customName }),
+        ...(masterNotes !== undefined && isGM && { masterNotes })
       },
       create: {
         hexMapId,
@@ -91,14 +70,10 @@ export async function PUT(request: NextRequest) {
         settlementId,
         isRevealed: isRevealed ?? false,
         notes: notes || '',
-        customName
+        customName,
+        masterNotes: masterNotes && isGM ? masterNotes : ''
       },
-      include: {
-        hexType: true,
-        landmark: true,
-        landmarkDetail: true,
-        settlement: true
-      }
+      include: { hexType: true, landmark: true, landmarkDetail: true, settlement: true }
     });
 
     return NextResponse.json(hexCell);

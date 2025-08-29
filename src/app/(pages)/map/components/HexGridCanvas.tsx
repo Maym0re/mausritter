@@ -1,25 +1,26 @@
 'use client';
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { Stage, Layer, Group, RegularPolygon, Text, Circle } from "react-konva";
-import { defineHex, Grid, Orientation, spiral } from "honeycomb-grid";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Circle, Group, Layer, RegularPolygon, Stage, Text } from "react-konva";
+import { defineHex, Orientation } from "honeycomb-grid";
 import { HexData, MapState } from "@/types/map";
 import {
-	hexKey,
+	generateSettlement,
+	getNeighborCoords,
 	getRandomHexType,
 	getRandomLandmark,
 	getRandomLandmarkDetail,
-	generateSettlement,
-	getNeighborCoords
+	hexKey
 } from "@/lib/mapUtils";
 import { getHexTypeIconUrl, getLandmarkIconUrl, iconDataUrls } from "@/lib/iconUtils";
 import { HexIcon } from "@/components/HexIcon";
-import { HexEditModal } from "./HexEditModal";
-import { HexDetailsPanel } from "./HexDetailsPanel";
+import { HexWindow } from './HexWindow';
 import { CanvasImagesLayer, CanvasImagesLayerHandle } from "./CanvasImagesLayer";
 
 interface HexGridCanvasProps {
 	mode: 'master' | 'player';
 	campaignId: string;
+	isAddHexMode?: boolean;
+	onAddHexModeChange?: (v: boolean)=>void;
 }
 
 interface MapData {
@@ -31,17 +32,16 @@ interface MapData {
 	cells: any[];
 }
 
-export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
+export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexModeChange}: HexGridCanvasProps) {
 	const [scale, setScale] = useState(1);
 	const [pos, setPos] = useState({x: 400, y: 300});
-	const [mapState, setMapState] = useState<MapState>({hexes: new Map(), selectedHex: null, mode, isEditMode: false});
+	const [mapState, setMapState] = useState<MapState>({hexes: new Map(), selectedHex: null, mode});
 	const [editingHex, setEditingHex] = useState<string | null>(null);
 	const [hoveredHex, setHoveredHex] = useState<string | null>(null);
 	const [mapData, setMapData] = useState<MapData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [canvasSize, setCanvasSize] = useState({width: 1000, height: 700});
 	const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
-	const [isAddHexMode, setIsAddHexMode] = useState(false);
 
 	const stageRef = useRef<import('konva').Stage | null>(null);
 	const containerRef = useRef<HTMLDivElement | null>(null);
@@ -79,7 +79,8 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 						settlement: cell.settlement,
 						isRevealed: mode === 'master' ? true : cell.isRevealed,
 						notes: cell.notes || '',
-						customName: cell.customName
+						customName: cell.customName,
+						masterNotes: cell.masterNotes || ''
 					});
 				});
 				setMapState(p => ({...p, hexes: m}));
@@ -107,7 +108,7 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 		const upd = () => {
 			const w = window.innerWidth;
 			const h = window.innerHeight;
-			const header = 74;
+			const header = 74; // актуальная высота верхней панели
 			const avail = h - header;
 			setCanvasSize({width: w, height: Math.max(avail, 400)});
 			setPos({x: w / 2, y: Math.max(avail, 400) / 2});
@@ -146,7 +147,8 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 					settlementId: updates.settlement?.id || hex.settlement?.id,
 					isRevealed: updates.isRevealed ?? hex.isRevealed,
 					notes: updates.notes ?? hex.notes,
-					customName: updates.customName ?? hex.customName
+					customName: updates.customName ?? hex.customName,
+					...(mode === 'master' ? { masterNotes: updates.masterNotes ?? hex.masterNotes } : {})
 				})
 			});
 			if (!r.ok) console.error('Failed update hex');
@@ -156,24 +158,13 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 	};
 
 	const handleHexClick = useCallback(async (k: string) => {
-		if (mode === 'master') {
-			if (mapState.isEditMode) {
-				setEditingHex(k);
-			} else {
-				const hex = mapState.hexes.get(k);
-				if (hex) {
-					const newRev = !hex.isRevealed;
-					setMapState(p => {
-						const nh = new Map(p.hexes);
-						nh.set(k, {...hex, isRevealed: newRev});
-						return {...p, hexes: nh};
-					});
-					await updateHexCell(k, {isRevealed: newRev});
-				}
-			}
+		const hex = mapState.hexes.get(k);
+		if (mode === 'master' && hex) {
+			// toggle reveal on right-click maybe later; for now just open window
 		}
+		setEditingHex(k);
 		setMapState(p => ({...p, selectedHex: k}));
-	}, [mode, mapState.isEditMode, mapState.hexes, mapData?.id]);
+	}, [mode, mapState.hexes]);
 
 	const handleHexSave = useCallback(async (k: string, data: Partial<HexData>) => {
 		setMapState(p => {
@@ -183,7 +174,7 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 			return {...p, hexes: nh};
 		});
 		await updateHexCell(k, data);
-		setEditingHex(null);
+		// оставляем окно открытым для последовательного редактирования
 	}, [mapData?.id]);
 
 	// Удаление гекса (перенесено выше ранних return)
@@ -212,45 +203,19 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 	const createHexAt = useCallback(async (q: number, r: number) => {
     if (!mapData?.id) return;
     const key = hexKey(q, r);
-    if (mapState.hexes.has(key)) return; // уже есть
+    if (mapState.hexes.has(key)) return;
     const ht = getRandomHexType();
     const lm = getRandomLandmark(ht.id);
     const ld = getRandomLandmarkDetail();
     setMapState(p => {
       const nh = new Map(p.hexes);
-      nh.set(key, {
-        q,
-        r,
-        s: -(q + r),
-        hexType: ht,
-        landmark: lm,
-        landmarkDetail: ld,
-        settlement: Math.random() < 0.2 ? generateSettlement() : undefined,
-        isRevealed: mode === 'master',
-        notes: ''
-      });
+      nh.set(key, { q, r, s: -(q + r), hexType: ht, landmark: lm, landmarkDetail: ld, settlement: Math.random() < 0.2 ? generateSettlement() : undefined, isRevealed: mode === 'master', notes: '' });
       return { ...p, hexes: nh, selectedHex: key };
     });
-    // Отключаем режим добавления чтобы убрать подсветку других потенциальных гексов
-    setIsAddHexMode(false);
-    // Открываем модалку редактирования сразу после создания
+    onAddHexModeChange?.(false);
     setEditingHex(key);
-    try {
-      await fetch('/api/maps/cells', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          hexMapId: mapData.id,
-          q,
-          r,
-          s: -(q + r),
-          hexTypeId: ht.id // сохраняем реальный тип вместо фиксированного
-        })
-      });
-    } catch (e) {
-      console.error('createHexAt error', e);
-    }
-  }, [mapData?.id, mapState.hexes, mode]);
+    try { await fetch('/api/maps/cells', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ hexMapId: mapData.id, q, r, s: -(q + r), hexTypeId: ht.id }) }); } catch(e){ console.error(e);}
+  }, [mapData?.id, mapState.hexes, mode, onAddHexModeChange]);
 
 	// Потенциальные координаты для добавления (граница)
 	const potentialHexes = useMemo(() => {
@@ -340,32 +305,23 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
 			iconUrl={iconUrl} x={x} y={y - 5} size={size}/></Group>);
 	};
 
-	// Удаление гекса
-	// (старое размещение удалено)
-
 	return (
 		<div className="flex flex-col h-full" ref={containerRef}>
-			<div className="bg-gray-100 border-b-2 border-gray-300 p-4 shadow-md">
+			<div className="bg-gray-100 border-b-2 border-gray-300 p-2 shadow-md">
 				<div className="flex justify-between items-center">
-					<h2 className="text-2xl font-bold text-gray-900">{mode === 'master' ? 'Game Master Map' : 'Player Map'}</h2>
+					<h2 className="text-xl font-bold text-gray-900">{mode === 'master' ? 'Map' : 'Map'}</h2>
 					<div className="flex gap-4 items-center">
 						{mode === 'master' && (<>
-							<button onClick={() => setMapState(p => ({...p, isEditMode: !p.isEditMode}))}
-							        className={`px-4 py-2 rounded-md text-white ${mapState.isEditMode ? 'bg-gray-800 hover:bg-gray-900' : 'bg-gray-600 hover:bg-gray-700'}`}>{mapState.isEditMode ? 'Exit Edit' : 'Edit Mode'}</button>
-							<button onClick={() => setIsAddHexMode(m => !m)}
-							        className={`px-4 py-2 rounded-md text-white ${isAddHexMode ? 'bg-amber-700 hover:bg-amber-800' : 'bg-amber-600 hover:bg-amber-700'}`}>{isAddHexMode ? 'Finish Adding' : 'Add Hex'}</button>
-							{selectedImageId && <button onClick={() => {
-								imagesLayerRef.current?.deleteSelected();
-							}} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete Image</button>}
+							{selectedImageId && <button onClick={() => { imagesLayerRef.current?.deleteSelected(); }} className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm">Delete Image</button>}
 						</>)}
-						<span className="text-sm text-gray-700">Scale: {Math.round(scale * 100)}%</span>
+						<span className="text-xs text-gray-700">Scale: {Math.round(scale * 100)}%</span>
 					</div>
 				</div>
 			</div>
 			<div className="flex flex-1">
 				<div className="flex-1 bg-gray-50">
-					<Stage ref={stageRef} width={canvasSize.width} height={canvasSize.height} draggable scaleX={scale}
-					       scaleY={scale} x={pos.x} y={pos.y} onWheel={(e) => {
+					<Stage ref={stageRef} width={canvasSize.width} height={canvasSize.height} draggable scaleX={scale} scaleY={scale} x={pos.x} y={pos.y}
+					       onWheel={(e) => {
 						e.evt.preventDefault();
 						if (e.evt.ctrlKey) {
 							const stage = e.target.getStage();
@@ -439,18 +395,11 @@ export function HexGridCanvas({mode, campaignId}: HexGridCanvasProps) {
                 );
               })}
 						</Layer>
-						<CanvasImagesLayer ref={imagesLayerRef} stageRef={stageRef} containerRef={containerRef}
-						                   editable={mode === 'master'} onSelectionChange={setSelectedImageId}/>
+						<CanvasImagesLayer ref={imagesLayerRef} stageRef={stageRef} containerRef={containerRef} editable={mode === 'master'} onSelectionChange={setSelectedImageId}/>
 					</Stage>
 				</div>
-				{mapState.selectedHex && <HexDetailsPanel hex={mapState.hexes.get(mapState.selectedHex)!} mode={mode}
-                                                  onClose={() => setMapState(p => ({...p, selectedHex: null}))}
-                                                  isOpen={!!mapState.selectedHex}/>}
 			</div>
-			{editingHex && <HexEditModal hex={mapState.hexes.get(editingHex)!}
-                                   onSave={(d: Partial<HexData>) => handleHexSave(editingHex, d)}
-                                   onDelete={() => handleHexDelete(editingHex)}
-                                   onClose={() => setEditingHex(null)}/>}
+			{editingHex && <HexWindow mode={mode} hex={mapState.hexes.get(editingHex)!} onSave={(d)=> handleHexSave(editingHex, d)} onDelete={mode==='master'? ()=>handleHexDelete(editingHex): undefined} onClose={()=> setEditingHex(null)} />}
 		</div>
 	);
 }
