@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Pirata_One } from "next/font/google";
 import "./../../styles/globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
+import { AppHeader } from '@/components/ui/AppHeader';
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -32,7 +33,10 @@ export default function RootLayout({children}: Readonly<{
 		<html lang="en" className="h-full">
 			<body className={`${geistSans.variable} ${geistMono.variable} ${pirataOne.variable} antialiased h-full m-0 p-0 overflow-auto`}>
 			<AuthProvider>
-				{children}
+				<AppHeader />
+				<div className="pt-14 h-full">
+					{children}
+				</div>
 				<FullscreenDiceLayer />
 			</AuthProvider>
 			</body>

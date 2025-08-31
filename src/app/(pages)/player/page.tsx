@@ -205,7 +205,7 @@ export default function PlayerPage() {
     <div className="min-h-screen bg-stone-50">
       {/* Хедер */}
       <header className="bg-white shadow-sm border-b border-stone-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <Link href="/" className="text-stone-600 hover:text-stone-800">
@@ -235,7 +235,7 @@ export default function PlayerPage() {
 
       {/* Навигация по вкладкам */}
       <nav className="bg-white border-b border-stone-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8">
             {[
               { key: 'overview' as const, label: 'Обзор', icon: '📊' },
@@ -259,7 +259,7 @@ export default function PlayerPage() {
       </nav>
 
       {/* Основное содержимое */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'overview' && (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow p-6">

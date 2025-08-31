@@ -1,15 +1,15 @@
 'use client';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Campaign } from "@prisma/client";
+import { FullCampaign } from "@/types/character";
 
 export default function HomePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [campaigns, setCampaigns] = useState<FullCampaign[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newCampaignName, setNewCampaignName] = useState('');
@@ -82,31 +82,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-stone-50">
-      {/* Хедер */}
-      <header className="bg-white shadow-sm border-b border-stone-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-stone-900">🐭 Mausritter</h1>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <span className="text-stone-600">
-                Добро пожаловать, {session.user?.name || session.user?.email}!
-              </span>
-              <button
-                onClick={() => signOut()}
-                className="text-stone-600 hover:text-stone-800 font-medium"
-              >
-                Выйти
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Основное содержимое */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Основное содержимое без локального хедера (используется глобальный AppHeader) */}
+      <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-3xl font-bold text-stone-900">Мои кампании</h2>
