@@ -144,21 +144,12 @@ export default function HomePage() {
                   </div>
 
                   <div className="flex space-x-2">
-                    {campaign.gm?.id === session.user?.id ? (
-                      <Link
-                        href={`/master?campaign=${campaign.id}`}
-                        className="flex-1 text-center bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-                      >
-                        Мастерская
-                      </Link>
-                    ) : (
-                      <Link
-                        href={`/player?campaign=${campaign.id}`}
-                        className="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-                      >
-                        Играть
-                      </Link>
-                    )}
+                    <Link
+                      href={`/campaign?campaign=${campaign.id}`}
+                      className="flex-1 text-center bg-stone-800 hover:bg-stone-900 text-white px-4 py-2 rounded-md text-sm font-medium"
+                    >
+                      Открыть
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -180,13 +171,13 @@ export default function HomePage() {
           </Link>
 
           <Link
-            href="/map"
+            href="/campaign"
             className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 text-center"
           >
             <div className="text-4xl mb-3">🗺️</div>
-            <h3 className="text-lg font-semibold text-stone-900 mb-2">Редактор карт</h3>
+            <h3 className="text-lg font-semibold text-stone-900 mb-2">Кампания / Карта</h3>
             <p className="text-stone-600 text-sm">
-              Создавайте и редактируйте гексагональные карты для ваших приключений
+              Откройте выбранную кампанию и её карту
             </p>
           </Link>
 

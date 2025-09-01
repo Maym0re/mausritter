@@ -307,17 +307,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexMod
 
 	return (
 		<div className="flex flex-col h-full" ref={containerRef}>
-			<div className="bg-gray-100 border-b-2 border-gray-300 p-2 shadow-md">
-				<div className="flex justify-between items-center">
-					<h2 className="text-xl font-bold text-gray-900">{mode === 'master' ? 'Map' : 'Map'}</h2>
-					<div className="flex gap-4 items-center">
-						{mode === 'master' && (<>
-							{selectedImageId && <button onClick={() => { imagesLayerRef.current?.deleteSelected(); }} className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm">Delete Image</button>}
-						</>)}
-						<span className="text-xs text-gray-700">Scale: {Math.round(scale * 100)}%</span>
-					</div>
-				</div>
-			</div>
 			<div className="flex flex-1">
 				<div className="flex-1 bg-gray-50">
 					<Stage ref={stageRef} width={canvasSize.width} height={canvasSize.height} draggable scaleX={scale} scaleY={scale} x={pos.x} y={pos.y}

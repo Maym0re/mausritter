@@ -7,7 +7,7 @@ import React, {
 	useRef,
 	useCallback
 } from "react";
-import { Layer, Image as KonvaImage, Transformer } from "react-konva";
+import { Layer, Image as KonvaImage, Transformer, Group } from "react-konva";
 import type Konva from "konva";
 
 // Публичный интерфейс для управления из родителя
@@ -115,7 +115,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 	});
 
 	const compressFile = useCallback(async (file: File): Promise<string> => {
-		// Если файл небольшой – просто читаем
+		// Если файл небольшой – просто чи��аем
 		if (file.size <= 700 * 1024) return fileToDataUrl(file);
 		const bitmap = await createImageBitmap(file);
 		const ratio = Math.min(1, MAX_IMG_W / bitmap.width, MAX_IMG_H / bitmap.height);
@@ -241,6 +241,24 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		} : img));
 	};
 
+	// Глобальное удаление по клавише Delete / Backspace
+	useEffect(() => {
+		if (!editable) return;
+		const onKey = (e: KeyboardEvent) => {
+			if ((e.key === 'Delete' || e.key === 'Backspace') && selectedId) {
+				setImages(prev => prev.filter(i => i.id !== selectedId));
+				setSelectedId(null);
+				selectedNodeRef.current = null;
+				if (transformerRef.current) {
+					transformerRef.current.nodes([]);
+					transformerRef.current.getLayer()?.batchDraw();
+				}
+			}
+		};
+		window.addEventListener('keydown', onKey);
+		return () => window.removeEventListener('keydown', onKey);
+	}, [editable, selectedId]);
+
 	return (
 		<Layer>
 			{images.map(img => (
@@ -277,6 +295,36 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 					borderDash={[4, 4]}
 				/>
 			)}
+			{/* Кнопка удаления поверх выбранного изображения */}
+			{editable && selectedId && (() => {
+				const img = images.find(i => i.id === selectedId);
+				if (!img) return null;
+				const btnX = img.x + img.width - 14;
+				const btnY = img.y - 6;
+				return (
+					<Group
+						key="delete-btn-overlay"
+						x={btnX}
+						y={btnY}
+						onClick={() => {
+							setImages(prev => prev.filter(i => i.id !== selectedId));
+							setSelectedId(null);
+							selectedNodeRef.current = null;
+							if (transformerRef.current) {
+								transformerRef.current.nodes([]);
+								transformerRef.current.getLayer()?.batchDraw();
+							}
+						}}
+						listening
+						cursor="pointer"
+					>
+						<KonvaImage
+							image={(() => { const c=document.createElement('canvas'); c.width=24; c.height=24; const ctx=c.getContext('2d'); if(ctx){ ctx.fillStyle='rgba(0,0,0,0.65)'; ctx.beginPath(); ctx.arc(12,12,12,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.stroke(); ctx.font='16px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#fff'; ctx.fillText('×',12,12); } const i=new Image(); i.src=c.toDataURL(); return i; })()}
+							opacity={0.9}
+						/>
+					</Group>
+				);
+			})()}
 		</Layer>
 	);
 });
