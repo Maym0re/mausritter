@@ -7,7 +7,7 @@ export function AppHeader() {
   const { data: session } = useSession();
   return (
     <header className="fixed top-0 left-0 right-0 h-14 z-[1200] flex items-center border-b border-stone-300 bg-white/90 backdrop-blur lg:px-8 px-4 sm:px-6">
-      <Link href="/" className="text-lg font-[var(--font-pirata-one)] text-stone-800 hover:text-amber-600 transition-colors">
+      <Link href="/" className="text-lg font-pirata-one text-stone-800 hover:text-amber-600 transition-colors">
         Mausritter
       </Link>
       <div className="ml-auto flex items-center gap-3">
