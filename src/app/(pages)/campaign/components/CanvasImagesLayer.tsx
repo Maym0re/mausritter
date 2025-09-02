@@ -21,6 +21,10 @@ interface CanvasImagesLayerProps {
 	containerRef: React.RefObject<HTMLDivElement | null>;
 	editable: boolean;
 	onSelectionChange?: (id: string | null) => void;
+	// Максимальный суммарный размер всех изображений в байтах (dataURL после компрессии). По умолчанию 5 МБ.
+	maxTotalBytes?: number;
+	// Колбэк при попытке превысить лимит.
+	onStorageLimit?: (current: number, limit: number) => void;
 }
 
 interface CanvasImage {
@@ -31,6 +35,8 @@ interface CanvasImage {
 	width: number;
 	height: number;
 	ratio: number;
+	// Размер dataURL в байтах для учёта лимита.
+	sizeBytes: number;
 }
 
 const MAX_IMG_W = 1024;
@@ -38,7 +44,7 @@ const MAX_IMG_H = 1024;
 const JPEG_QUALITY = 0.85;
 
 export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImagesLayerProps>(function CanvasImagesLayer(
-	{stageRef, containerRef, editable, onSelectionChange},
+	{stageRef, containerRef, editable, onSelectionChange, maxTotalBytes = 5 * 1024 * 1024, onStorageLimit},
 	ref
 ) {
 	const [images, setImages] = useState<CanvasImage[]>([]);
@@ -46,7 +52,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 	const transformerRef = useRef<Konva.Transformer | null>(null);
 	const selectedNodeRef = useRef<Konva.Image | null>(null);
 
-	// Экспортируем API
+	// Экспо��тируем API
 	useImperativeHandle(ref, () => ({
 		deleteSelected: () => {
 			if (selectedId) {
@@ -91,22 +97,53 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		return {x: (pointer.x - stage.x()) / scale, y: (pointer.y - stage.y()) / scale};
 	}, [stageRef]);
 
+	const dataUrlToSize = (dataUrl: string) => {
+		// data:[mime];base64,.....
+		const comma = dataUrl.indexOf(',');
+		if (comma === -1) return 0;
+		const b64 = dataUrl.slice(comma + 1);
+		// Размер base64 -> исходные байты ~ length * 3/4 (без padding)
+		return Math.floor(b64.length * 0.75);
+	};
+
+	const getTotalBytes = useCallback((list: CanvasImage[]) => list.reduce((sum, i) => sum + (i.sizeBytes || 0), 0), []);
+
 	const addImage = useCallback((dataUrl: string, x: number, y: number) => {
-		const img = new window.Image();
-		img.onload = () => {
-			const ratio = img.width / img.height || 1;
-			setImages(prev => [...prev, {
-				id: crypto.randomUUID(),
-				img,
-				x: x - img.width / 2,
-				y: y - img.height / 2,
-				width: img.width,
-				height: img.height,
-				ratio
-			}]);
-		};
-		img.src = dataUrl;
-	}, []);
+		const newSize = dataUrlToSize(dataUrl);
+		setImages(prev => {
+			const currentTotal = getTotalBytes(prev);
+			if (currentTotal + newSize > maxTotalBytes) {
+				console.warn('Превышен лимит хранилища изображений');
+				onStorageLimit?.(currentTotal, maxTotalBytes);
+				return prev; // отменяем добавление
+			}
+			const img = new window.Image();
+			img.onload = () => {
+				const ratio = img.width / img.height || 1;
+				setImages(p2 => {
+					// Повторная проверка (пока грузилось могли добавить ещё)
+					const currentTotal2 = getTotalBytes(p2);
+					if (currentTotal2 + newSize > maxTotalBytes) {
+						console.warn('Превышен лимит хранилища из��бражений (onload)');
+						onStorageLimit?.(currentTotal2, maxTotalBytes);
+						return p2;
+					}
+					return [...p2, {
+						id: crypto.randomUUID(),
+						img,
+						x: x - img.width / 2,
+						y: y - img.height / 2,
+						width: img.width,
+						height: img.height,
+						ratio,
+						sizeBytes: newSize
+					}];
+				});
+			};
+			img.src = dataUrl;
+			return prev; // промежуточно не добавляем, итог добавится onload
+		});
+	}, [getTotalBytes, maxTotalBytes, onStorageLimit]);
 
 	const fileToDataUrl = (blob: Blob) => new Promise<string>((res) => {
 		const r = new FileReader();
@@ -115,7 +152,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 	});
 
 	const compressFile = useCallback(async (file: File): Promise<string> => {
-		// Если файл небольшой – просто чи��аем
+		// Если файл небольшой – просто читаем
 		if (file.size <= 700 * 1024) return fileToDataUrl(file);
 		const bitmap = await createImageBitmap(file);
 		const ratio = Math.min(1, MAX_IMG_W / bitmap.width, MAX_IMG_H / bitmap.height);
@@ -203,11 +240,11 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		if (!editable) return;
 		const stage = stageRef.current;
 		if (!stage) return;
-		const handler = (e: any) => {
-			const target = e.target;
-			const isImage = target && target.getClassName && target.getClassName() === 'Image';
-			const parent = target && target.getParent && target.getParent();
-			const isTransformer = target?.getClassName?.() === 'Transformer' || parent?.getClassName?.() === 'Transformer';
+		const handler = (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
+			const target = e.target as Konva.Node; // целевой Konva.Node
+			const isImage = target && (target as any).getClassName && (target as any).getClassName() === 'Image';
+			const parent = (target as any)?.getParent && (target as any).getParent();
+			const isTransformer = (target as any)?.getClassName?.() === 'Transformer' || parent?.getClassName?.() === 'Transformer';
 			if (!isImage && !isTransformer) {
 				setSelectedId(null);
 				selectedNodeRef.current = null;
@@ -217,7 +254,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		return () => {
 			stage.off('mousedown.canvasImagesLayer touchstart.canvasImagesLayer', handler);
 		};
-	}, [editable]);
+	}, [editable, stageRef]);
 
 	const onImageSelect = (node: Konva.Image, id: string) => {
 		if (!editable) return;

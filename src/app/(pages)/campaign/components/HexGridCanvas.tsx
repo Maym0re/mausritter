@@ -384,7 +384,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexMod
                 );
               })}
 						</Layer>
-						<CanvasImagesLayer ref={imagesLayerRef} stageRef={stageRef} containerRef={containerRef} editable={mode === 'master'} onSelectionChange={setSelectedImageId}/>
+						<CanvasImagesLayer ref={imagesLayerRef} maxTotalBytes={1000} stageRef={stageRef} containerRef={containerRef} editable={mode === 'master'} onSelectionChange={setSelectedImageId}/>
 					</Stage>
 				</div>
 			</div>
