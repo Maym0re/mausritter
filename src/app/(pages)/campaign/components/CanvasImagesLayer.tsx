@@ -21,10 +21,11 @@ interface CanvasImagesLayerProps {
 	containerRef: React.RefObject<HTMLDivElement | null>;
 	editable: boolean;
 	onSelectionChange?: (id: string | null) => void;
-	// Максимальный суммарный размер всех изображений в байтах (dataURL после компрессии). По умолчанию 5 МБ.
+	// DEPRECATED: Используйте maxTotalMB. Если указан, имеет приоритет над maxTotalMB.
 	maxTotalBytes?: number;
-	// Колбэк при попытке превысить лимит.
-	onStorageLimit?: (current: number, limit: number) => void;
+	// Максимальный суммарный размер всех изображений в мегабайтах. По умолчанию 5.
+	maxTotalMB?: number;
+	onStorageLimit?: (current: number, limitBytes: number) => void;
 }
 
 interface CanvasImage {
@@ -44,7 +45,7 @@ const MAX_IMG_H = 1024;
 const JPEG_QUALITY = 0.85;
 
 export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImagesLayerProps>(function CanvasImagesLayer(
-	{stageRef, containerRef, editable, onSelectionChange, maxTotalBytes = 5 * 1024 * 1024, onStorageLimit},
+	{stageRef, containerRef, editable, onSelectionChange, maxTotalMB, onStorageLimit},
 	ref
 ) {
 	const [images, setImages] = useState<CanvasImage[]>([]);
@@ -52,7 +53,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 	const transformerRef = useRef<Konva.Transformer | null>(null);
 	const selectedNodeRef = useRef<Konva.Image | null>(null);
 
-	// Экспо��тируем API
+	// Экспортируем API
 	useImperativeHandle(ref, () => ({
 		deleteSelected: () => {
 			if (selectedId) {
@@ -108,13 +109,18 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 
 	const getTotalBytes = useCallback((list: CanvasImage[]) => list.reduce((sum, i) => sum + (i.sizeBytes || 0), 0), []);
 
+	const resolvedMaxBytes = React.useMemo(() => {
+		if (typeof maxTotalMB === 'number') return maxTotalMB * 1024 * 1024;
+		return 5 * 1024 * 1024; // дефолт 5 МБ
+	}, [maxTotalMB]);
+
 	const addImage = useCallback((dataUrl: string, x: number, y: number) => {
 		const newSize = dataUrlToSize(dataUrl);
 		setImages(prev => {
 			const currentTotal = getTotalBytes(prev);
-			if (currentTotal + newSize > maxTotalBytes) {
+			if (currentTotal + newSize > resolvedMaxBytes) {
 				console.warn('Превышен лимит хранилища изображений');
-				onStorageLimit?.(currentTotal, maxTotalBytes);
+				onStorageLimit?.(currentTotal, resolvedMaxBytes);
 				return prev; // отменяем добавление
 			}
 			const img = new window.Image();
@@ -123,9 +129,9 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 				setImages(p2 => {
 					// Повторная проверка (пока грузилось могли добавить ещё)
 					const currentTotal2 = getTotalBytes(p2);
-					if (currentTotal2 + newSize > maxTotalBytes) {
-						console.warn('Превышен лимит хранилища из��бражений (onload)');
-						onStorageLimit?.(currentTotal2, maxTotalBytes);
+					if (currentTotal2 + newSize > resolvedMaxBytes) {
+						console.warn('Превышен лимит хранилища изображений (onload)');
+						onStorageLimit?.(currentTotal2, resolvedMaxBytes);
 						return p2;
 					}
 					return [...p2, {
@@ -143,7 +149,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 			img.src = dataUrl;
 			return prev; // промежуточно не добавляем, итог добавится onload
 		});
-	}, [getTotalBytes, maxTotalBytes, onStorageLimit]);
+	}, [getTotalBytes, resolvedMaxBytes, onStorageLimit]);
 
 	const fileToDataUrl = (blob: Blob) => new Promise<string>((res) => {
 		const r = new FileReader();

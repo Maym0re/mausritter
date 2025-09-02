@@ -15,6 +15,8 @@ import { getHexTypeIconUrl, getLandmarkIconUrl, iconDataUrls } from "@/lib/iconU
 import { HexIcon } from "@/components/HexIcon";
 import { HexWindow } from './HexWindow';
 import { CanvasImagesLayer, CanvasImagesLayerHandle } from "./CanvasImagesLayer";
+import { useToast } from '@/components/ui/ToastProvider';
+import type Konva from 'konva';
 
 interface HexGridCanvasProps {
 	mode: 'master' | 'player';
@@ -29,7 +31,19 @@ interface MapData {
 	size: number;
 	centerX: number;
 	centerY: number;
-	cells: any[];
+	cells: ApiCell[];
+}
+
+interface ApiCell {
+	q: number; r: number; s: number;
+	hexType: HexData['hexType'];
+	landmark?: HexData['landmark'];
+	landmarkDetail?: HexData['landmarkDetail'];
+	settlement?: HexData['settlement'];
+	isRevealed?: boolean;
+	notes?: string;
+	customName?: string;
+	masterNotes?: string;
 }
 
 export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexModeChange}: HexGridCanvasProps) {
@@ -43,31 +57,22 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexMod
 	const [canvasSize, setCanvasSize] = useState({width: 1000, height: 700});
 	const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
 
-	const stageRef = useRef<import('konva').Stage | null>(null);
+	const stageRef = useRef<Konva.Stage | null>(null);
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const imagesLayerRef = useRef<CanvasImagesLayerHandle | null>(null);
+	const toast = useToast();
 
 	const radius = 35;
-	const mapRadius = 2;
 
-	// загрузка карты
-	useEffect(() => {
-		if (campaignId) {
-			loadMapData();
-			loadHexTypes();
-		}
-	}, [campaignId]);
-
-	const loadMapData = async () => {
+	const loadMapData = useCallback(async () => {
 		try {
 			setLoading(true);
 			const r = await fetch(`/api/maps?campaignId=${campaignId}`);
 			if (r.ok) {
-				const data = await r.json();
+				const data: MapData = await r.json();
 				setMapData(data);
-
 				const m = new Map<string, HexData>();
-				data.cells?.forEach((cell: any) => {
+				data.cells?.forEach((cell: ApiCell) => {
 					const k = hexKey(cell.q, cell.r);
 					m.set(k, {
 						q: cell.q,
@@ -77,7 +82,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexMod
 						landmark: cell.landmark,
 						landmarkDetail: cell.landmarkDetail,
 						settlement: cell.settlement,
-						isRevealed: mode === 'master' ? true : cell.isRevealed,
+						isRevealed: mode === 'master' ? true : !!cell.isRevealed,
 						notes: cell.notes || '',
 						customName: cell.customName,
 						masterNotes: cell.masterNotes || ''
@@ -90,9 +95,9 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexMod
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [campaignId, mode]);
 
-	const loadHexTypes = async () => {
+	const loadHexTypes = useCallback(async () => {
 		try {
 			const r = await fetch('/api/maps/types');
 			if (r.ok) {
@@ -101,7 +106,15 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexMod
 		} catch (e) {
 			console.error(e);
 		}
-	};
+	}, []);
+
+	// Теперь эффект после объявлений
+	useEffect(() => {
+		if (campaignId) {
+			loadMapData();
+			loadHexTypes();
+		}
+	}, [campaignId, loadMapData, loadHexTypes]);
 
 	// resize
 	useEffect(() => {
@@ -175,7 +188,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexMod
 		});
 		await updateHexCell(k, data);
 		// оставляем окно открытым для последовательного редактирования
-	}, [mapData?.id]);
+	}, [updateHexCell]);
 
 	// Удаление гекса (перенесено выше ранних return)
 	const handleHexDelete = useCallback(async (k: string) => {
@@ -254,7 +267,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexMod
 			<div className="flex items-center justify-center h-full">
 				<div className="text-center">
 					<h2 className="text-2xl font-bold text-gray-900 mb-4">Карта не создана</h2>
-					<p className="text-gray-600">Мастер еще не создал карту для этой кампании.</p>
+					<p className="text-gray-600">Мас��ер еще не создал карту для этой кампании.</p>
 				</div>
 			</div>
 		);
@@ -384,7 +397,17 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexMod
                 );
               })}
 						</Layer>
-						<CanvasImagesLayer ref={imagesLayerRef} maxTotalBytes={1000} stageRef={stageRef} containerRef={containerRef} editable={mode === 'master'} onSelectionChange={setSelectedImageId}/>
+						<CanvasImagesLayer
+							ref={imagesLayerRef}
+							maxTotalMB={1}
+							stageRef={stageRef}
+							containerRef={containerRef}
+							editable={mode === 'master'}
+							onSelectionChange={setSelectedImageId}
+							onStorageLimit={(current, limit) => {
+								toast.error(`Лимит изображений исчерпан. ${(current/1024).toFixed(1)} / ${(limit/1024).toFixed(1)} КБ.`);
+							}}
+						/>
 					</Stage>
 				</div>
 			</div>
