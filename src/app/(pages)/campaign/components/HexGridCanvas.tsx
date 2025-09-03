@@ -32,6 +32,7 @@ interface MapData {
 	centerX: number;
 	centerY: number;
 	cells: ApiCell[];
+	images?: { id: string; data: string; x: number; y: number; width: number; height: number }[];
 }
 
 interface ApiCell {
@@ -407,6 +408,8 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode=false, onAddHexMod
 							onStorageLimit={(current, limit) => {
 								toast.error(`Лимит изображений исчерпан. ${(current/1024).toFixed(1)} / ${(limit/1024).toFixed(1)} КБ.`);
 							}}
+							hexMapId={mapData?.id || undefined}
+							initialImages={mapData?.images || []}
 						/>
 					</Stage>
 				</div>

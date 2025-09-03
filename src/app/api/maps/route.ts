@@ -44,7 +44,8 @@ export async function GET(request: NextRequest) {
             landmarkDetail: true,
             settlement: true
           }
-        }
+        },
+        images: true
       }
     });
 
@@ -56,7 +57,8 @@ export async function GET(request: NextRequest) {
         size: 5,
         centerX: 2,
         centerY: 2,
-        cells: []
+        cells: [],
+        images: []
       });
     }
 

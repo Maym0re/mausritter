@@ -21,23 +21,24 @@ interface CanvasImagesLayerProps {
 	containerRef: React.RefObject<HTMLDivElement | null>;
 	editable: boolean;
 	onSelectionChange?: (id: string | null) => void;
-	// DEPRECATED: Используйте maxTotalMB. Если указан, имеет приоритет над maxTotalMB.
-	maxTotalBytes?: number;
-	// Максимальный суммарный размер всех изображений в мегабайтах. По умолчанию 5.
 	maxTotalMB?: number;
 	onStorageLimit?: (current: number, limitBytes: number) => void;
+	// Для сохранения
+	hexMapId?: string; // требуется для сохранения
+	initialImages?: { id: string; data: string; x: number; y: number; width: number; height: number }[];
 }
 
 interface CanvasImage {
-	id: string;
+	id: string; // может быть временный (temp-...)
 	img: HTMLImageElement;
+	data: string; // dataURL
 	x: number;
 	y: number;
 	width: number;
 	height: number;
 	ratio: number;
-	// Размер dataURL в байтах для учёта лимита.
 	sizeBytes: number;
+	_pending?: boolean; // в процессе сохранения
 }
 
 const MAX_IMG_W = 1024;
@@ -45,7 +46,7 @@ const MAX_IMG_H = 1024;
 const JPEG_QUALITY = 0.85;
 
 export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImagesLayerProps>(function CanvasImagesLayer(
-	{stageRef, containerRef, editable, onSelectionChange, maxTotalMB, onStorageLimit},
+	{stageRef, containerRef, editable, onSelectionChange, maxTotalMB, onStorageLimit, hexMapId, initialImages},
 	ref
 ) {
 	const [images, setImages] = useState<CanvasImage[]>([]);
@@ -123,33 +124,41 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 				onStorageLimit?.(currentTotal, resolvedMaxBytes);
 				return prev; // отменяем добавление
 			}
+			const tempId = `temp-${crypto.randomUUID()}`;
 			const img = new window.Image();
 			img.onload = () => {
 				const ratio = img.width / img.height || 1;
-				setImages(p2 => {
-					// Повторная проверка (пока грузилось могли добавить ещё)
-					const currentTotal2 = getTotalBytes(p2);
-					if (currentTotal2 + newSize > resolvedMaxBytes) {
-						console.warn('Превышен лимит хранилища изображений (onload)');
-						onStorageLimit?.(currentTotal2, resolvedMaxBytes);
-						return p2;
-					}
-					return [...p2, {
-						id: crypto.randomUUID(),
-						img,
-						x: x - img.width / 2,
-						y: y - img.height / 2,
-						width: img.width,
-						height: img.height,
-						ratio,
-						sizeBytes: newSize
-					}];
-				});
+				setImages(p2 => p2.map(im => im.id === tempId ? {...im, ratio, width: img.width, height: img.height, x: x - img.width/2, y: y - img.height/2 } : im));
+				// Сохранение на сервере
+				if (hexMapId && editable) {
+					fetch('/api/maps/images', {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify({ hexMapId, data: dataUrl, x: x - img.width/2, y: y - img.height/2, width: img.width, height: img.height })
+					}).then(r => r.ok ? r.json(): Promise.reject(r)).then(created => {
+						setImages(p3 => p3.map(im => im.id === tempId ? {...im, id: created.id, _pending: false } : im));
+					}).catch(err => {
+						console.error('Save image failed', err);
+						// При ошибке удаляем временное
+						setImages(p3 => p3.filter(im => im.id !== tempId));
+					});
+				}
 			};
 			img.src = dataUrl;
-			return prev; // промежуточно не добавляем, итог добавится onload
+			return [...prev, {
+				id: tempId,
+				img,
+				data: dataUrl,
+				x: x - 50, // временно пока не onload
+				y: y - 50,
+				width: 100,
+				height: 100,
+				ratio: 1,
+				sizeBytes: newSize,
+				_pending: true
+			}];
 		});
-	}, [getTotalBytes, resolvedMaxBytes, onStorageLimit]);
+	}, [getTotalBytes, resolvedMaxBytes, onStorageLimit, hexMapId, editable]);
 
 	const fileToDataUrl = (blob: Blob) => new Promise<string>((res) => {
 		const r = new FileReader();
@@ -227,7 +236,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		};
 	}, [editable, containerRef, handleFiles]);
 
-	// Подключение Transformer к выбранному узлу
+	// Под��лючение Transformer к выбранному узлу
 	useEffect(() => {
 		const transformer = transformerRef.current;
 		if (!transformer) return;
@@ -268,6 +277,16 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		selectedNodeRef.current = node;
 	};
 
+	const updateServerImage = useCallback((img: CanvasImage) => {
+		if (!editable || !hexMapId) return;
+		if (img.id.startsWith('temp-')) return; // ещё не сохранён
+		fetch(`/api/maps/images/${img.id}`, {
+			method: 'PUT',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({ x: img.x, y: img.y, width: img.width, height: img.height })
+		}).catch(e => console.error('Update image failed', e));
+	}, [editable, hexMapId]);
+
 	const handleTransformEnd = (node: Konva.Image, id: string) => {
 		const scaleX = node.scaleX();
 		const scaleY = node.scaleY();
@@ -282,6 +301,8 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 			x: node.x(),
 			y: node.y()
 		} : img));
+		const updated = images.find(i => i.id === id);
+		if (updated) updateServerImage({...updated, width: newWidth, height: newHeight, x: node.x(), y: node.y()});
 	};
 
 	// Глобальное удаление по клавише Delete / Backspace
@@ -302,6 +323,30 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		return () => window.removeEventListener('keydown', onKey);
 	}, [editable, selectedId]);
 
+	// Загрузка начальных изображений (один раз)
+	useEffect(() => {
+		if (!initialImages) return;
+		setImages(() => {
+			const list: CanvasImage[] = [];
+			initialImages.forEach(raw => {
+				const imgEl = new Image();
+				imgEl.src = raw.data;
+				list.push({
+					id: raw.id,
+					img: imgEl,
+					data: raw.data,
+					x: raw.x,
+					y: raw.y,
+					width: raw.width,
+					height: raw.height,
+					ratio: raw.width / raw.height || 1,
+					sizeBytes: dataUrlToSize(raw.data)
+				});
+			});
+			return list;
+		});
+	}, [initialImages]);
+
 	return (
 		<Layer>
 			{images.map(img => (
@@ -314,11 +359,13 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 					height={img.height}
 					listening={editable}
 					draggable={editable}
+					opacity={img._pending ? 0.6 : 1}
 					onClick={e => onImageSelect(e.target as Konva.Image, img.id)}
 					onTap={e => onImageSelect(e.target as Konva.Image, img.id)}
 					onDragEnd={e => {
 						const {x, y} = e.target.position();
 						setImages(prev => prev.map(p => p.id === img.id ? {...p, x, y} : p));
+						updateServerImage({...img, x, y});
 					}}
 					onTransformEnd={e => handleTransformEnd(e.target as Konva.Image, img.id)}
 					ref={node => {
@@ -350,7 +397,12 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 						x={btnX}
 						y={btnY}
 						onClick={() => {
+							// Удаляем локально
 							setImages(prev => prev.filter(i => i.id !== selectedId));
+							// Сервер
+							if (editable && hexMapId && !selectedId.startsWith('temp-')) {
+								fetch(`/api/maps/images/${selectedId}`, { method: 'DELETE' }).catch(e => console.error('Delete image failed', e));
+							}
 							setSelectedId(null);
 							selectedNodeRef.current = null;
 							if (transformerRef.current) {
