@@ -506,11 +506,14 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
                     onMouseEnter={() => {
                       setHoveredHex(key);
                       const g = hexGroupRefs.current[key];
-                      if (g) g.to({ y: -3, duration: 0.1, easing: Konva.Easings.EaseInOut }); // относительный подъем
+                      if (g) {
+                        g.moveToTop();
+                        g.to({ y: -3, duration: 0.15, easing: Konva.Easings.EaseOut });
+                      }
                     }}
                     onMouseLeave={() => {
                       const g = hexGroupRefs.current[key];
-                      if (g) g.to({ y: 0, duration: 0.1, easing: Konva.Easings.EaseInOut }); // возврат в базу
+                      if (g) g.to({ y: 0, duration: 0.15, easing: Konva.Easings.EaseOut });
                       setHoveredHex(null);
                     }}
 									>
@@ -524,7 +527,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 											fillEnabled={true}
 											fill={'rgba(0,0,0,0.001)'} // прозрачный fill для корректного hover/click
 											stroke={getHexStroke(key, hex)}
-											strokeWidth={mapState.selectedHex === key ? 3 : 1}
 											onClick={() => handleHexClick(key)}
 											shadowBlur={mapState.selectedHex === key ? 10 : 0}
 											shadowColor="gold"/>
@@ -543,7 +545,10 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
                     onMouseEnter={() => {
                       setHoveredHex(k);
                       const g = hexGroupRefs.current[`potential-${k}`];
-                      if (g) g.to({ y: -3, duration: 0.15, easing: Konva.Easings.EaseOut });
+                      if (g) {
+                        g.moveToTop();
+                        g.to({ y: -3, duration: 0.15, easing: Konva.Easings.EaseOut });
+                      }
                     }}
                     onMouseLeave={() => {
                       const g = hexGroupRefs.current[`potential-${k}`];
