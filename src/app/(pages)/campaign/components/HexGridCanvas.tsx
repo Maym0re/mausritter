@@ -321,18 +321,14 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		);
 	}
 
-	const getHexColor = (hex: HexData) => !hex.isRevealed && mode === 'player' ? '#1a1a1a' : hex.hexType.color;
-	const getHexStroke = (k: string, hex: HexData) => mapState.selectedHex === k ? '#000' : (hoveredHex === k ? '#333' : (!hex.isRevealed && mode === 'player') ? '#404040' : '#000');
+	const getHexColor = (hex: HexData) => hex.hexType.color;
+	const getHexStroke = (k: string, hex: HexData) => mapState.selectedHex === k ? '#000' : (hoveredHex === k ? '#333' : '#000');
 	const renderHexLabel = (hex: HexData, x: number, y: number) => {
-		if (!hex.isRevealed && mode === 'player') return <Text x={x - 8} y={y - 6} text="?" fontSize={24} fill="#666"
-		                                                       fontFamily="serif"/>;
 		const label = hex.customName || hex.settlement?.name || hex.landmark?.name || hex.hexType.name;
-		return <Text x={x - label.length * 3} y={y + 20} text={label} fontSize={9} fill="#000" fontFamily="serif"
-		             fontStyle="bold"/>;
+		return <Text x={x - label.length * 3} y={y + 20} text={label} fontSize={9} fill="#000" fontFamily="serif" fontStyle="bold"/>;
 	};
 
 	const getHexImage = (hex: HexData) => {
-		if (!hex.isRevealed && mode === 'player') return undefined;
 		switch (hex.hexType.id) {
 			case 'countryside': return imgCountryside;
 			case 'forest': return imgForest;
@@ -402,28 +398,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								const x = h.x;
 								const y = h.y;
 								const img = getHexImage(hex);
-								// Если игрок не видит гекс
-								if (!hex.isRevealed && mode === 'player') {
-									return (
-										<Group key={key}>
-											<RegularPolygon
-												x={x}
-												y={y}
-												sides={6}
-												rotation={30}
-												radius={radius}
-												fill={getHexColor(hex)}
-												stroke={getHexStroke(key, hex)}
-												strokeWidth={mapState.selectedHex === key ? 3 : 1}
-												onClick={() => handleHexClick(key)}
-												onMouseEnter={() => setHoveredHex(key)}
-												onMouseLeave={() => setHoveredHex(null)}
-												shadowBlur={mapState.selectedHex === key ? 10 : 0}
-												shadowColor="gold"/>
-											{renderHexLabel(hex, x, y)}
-										</Group>
-									);
-								}
 								return (
 									<Group key={key}>
 										{renderHexImage(img, x, y)}
