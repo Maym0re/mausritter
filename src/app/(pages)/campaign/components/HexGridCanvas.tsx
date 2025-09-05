@@ -65,6 +65,10 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const [imgRiver] = useImage('/images/hexes/hex-river.webp');
 	const [imgCity] = useImage('/images/hexes/hex-city.webp');
 	const [imgBlank] = useImage('/images/hexes/hex-blank.webp');
+	// Составной фон заголовка
+	const [imgTitleLeft] = useImage('/images/hexes/hex-title-left.webp');
+	const [imgTitleMiddle] = useImage('/images/hexes/hex-title-middle.webp');
+	const [imgTitleRight] = useImage('/images/hexes/hex-title-right.webp');
 
 	const radius = 35;
 
@@ -74,7 +78,20 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const toast = useToast();
 
 	// После всех предыдущих хуков, чтобы порядок оставался стабильным при хот-релоаде
-	const HEX_HEIGHT = useMemo(()=> Math.sqrt(3) * radius, [radius]);
+	const HEX_HEIGHT = useMemo(() => Math.sqrt(3) * radius, [radius]);
+
+	// Контекст для точного измерения текста
+	const measureCtxRef = useRef<CanvasRenderingContext2D | null>(null);
+	useEffect(() => {
+		const canvas = document.createElement('canvas');
+		measureCtxRef.current = canvas.getContext('2d');
+	}, []);
+	const measureTextWidth = useCallback((text: string, fontSize: number) => {
+		const ctx = measureCtxRef.current;
+		if (!ctx) return text.length * fontSize * 0.55; // fallback
+		ctx.font = `bold ${fontSize}px serif`;
+		return ctx.measureText(text).width;
+	}, []);
 
 	const loadMapData = useCallback(async () => {
 		try {
@@ -323,20 +340,23 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 
 	const getHexColor = (hex: HexData) => hex.hexType.color;
 	const getHexStroke = (k: string, hex: HexData) => mapState.selectedHex === k ? '#000' : (hoveredHex === k ? '#333' : '#000');
-	const renderHexLabel = (hex: HexData, x: number, y: number) => {
-		const label = hex.customName || hex.settlement?.name || hex.landmark?.name || hex.hexType.name;
-		return <Text x={x - label.length * 3} y={y + 20} text={label} fontSize={9} fill="#000" fontFamily="serif" fontStyle="bold"/>;
-	};
 
 	const getHexImage = (hex: HexData) => {
 		switch (hex.hexType.id) {
-			case 'countryside': return imgCountryside;
-			case 'forest': return imgForest;
-			case 'river': return imgRiver;
-			case 'human_town': return imgCity;
-			case 'mountains': return imgForest; // временный выбор
-			case 'swamp': return imgCountryside; // временный выбор
-			default: return imgBlank;
+			case 'countryside':
+				return imgCountryside;
+			case 'forest':
+				return imgForest;
+			case 'river':
+				return imgRiver;
+			case 'human_town':
+				return imgCity;
+			case 'mountains':
+				return imgForest; // временный выбор
+			case 'swamp':
+				return imgCountryside; // временный выбор
+			default:
+				return imgBlank;
 		}
 	};
 
@@ -346,17 +366,95 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		return (
 			<Group x={x} y={y} listening={false}
 			       clipFunc={(ctx) => {
-			       	const h = HEX_HEIGHT;
-			       	ctx.beginPath();
-			       	ctx.moveTo(-radius/2, -h/2);
-			       	ctx.lineTo(radius/2, -h/2);
-			       	ctx.lineTo(radius, 0);
-			       	ctx.lineTo(radius/2, h/2);
-			       	ctx.lineTo(-radius/2, h/2);
-			       	ctx.lineTo(-radius, 0);
-			       	ctx.closePath();
+				       const h = HEX_HEIGHT;
+				       ctx.beginPath();
+				       ctx.moveTo(-radius / 2, -h / 2);
+				       ctx.lineTo(radius / 2, -h / 2);
+				       ctx.lineTo(radius, 0);
+				       ctx.lineTo(radius / 2, h / 2);
+				       ctx.lineTo(-radius / 2, h / 2);
+				       ctx.lineTo(-radius, 0);
+				       ctx.closePath();
 			       }}>
-				<KonvaImage image={img} x={-radius} y={-HEX_HEIGHT/2} width={radius*2} height={HEX_HEIGHT} listening={false}/>
+				<KonvaImage image={img} x={-radius} y={-HEX_HEIGHT / 2} width={radius * 2} height={HEX_HEIGHT}
+				            listening={false}/>
+			</Group>
+		);
+	};
+
+	// Рендер лейбла (составной свиток) при наведении или выборе — компактный вариант
+	const renderHexLabel = (hex: HexData, x: number, y: number) => {
+		const fontSize = 11;
+		const paddingX = 6; // горизонтальные отступы
+		const label = hex.customName || hex.settlement?.name || hex.landmark?.name || hex.hexType.name;
+		const txtW = Math.ceil(measureTextWidth(label, fontSize));
+		// Оригинальные размеры частей
+		const lwOrig = imgTitleLeft?.width || 14;
+		const lhOrig = imgTitleLeft?.height || 24;
+		const mwOrig = imgTitleMiddle?.width || 32;
+		const mhOrig = imgTitleMiddle?.height || lhOrig;
+		const rwOrig = imgTitleRight?.width || 14;
+		const rhOrig = imgTitleRight?.height || lhOrig;
+		// Желаемая высота = половина высоты гекса
+		const desiredHeight = HEX_HEIGHT / 2; // фиксированная высота
+		// Масштаб по высоте для сохранения пропорций левой/правой частей
+		const scaleY = desiredHeight / mhOrig;
+		const leftW = lwOrig * scaleY;
+		const rightW = rwOrig * scaleY;
+		// Middle высоту задаем напрямую (desiredHeight), ширину вычисляем из текста
+		const contentWidth = txtW + paddingX * 2;
+		// Минимальная ширина middle = (mwOrig * scaleY) чтобы не схлопывалось; растягиваем только по ширине без изменения высоты
+		const middleMinWidth = mwOrig * scaleY;
+		const middleWidth = Math.max(middleMinWidth, contentWidth);
+		const totalWidth = leftW + middleWidth + rightW;
+		const posY = y + radius - 5;
+		const leftX = -totalWidth / 2;
+		const middleX = leftX + leftW;
+		const rightX = middleX + middleWidth;
+		return (
+			<Group x={x} y={posY} listening={false}>
+				{imgTitleLeft && (
+					<KonvaImage
+						image={imgTitleLeft}
+						x={leftX + 1}
+						y={-desiredHeight / 2}
+						width={leftW}
+						height={desiredHeight}
+						listening={false}
+					/>
+				)}
+				{imgTitleMiddle && (
+					<KonvaImage
+						image={imgTitleMiddle}
+						x={middleX}
+						y={-desiredHeight / 2}
+						width={middleWidth}
+						height={desiredHeight}
+						listening={false}
+					/>
+				)}
+				{imgTitleRight && (
+					<KonvaImage
+						image={imgTitleRight}
+						x={rightX - 1}
+						y={-desiredHeight / 2}
+						width={rightW}
+						height={desiredHeight}
+						listening={false}
+					/>
+				)}
+				<Text
+					text={label}
+					fontSize={fontSize}
+					fontFamily="serif"
+					fontStyle="bold"
+					fill="#000"
+					x={-txtW / 2}
+					y={-fontSize / 2 - 3}
+					width={txtW}
+					align="center"
+					listening={false}
+				/>
 			</Group>
 		);
 	};
@@ -398,6 +496,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								const x = h.x;
 								const y = h.y;
 								const img = getHexImage(hex);
+								const active = mapState.selectedHex === key || hoveredHex === key;
 								return (
 									<Group key={key}>
 										{renderHexImage(img, x, y)}
@@ -407,7 +506,8 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 											sides={6}
 											rotation={30}
 											radius={radius}
-											fillEnabled={false}
+											fillEnabled={true}
+											fill={'rgba(0,0,0,0.001)'} // прозрачный fill для корректного hover/click
 											stroke={getHexStroke(key, hex)}
 											strokeWidth={mapState.selectedHex === key ? 3 : 1}
 											onClick={() => handleHexClick(key)}
@@ -415,7 +515,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 											onMouseLeave={() => setHoveredHex(null)}
 											shadowBlur={mapState.selectedHex === key ? 10 : 0}
 											shadowColor="gold"/>
-										{renderHexLabel(hex, x, y)}
+										{/* Лейблы перенесены в отдельный слой выше */}
 									</Group>
 								);
 							})}
@@ -437,13 +537,23 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 											sides={6}
 											rotation={30}
 											radius={radius}
-											fillEnabled={false}
+											fillEnabled={true}
+											fill={'rgba(0,0,0,0.001)'}
 											stroke={'#888'}
 											dash={[4,4]}
 											strokeWidth={2}
 										/>
 									</Group>
 								);
+							})}
+						</Layer>
+						{/* Отдельный слой для лейблов поверх всего */}
+						<Layer listening={false}>
+							{Array.from(mapState.hexes.entries()).map(([key, hex]) => {
+								const isActive = mapState.selectedHex === key || hoveredHex === key;
+								if (!isActive) return null;
+								const h = new Tile({q: hex.q, r: hex.r});
+								return <Group key={`label-${key}`}>{renderHexLabel(hex, h.x, h.y)}</Group>;
 							})}
 						</Layer>
 						<CanvasImagesLayer
