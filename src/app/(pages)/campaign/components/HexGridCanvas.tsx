@@ -446,9 +446,9 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 				<Text
 					text={label}
 					fontSize={fontSize}
-					fontFamily="serif"
+					fontFamily="Pirata One, serif"
 					fontStyle="bold"
-					fill="#000"
+					fill="#19150f"
 					x={-txtW / 2}
 					y={-fontSize / 2 - 3}
 					width={txtW}
