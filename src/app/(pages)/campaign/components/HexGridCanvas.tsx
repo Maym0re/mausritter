@@ -59,12 +59,10 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const [canvasSize, setCanvasSize] = useState({width: 1000, height: 700});
 	const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
 
-	// Загрузка изображений фонов (однократно, переиспользуются)
+	// Загрузка изображений фонов (один слой на гекс)
 	const [imgCountryside] = useImage('/images/hexes/hex-vilage.webp');
 	const [imgForest] = useImage('/images/hexes/hex-forest.webp');
-	const [imgPlains] = useImage('/images/hexes/hex-plains.webp');
 	const [imgRiver] = useImage('/images/hexes/hex-river.webp');
-	const [imgRocky] = useImage('/images/hexes/hex-rocky.webp');
 	const [imgCity] = useImage('/images/hexes/hex-city.webp');
 	const [imgBlank] = useImage('/images/hexes/hex-blank.webp');
 
@@ -333,50 +331,39 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		             fontStyle="bold"/>;
 	};
 
-	const getHexImages = (hex: HexData) => {
-		if (!hex.isRevealed && mode === 'player') return [] as (HTMLImageElement | undefined)[];
+	const getHexImage = (hex: HexData) => {
+		if (!hex.isRevealed && mode === 'player') return undefined;
 		switch (hex.hexType.id) {
-			case 'countryside':
-				return [imgCountryside];
-			case 'forest':
-				return [imgForest];
-			case 'river':
-				// база + река
-				return [imgPlains, imgRiver];
-			case 'human_town':
-				// база скалы + город
-				return [imgRocky, imgCity];
-			case 'mountains':
-				return [imgRocky];
-			case 'swamp':
-				return [imgPlains];
-			default:
-				return [imgPlains];
+			case 'countryside': return imgCountryside;
+			case 'forest': return imgForest;
+			case 'river': return imgRiver;
+			case 'human_town': return imgCity;
+			case 'mountains': return imgForest; // временный выбор
+			case 'swamp': return imgCountryside; // временный выбор
+			default: return imgBlank;
 		}
 	};
 
-	// Рендер изображений внутри гекса с клипом
-	const renderHexImages = (images: (HTMLImageElement | undefined)[], x: number, y: number) => {
-    if (!images.length) return null;
-    return (
-      <Group x={x} y={y} listening={false}
-        clipFunc={(ctx)=>{
-          const h = HEX_HEIGHT;
-          ctx.beginPath();
-          ctx.moveTo(-radius/2, -h/2);
-          ctx.lineTo(radius/2, -h/2);
-          ctx.lineTo(radius, 0);
-          ctx.lineTo(radius/2, h/2);
-          ctx.lineTo(-radius/2, h/2);
-          ctx.lineTo(-radius, 0);
-          ctx.closePath();
-        }}>
-        {images.map((img,i)=> img && (
-          <KonvaImage key={i} image={img} x={-radius} y={-HEX_HEIGHT/2} width={radius*2} height={HEX_HEIGHT} listening={false} />
-        ))}
-      </Group>
-    );
-  };
+	// Рендер одного изображения внутри гекса с клипом
+	const renderHexImage = (img: HTMLImageElement | undefined, x: number, y: number) => {
+		if (!img) return null;
+		return (
+			<Group x={x} y={y} listening={false}
+			       clipFunc={(ctx) => {
+			       	const h = HEX_HEIGHT;
+			       	ctx.beginPath();
+			       	ctx.moveTo(-radius/2, -h/2);
+			       	ctx.lineTo(radius/2, -h/2);
+			       	ctx.lineTo(radius, 0);
+			       	ctx.lineTo(radius/2, h/2);
+			       	ctx.lineTo(-radius/2, h/2);
+			       	ctx.lineTo(-radius, 0);
+			       	ctx.closePath();
+			       }}>
+				<KonvaImage image={img} x={-radius} y={-HEX_HEIGHT/2} width={radius*2} height={HEX_HEIGHT} listening={false}/>
+			</Group>
+		);
+	};
 
 	return (
 		<div className="flex flex-col h-full" ref={containerRef}>
@@ -414,7 +401,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								const h = new Tile({q: hex.q, r: hex.r});
 								const x = h.x;
 								const y = h.y;
-								const images = getHexImages(hex);
+								const img = getHexImage(hex);
 								// Если игрок не видит гекс
 								if (!hex.isRevealed && mode === 'player') {
 									return (
@@ -439,7 +426,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								}
 								return (
 									<Group key={key}>
-										{renderHexImages(images, x, y)}
+										{renderHexImage(img, x, y)}
 										<RegularPolygon
 											x={x}
 											y={y}
@@ -469,7 +456,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 										onMouseEnter={() => setHoveredHex(k)}
 										onMouseLeave={() => setHoveredHex(null)}
 									>
-										{renderHexImages([imgBlank], x, y)}
+										{renderHexImage(imgBlank, x, y)}
 										<RegularPolygon
 											x={x}
 											y={y}
