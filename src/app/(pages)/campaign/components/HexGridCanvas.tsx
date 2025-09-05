@@ -22,6 +22,8 @@ interface HexGridCanvasProps {
 	campaignId: string;
 	isAddHexMode?: boolean;
 	onAddHexModeChange?: (v: boolean) => void;
+	markersPanelOpen?: boolean;
+	onMarkersPanelOpenChange?: (v: boolean) => void;
 }
 
 interface MapData {
@@ -32,6 +34,7 @@ interface MapData {
 	centerY: number;
 	cells: ApiCell[];
 	images?: { id: string; data: string; x: number; y: number; width: number; height: number }[];
+	markers?: { id: string; image: string; x: number; y: number; z: number }[];
 }
 
 interface ApiCell {
@@ -48,7 +51,7 @@ interface ApiCell {
 	masterNotes?: string;
 }
 
-export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexModeChange}: HexGridCanvasProps) {
+export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexModeChange, markersPanelOpen, onMarkersPanelOpenChange}: HexGridCanvasProps) {
 	const [scale, setScale] = useState(1);
 	const [pos, setPos] = useState({x: 400, y: 300});
 	const [mapState, setMapState] = useState<MapState>({hexes: new Map(), selectedHex: null, mode});
@@ -58,6 +61,10 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const [loading, setLoading] = useState(true);
 	const [canvasSize, setCanvasSize] = useState({width: 1000, height: 700});
 	const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
+	const [pointerImages, setPointerImages] = useState<string[]>([]);
+	const [selectedPointer, setSelectedPointer] = useState<string | null>(null);
+	const [markers, setMarkers] = useState<{ id: string; image: string; x: number; y: number; z: number }[]>([]);
+	const markersAddingRef = useRef(false);
 
 	// Загрузка изображений фонов (один слой на гекс)
 	const [imgCountryside] = useImage('/images/hexes/hex-vilage.webp');
@@ -121,6 +128,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 					});
 				});
 				setMapState(p => ({...p, hexes: m}));
+				setMarkers(data.markers || []);
 			}
 		} catch (e) {
 			console.error(e);
@@ -173,7 +181,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	}, [radius]);
 
 	// update cell
-	const updateHexCell = async (k: string, updates: Partial<HexData>) => {
+	const updateHexCell = useCallback(async (k: string, updates: Partial<HexData>) => {
 		if (!mapData?.id) return;
 		const hex = mapState.hexes.get(k);
 		if (!hex) return;
@@ -200,7 +208,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		} catch (e) {
 			console.error(e);
 		}
-	};
+	}, [mapData?.id, mapState.hexes, mode]);
 
 	const handleHexClick = useCallback(async (k: string) => {
 		const hex = mapState.hexes.get(k);
@@ -299,6 +307,47 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		return Array.from(border.values()).map(v => ({q: v.q, r: v.r}));
 	}, [isAddHexMode, mapState.hexes]);
 
+	// Загрузка списка доступных изображений маркеров при открытии панели
+	useEffect(() => {
+		if (markersPanelOpen && pointerImages.length === 0) {
+			fetch('/api/maps/markers/pointers')
+				.then(r => r.ok ? r.json() : [])
+				.then((list: string[]) => setPointerImages(list))
+				.catch(() => {});
+		}
+		if (!markersPanelOpen) setSelectedPointer(null);
+	}, [markersPanelOpen, pointerImages.length]);
+
+	// Работа с метками
+	const addMarker = useCallback(async (image: string, x: number, y: number) => {
+		if (!mapData?.id) return;
+		try {
+			const r = await fetch('/api/maps/markers', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ hexMapId: mapData.id, image, x, y })
+			});
+			if (r.ok) {
+				const mk = await r.json();
+				setMarkers(prev => [...prev, mk].sort((a,b)=>a.z-b.z));
+			} else if (r.status === 409) {
+				toast.error('Достигнут лимит в 20 меток');
+			} else {
+				toast.error('Ошибка создания метки');
+			}
+		} catch (e) { console.error(e); }
+	}, [mapData?.id, toast]);
+
+	const updateMarker = useCallback((id: string, patch: Partial<{x:number;y:number;z:number}>) => {
+		setMarkers(prev => prev.map(m => m.id===id? {...m, ...patch}: m));
+		fetch(`/api/maps/markers/${id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(patch) }).catch(()=>{});
+	}, []);
+
+	const deleteMarker = useCallback((id: string) => {
+		setMarkers(prev => prev.filter(m => m.id!==id));
+		fetch(`/api/maps/markers/${id}`, { method: 'DELETE' }).catch(()=>{});
+	}, []);
+
 	// Отображение загрузки
 	if (loading) {
 		return (
@@ -341,8 +390,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		);
 	}
 
-	const getHexColor = (hex: HexData) => hex.hexType.color;
-	const getHexStroke = (k: string, hex: HexData) => mapState.selectedHex === k ? '#000' : (hoveredHex === k ? '#333' : '#000');
+	const getHexStroke = (k: string) => mapState.selectedHex === k ? '#000' : (hoveredHex === k ? '#333' : '#000');
 
 	const getHexImage = (hex: HexData) => {
 		switch (hex.hexType.id) {
@@ -397,7 +445,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		const mwOrig = imgTitleMiddle?.width || 32;
 		const mhOrig = imgTitleMiddle?.height || lhOrig;
 		const rwOrig = imgTitleRight?.width || 14;
-		const rhOrig = imgTitleRight?.height || lhOrig;
 		// Желаемая высота = половина высоты гекса
 		const desiredHeight = HEX_HEIGHT / 2; // фиксированная высота
 		// Масштаб по высоте для сохранения пропорций левой/правой частей
@@ -488,6 +535,18 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 						if (e.target === e.target.getStage() && selectedImageId) {
 							setSelectedImageId(null);
 						}
+						if (selectedPointer && mode==='master') {
+							const stage = stageRef.current; if (!stage) return;
+							const scale = stage.scaleX();
+							const ptr = stage.getPointerPosition();
+							if (!ptr) return;
+							const x = (ptr.x - stage.x()) / scale;
+							const y = (ptr.y - stage.y()) / scale;
+							addMarker(selectedPointer, x - 16, y - 32); // смещение чтобы наконечник "указывал"
+							setSelectedPointer(null);
+							markersAddingRef.current = false;
+							return;
+						}
 					}} onTouchStart={(e) => {
 						if (e.target === e.target.getStage() && selectedImageId) {
 							setSelectedImageId(null);
@@ -499,7 +558,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								const x = h.x;
 								const y = h.y;
 								const img = getHexImage(hex);
-								const active = mapState.selectedHex === key || hoveredHex === key;
 								return (
 									<Group key={key}
                     ref={node => { if (node) hexGroupRefs.current[key] = node; else delete hexGroupRefs.current[key]; }}
@@ -526,7 +584,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 											radius={radius}
 											fillEnabled={true}
 											fill={'rgba(0,0,0,0.001)'} // прозрачный fill для корректного hover/click
-											stroke={getHexStroke(key, hex)}
+											stroke={getHexStroke(key)}
 											onClick={() => handleHexClick(key)}
 											shadowBlur={mapState.selectedHex === key ? 10 : 0}
 											shadowColor="gold"/>
@@ -596,6 +654,20 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 							hexMapId={mapData?.id || undefined}
 							initialImages={mapData?.images || []}
 						/>
+						{/* Слой меток */}
+						<Layer>
+							{markers.map(m => (
+								<Group key={m.id}
+									x={m.x}
+									y={m.y}
+									draggable={mode==='master'}
+									onDragEnd={(e)=> updateMarker(m.id, { x: e.target.x(), y: e.target.y() })}
+									onDblClick={() => { if (mode==='master') deleteMarker(m.id); }}
+								>
+									<KonvaImage image={(() => { const img = new window.Image(); img.src = `/images/pointers/${m.image}`; return img; })()} width={23} height={50} listening={mode==='master'} />
+								</Group>
+							))}
+						</Layer>
 					</Stage>
 				</div>
 			</div>
@@ -603,6 +675,30 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
           <HexWindow mode={mode} hex={mapState.hexes.get(editingHex)!} onSave={(d) => handleHexSave(editingHex, d)}
                      onDelete={mode === 'master' ? () => handleHexDelete(editingHex) : undefined}
                      onClose={() => setEditingHex(null)}/>}
+			{markersPanelOpen && mode==='master' && (
+				<div className="absolute top-4 right-4 z-[1200] bg-stone-900/90 border border-stone-700 rounded-lg p-3 w-52 max-h-80 overflow-auto space-y-2">
+					<div className="flex justify-between items-center mb-1">
+						<span className="text-xs text-stone-300 font-semibold">Метки ({markers.length}/20)</span>
+						<button className="text-xs text-stone-400 hover:text-white" onClick={()=>onMarkersPanelOpenChange?.(false)}>✕</button>
+					</div>
+					{markers.length>=20 && <div className="text-[10px] text-red-400">Лимит достигнут</div>}
+					<div className="grid grid-cols-4 gap-2">
+						{pointerImages.map(fn => {
+							const active = selectedPointer===fn;
+							return (
+								<button key={fn} disabled={markers.length>=20}
+									className={`relative border rounded p-1 hover:border-amber-400 ${active? 'border-emerald-500 bg-stone-700':'border-stone-600'}`}
+									onClick={()=> { setSelectedPointer(p=> p===fn? null: fn); markersAddingRef.current = true; }}
+									title="Кликните по карте чтобы поставить"
+								>
+									<img src={`/images/pointers/${fn}`} alt={fn} className="w-7 h-7 object-contain" />
+								</button>
+							);
+						})}
+					</div>
+					{selectedPointer && <div className="text-[10px] text-emerald-400 mt-2">Выберите место на карте…</div>}
+				</div>
+			)}
 		</div>
 	);
 }

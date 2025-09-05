@@ -45,7 +45,8 @@ export async function GET(request: NextRequest) {
             settlement: true
           }
         },
-        images: true
+        images: true,
+        markers: true // добавлено
       }
     });
 
@@ -58,7 +59,8 @@ export async function GET(request: NextRequest) {
         centerX: 2,
         centerY: 2,
         cells: [],
-        images: []
+        images: [],
+        markers: [] // добавлено
       });
     }
 

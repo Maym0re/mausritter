@@ -246,6 +246,9 @@ model HexMap {
   // Изображения на карте
   images MapImage[]
 
+  // Метки на карте
+  markers MapMarker[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -259,6 +262,20 @@ model MapImage {
   y         Float
   width     Float
   height    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([hexMapId])
+}
+
+model MapMarker {
+  id        String   @id @default(cuid())
+  hexMapId  String
+  hexMap    HexMap   @relation(fields: [hexMapId], references: [id], onDelete: Cascade)
+  image     String   // имя файла в /public/images/pointers
+  x         Float
+  y         Float
+  z         Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
