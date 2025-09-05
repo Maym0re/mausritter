@@ -15,7 +15,7 @@ import useImage from 'use-image';
 import { HexWindow } from './HexWindow';
 import { CanvasImagesLayer, CanvasImagesLayerHandle } from './CanvasImagesLayer';
 import { useToast } from '@/components/ui/ToastProvider';
-import type Konva from 'konva';
+import Konva from 'konva';
 
 interface HexGridCanvasProps {
 	mode: 'master' | 'player';
@@ -76,6 +76,9 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const imagesLayerRef = useRef<CanvasImagesLayerHandle | null>(null);
 	const toast = useToast();
+
+	// refs групп гексов для анимации
+	const hexGroupRefs = useRef<Record<string, Konva.Group>>({});
 
 	// После всех предыдущих хуков, чтобы порядок оставался стабильным при хот-релоаде
 	const HEX_HEIGHT = useMemo(() => Math.sqrt(3) * radius, [radius]);
@@ -498,7 +501,19 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								const img = getHexImage(hex);
 								const active = mapState.selectedHex === key || hoveredHex === key;
 								return (
-									<Group key={key}>
+									<Group key={key}
+                    ref={node => { if (node) hexGroupRefs.current[key] = node; else delete hexGroupRefs.current[key]; }}
+                    onMouseEnter={() => {
+                      setHoveredHex(key);
+                      const g = hexGroupRefs.current[key];
+                      if (g) g.to({ y: -3, duration: 0.1, easing: Konva.Easings.EaseInOut }); // относительный подъем
+                    }}
+                    onMouseLeave={() => {
+                      const g = hexGroupRefs.current[key];
+                      if (g) g.to({ y: 0, duration: 0.1, easing: Konva.Easings.EaseInOut }); // возврат в базу
+                      setHoveredHex(null);
+                    }}
+									>
 										{renderHexImage(img, x, y)}
 										<RegularPolygon
 											x={x}
@@ -511,8 +526,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 											stroke={getHexStroke(key, hex)}
 											strokeWidth={mapState.selectedHex === key ? 3 : 1}
 											onClick={() => handleHexClick(key)}
-											onMouseEnter={() => setHoveredHex(key)}
-											onMouseLeave={() => setHoveredHex(null)}
 											shadowBlur={mapState.selectedHex === key ? 10 : 0}
 											shadowColor="gold"/>
 										{/* Лейблы перенесены в отдельный слой выше */}
@@ -526,9 +539,18 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								return (
 									<Group
 										key={`potential-${k}`}
-										onClick={() => createHexAt(ph.q, ph.r)}
-										onMouseEnter={() => setHoveredHex(k)}
-										onMouseLeave={() => setHoveredHex(null)}
+                    ref={node => { if (node) hexGroupRefs.current[`potential-${k}`] = node; else delete hexGroupRefs.current[`potential-${k}`]; }}
+                    onMouseEnter={() => {
+                      setHoveredHex(k);
+                      const g = hexGroupRefs.current[`potential-${k}`];
+                      if (g) g.to({ y: -3, duration: 0.15, easing: Konva.Easings.EaseOut });
+                    }}
+                    onMouseLeave={() => {
+                      const g = hexGroupRefs.current[`potential-${k}`];
+                      if (g) g.to({ y: 0, duration: 0.15, easing: Konva.Easings.EaseOut });
+                      setHoveredHex(null);
+                    }}
+                    onClick={() => createHexAt(ph.q, ph.r)}
 									>
 										{renderHexImage(imgBlank, x, y)}
 										<RegularPolygon
