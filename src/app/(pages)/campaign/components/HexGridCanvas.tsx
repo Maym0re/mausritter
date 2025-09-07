@@ -690,7 +690,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
                      onDelete={mode === 'master' ? () => handleHexDelete(editingHex) : undefined}
                      onClose={() => setEditingHex(null)}/>}
 			{markersPanelOpen && mode==='master' && (
-				<div className="absolute top-4 right-4 z-[1200] bg-stone-900/90 border border-stone-700 rounded-lg p-3 w-52 max-h-80 overflow-auto space-y-2">
+				<div className="absolute top-4 right-4 z-[1200] bg-stone-900/90 border border-stone-700 rounded-lg p-3 w-60 max-h-80 overflow-auto space-y-2">
 					<div className="flex justify-between items-center mb-1">
 						<span className="text-xs text-stone-300 font-semibold">Метки ({markers.length}/20)</span>
 						<button className="text-xs text-stone-400 hover:text-white" onClick={()=>onMarkersPanelOpenChange?.(false)}>✕</button>
@@ -705,7 +705,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 									onClick={()=> { setSelectedPointer(p=> p===fn? null: fn); markersAddingRef.current = true; }}
 									title="Кликните по карте чтобы поставить"
 								>
-									<img src={`/images/pointers/${fn}`} alt={fn} className="w-7 h-7 object-contain" />
+									<img src={`/images/pointers/${fn}`} alt={fn} className="w-10 h-10 object-contain" />
 								</button>
 							);
 						})}
