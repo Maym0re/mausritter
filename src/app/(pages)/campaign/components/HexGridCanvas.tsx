@@ -65,6 +65,9 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const [selectedPointer, setSelectedPointer] = useState<string | null>(null);
 	const [markers, setMarkers] = useState<{ id: string; image: string; x: number; y: number; z: number }[]>([]);
 	const markersAddingRef = useRef(false);
+	// Визуальный призрак во время drag&drop
+	const [dragPreview, setDragPreview] = useState<{name: string; x: number; y: number} | null>(null);
+	const dragPointerRef = useRef<string | null>(null);
 
 	// Загрузка изображений фонов (один слой на гекс)
 	const [imgCountryside] = useImage('/images/hexes/hex-vilage.webp');
@@ -371,13 +374,22 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('application/x-pointer')) {
 				e.preventDefault();
 				e.dataTransfer.dropEffect = 'copy';
+				// обновляем позицию призрака
+				if (dragPointerRef.current) {
+					const stage = stageRef.current; if (!stage) return;
+					const rect = stage.container().getBoundingClientRect();
+					const scale = stage.scaleX();
+					const x = (e.clientX - rect.left - stage.x()) / scale - 16;
+					const y = (e.clientY - rect.top - stage.y()) / scale - 32;
+					setDragPreview({name: dragPointerRef.current, x, y});
+				}
 			}
 		};
 		const onDrop = (e: DragEvent) => {
 			if (!e.dataTransfer) return;
 			if (Array.from(e.dataTransfer.types).includes('application/x-pointer')) {
 				e.preventDefault();
-				const name = e.dataTransfer.getData('application/x-pointer');
+				const name = e.dataTransfer.getData('application/x-pointer') || dragPointerRef.current;
 				if (!name) return;
 				const stage = stageRef.current; if (!stage) return;
 				const rect = stage.container().getBoundingClientRect();
@@ -385,13 +397,24 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 				const x = (e.clientX - rect.left - stage.x()) / scale;
 				const y = (e.clientY - rect.top - stage.y()) / scale;
 				addMarker(name, x - 16, y - 32);
+				setDragPreview(null);
+				dragPointerRef.current = null;
 			}
 		};
+		const onDragEndWindow = () => {
+			// Очистка если отменили перетаскивание вне
+			if (dragPointerRef.current) {
+				dragPointerRef.current = null;
+				setDragPreview(null);
+			}
+		};
+		window.addEventListener('dragend', onDragEndWindow);
 		el.addEventListener('dragover', onDragOver);
 		el.addEventListener('drop', onDrop);
 		return () => {
 			el.removeEventListener('dragover', onDragOver);
 			el.removeEventListener('drop', onDrop);
+			window.removeEventListener('dragend', onDragEndWindow);
 		};
 	}, [addMarker]);
 
@@ -714,6 +737,12 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								</Group>
 							))}
 						</Layer>
+						{/* Призрак перетаскиваемой метки */}
+						{dragPreview && (
+							<Layer listening={false}>
+								<KonvaImage image={getMarkerImage(dragPreview.name)} x={dragPreview.x} y={dragPreview.y} width={24} height={50} opacity={0.5} listening={false} />
+							</Layer>
+						)}
 					</Stage>
 				</div>
 			</div>
@@ -736,10 +765,11 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 									className={`relative border rounded p-1 hover:border-amber-400 ${active? 'border-emerald-500 bg-stone-700':'border-stone-600'}`}
 									onClick={()=> { setSelectedPointer(p=> p===fn? null: fn); markersAddingRef.current = true; }}
 									draggable={! (markers.length>=20)}
-									onDragStart={e => { if (markers.length>=20) return; e.dataTransfer.setData('application/x-pointer', fn); e.dataTransfer.effectAllowed='copy'; }}
+									onDragStart={e => { if (markers.length>=20) return; dragPointerRef.current = fn; setDragPreview({name: fn, x: -9999, y: -9999}); e.dataTransfer.setData('application/x-pointer', fn); e.dataTransfer.effectAllowed='copy'; }}
+									onDragEnd={() => { dragPointerRef.current = null; setDragPreview(null); }}
 									title="Перетащите на карту или кликните, затем клик по карте"
 								>
-									<img src={`/images/pointers/${fn}`} alt={fn} className="w-10 h-10 object-contain" />
+									<img src={`/images/pointers/${fn}`} alt={fn} className="w-10 h-10 object-contain pointer-events-none" />
 								</button>
 							);
 						})}
