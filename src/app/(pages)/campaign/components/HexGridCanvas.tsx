@@ -363,6 +363,38 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		fetch(`/api/maps/markers/${id}`, { method: 'DELETE' }).catch(()=>{});
 	}, []);
 
+	// DnD меток из панели непосредственно на карту
+	useEffect(() => {
+		const el = containerRef.current;
+		if (!el) return;
+		const onDragOver = (e: DragEvent) => {
+			if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('application/x-pointer')) {
+				e.preventDefault();
+				e.dataTransfer.dropEffect = 'copy';
+			}
+		};
+		const onDrop = (e: DragEvent) => {
+			if (!e.dataTransfer) return;
+			if (Array.from(e.dataTransfer.types).includes('application/x-pointer')) {
+				e.preventDefault();
+				const name = e.dataTransfer.getData('application/x-pointer');
+				if (!name) return;
+				const stage = stageRef.current; if (!stage) return;
+				const rect = stage.container().getBoundingClientRect();
+				const scale = stage.scaleX();
+				const x = (e.clientX - rect.left - stage.x()) / scale;
+				const y = (e.clientY - rect.top - stage.y()) / scale;
+				addMarker(name, x - 16, y - 32);
+			}
+		};
+		el.addEventListener('dragover', onDragOver);
+		el.addEventListener('drop', onDrop);
+		return () => {
+			el.removeEventListener('dragover', onDragOver);
+			el.removeEventListener('drop', onDrop);
+		};
+	}, [addMarker]);
+
 	// Отображение загрузки
 	if (loading) {
 		return (
@@ -703,7 +735,9 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								<button key={fn} disabled={markers.length>=20}
 									className={`relative border rounded p-1 hover:border-amber-400 ${active? 'border-emerald-500 bg-stone-700':'border-stone-600'}`}
 									onClick={()=> { setSelectedPointer(p=> p===fn? null: fn); markersAddingRef.current = true; }}
-									title="Кликните по карте чтобы поставить"
+									draggable={! (markers.length>=20)}
+									onDragStart={e => { if (markers.length>=20) return; e.dataTransfer.setData('application/x-pointer', fn); e.dataTransfer.effectAllowed='copy'; }}
+									title="Перетащите на карту или кликните, затем клик по карте"
 								>
 									<img src={`/images/pointers/${fn}`} alt={fn} className="w-10 h-10 object-contain" />
 								</button>
