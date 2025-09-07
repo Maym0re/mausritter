@@ -77,6 +77,20 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const [imgTitleMiddle] = useImage('/images/hexes/hex-title-middle.webp');
 	const [imgTitleRight] = useImage('/images/hexes/hex-title-right.webp');
 
+	const markerImageCache = useRef<Record<string, HTMLImageElement>>({});
+	const [, forceMarkerRerender] = useState(0);
+	const getMarkerImage = useCallback((name: string) => {
+		if (!name) return undefined;
+		let img = markerImageCache.current[name];
+		if (!img) {
+			img = new window.Image();
+			img.onload = () => forceMarkerRerender(v => v + 1);
+			img.src = `/images/pointers/${name}`;
+			markerImageCache.current[name] = img;
+		}
+		return img;
+	}, []);
+
 	const radius = 35;
 
 	const stageRef = useRef<Konva.Stage | null>(null);
@@ -103,6 +117,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		return ctx.measureText(text).width;
 	}, []);
 
+	// Загрузка данных карты
 	const loadMapData = useCallback(async () => {
 		try {
 			setLoading(true);
@@ -625,7 +640,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 											fillEnabled={true}
 											fill={'rgba(0,0,0,0.001)'}
 											stroke={'#888'}
-											dash={[4,4]}
 											strokeWidth={2}
 										/>
 									</Group>
@@ -664,7 +678,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 									onDragEnd={(e)=> updateMarker(m.id, { x: e.target.x(), y: e.target.y() })}
 									onDblClick={() => { if (mode==='master') deleteMarker(m.id); }}
 								>
-									<KonvaImage image={(() => { const img = new window.Image(); img.src = `/images/pointers/${m.image}`; return img; })()} width={23} height={50} listening={mode==='master'} />
+									<KonvaImage image={getMarkerImage(m.image)} width={24} height={50} listening={mode==='master'} />
 								</Group>
 							))}
 						</Layer>
