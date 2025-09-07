@@ -68,6 +68,8 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	// Визуальный призрак во время drag&drop
 	const [dragPreview, setDragPreview] = useState<{name: string; x: number; y: number} | null>(null);
 	const dragPointerRef = useRef<string | null>(null);
+	const dragImageRef = useRef<HTMLCanvasElement | null>(null);
+	const markersPanelRef = useRef<HTMLDivElement | null>(null);
 
 	// Загрузка изображений фонов (один слой на гекс)
 	const [imgCountryside] = useImage('/images/hexes/hex-vilage.webp');
@@ -374,7 +376,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('application/x-pointer')) {
 				e.preventDefault();
 				e.dataTransfer.dropEffect = 'copy';
-				// обновляем позицию призрака
 				if (dragPointerRef.current) {
 					const stage = stageRef.current; if (!stage) return;
 					const rect = stage.container().getBoundingClientRect();
@@ -388,6 +389,13 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		const onDrop = (e: DragEvent) => {
 			if (!e.dataTransfer) return;
 			if (Array.from(e.dataTransfer.types).includes('application/x-pointer')) {
+				// Если дропнули на панель меток – отменяем
+				if (markersPanelRef.current && e.target && markersPanelRef.current.contains(e.target as Node)) {
+					e.preventDefault();
+					setDragPreview(null);
+					dragPointerRef.current = null;
+					return;
+				}
 				e.preventDefault();
 				const name = e.dataTransfer.getData('application/x-pointer') || dragPointerRef.current;
 				if (!name) return;
@@ -402,7 +410,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			}
 		};
 		const onDragEndWindow = () => {
-			// Очистка если отменили перетаскивание вне
 			if (dragPointerRef.current) {
 				dragPointerRef.current = null;
 				setDragPreview(null);
@@ -751,7 +758,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
                      onDelete={mode === 'master' ? () => handleHexDelete(editingHex) : undefined}
                      onClose={() => setEditingHex(null)}/>}
 			{markersPanelOpen && mode==='master' && (
-				<div className="absolute top-4 right-4 z-[1200] bg-stone-900/90 border border-stone-700 rounded-lg p-3 w-60 max-h-80 overflow-auto space-y-2">
+				<div ref={markersPanelRef} className="absolute top-4 right-4 z-[1200] bg-stone-900/90 border border-stone-700 rounded-lg p-3 w-60 max-h-80 overflow-auto space-y-2">
 					<div className="flex justify-between items-center mb-1">
 						<span className="text-xs text-stone-300 font-semibold">Метки ({markers.length}/20)</span>
 						<button className="text-xs text-stone-400 hover:text-white" onClick={()=>onMarkersPanelOpenChange?.(false)}>✕</button>
@@ -769,7 +776,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 									onDragEnd={() => { dragPointerRef.current = null; setDragPreview(null); }}
 									title="Перетащите на карту или кликните, затем клик по карте"
 								>
-									<img src={`/images/pointers/${fn}`} alt={fn} className="w-10 h-10 object-contain pointer-events-none" />
+									<img src={`/images/pointers/${fn}`} alt={fn} draggable={false} className="w-10 h-10 object-contain select-none" />
 								</button>
 							);
 						})}
