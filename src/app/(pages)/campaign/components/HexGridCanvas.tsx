@@ -67,8 +67,9 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const markersAddingRef = useRef(false);
 	// Визуальный призрак во время drag&drop
 	const [dragPreview, setDragPreview] = useState<{name: string; x: number; y: number} | null>(null);
-	const dragPointerRef = useRef<string | null>(null);
-	const dragImageRef = useRef<HTMLCanvasElement | null>(null);
+	// Удаляем: dragPointerRef, dragImageRef
+	// const dragPointerRef = useRef<string | null>(null);
+	// const dragImageRef = useRef<HTMLCanvasElement | null>(null);
 	const markersPanelRef = useRef<HTMLDivElement | null>(null);
 
 	// Загрузка изображений фонов (один слой на гекс)
@@ -368,62 +369,58 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		fetch(`/api/maps/markers/${id}`, { method: 'DELETE' }).catch(()=>{});
 	}, []);
 
-	// DnD меток из панели непосредственно на карту
+	// Кастомный старт перетаскивания метки (без HTML5 ghost)
+	const startPointerDrag = useCallback((name: string, clientX: number, clientY: number) => {
+		const stage = stageRef.current;
+		if (!stage) return;
+		const rect = stage.container().getBoundingClientRect();
+		const scale = stage.scaleX();
+		const x = (clientX - rect.left - stage.x()) / scale - 16;
+		const y = (clientY - rect.top - stage.y()) / scale - 32;
+		setDragPreview({name, x, y});
+	}, []);
+
+	// Глобальные обработчики для кастомного DnD
 	useEffect(() => {
-		const el = containerRef.current;
-		if (!el) return;
-		const onDragOver = (e: DragEvent) => {
-			if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('application/x-pointer')) {
-				e.preventDefault();
-				e.dataTransfer.dropEffect = 'copy';
-				if (dragPointerRef.current) {
-					const stage = stageRef.current; if (!stage) return;
-					const rect = stage.container().getBoundingClientRect();
-					const scale = stage.scaleX();
-					const x = (e.clientX - rect.left - stage.x()) / scale - 16;
-					const y = (e.clientY - rect.top - stage.y()) / scale - 32;
-					setDragPreview({name: dragPointerRef.current, x, y});
-				}
-			}
+		if (!dragPreview) return;
+		const move = (e: MouseEvent) => {
+			const stage = stageRef.current; if (!stage) return;
+			const rect = stage.container().getBoundingClientRect();
+			const scale = stage.scaleX();
+			const x = (e.clientX - rect.left - stage.x()) / scale - 16;
+			const y = (e.clientY - rect.top - stage.y()) / scale - 32;
+			setDragPreview(p => p ? {...p, x, y} : p);
 		};
-		const onDrop = (e: DragEvent) => {
-			if (!e.dataTransfer) return;
-			if (Array.from(e.dataTransfer.types).includes('application/x-pointer')) {
-				// Если дропнули на панель меток – отменяем
-				if (markersPanelRef.current && e.target && markersPanelRef.current.contains(e.target as Node)) {
-					e.preventDefault();
-					setDragPreview(null);
-					dragPointerRef.current = null;
-					return;
-				}
-				e.preventDefault();
-				const name = e.dataTransfer.getData('application/x-pointer') || dragPointerRef.current;
-				if (!name) return;
-				const stage = stageRef.current; if (!stage) return;
+		const up = (e: MouseEvent) => {
+			// Проверяем панель – если внутри, отменяем
+			if (markersPanelRef.current && e.target && markersPanelRef.current.contains(e.target as Node)) {
+				setDragPreview(null);
+				return cleanup();
+			}
+			// Добавляем метку если внутри канваса
+			const stage = stageRef.current; if (stage) {
 				const rect = stage.container().getBoundingClientRect();
-				const scale = stage.scaleX();
-				const x = (e.clientX - rect.left - stage.x()) / scale;
-				const y = (e.clientY - rect.top - stage.y()) / scale;
-				addMarker(name, x - 16, y - 32);
-				setDragPreview(null);
-				dragPointerRef.current = null;
+				if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+					const scale = stage.scaleX();
+					const x = (e.clientX - rect.left - stage.x()) / scale;
+					const y = (e.clientY - rect.top - stage.y()) / scale;
+					if (dragPreview) addMarker(dragPreview.name, x - 16, y - 32);
+				}
 			}
+			setDragPreview(null);
+			cleanup();
 		};
-		const onDragEndWindow = () => {
-			if (dragPointerRef.current) {
-				dragPointerRef.current = null;
-				setDragPreview(null);
-			}
+		const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') { setDragPreview(null); cleanup(); } };
+		const cleanup = () => {
+			window.removeEventListener('mousemove', move);
+			window.removeEventListener('mouseup', up);
+			window.removeEventListener('keydown', esc);
 		};
-		window.addEventListener('dragend', onDragEndWindow);
-		el.addEventListener('dragover', onDragOver);
-		el.addEventListener('drop', onDrop);
-		return () => {
-			el.removeEventListener('dragover', onDragOver);
-			el.removeEventListener('drop', onDrop);
-			window.removeEventListener('dragend', onDragEndWindow);
-		};
-	}, [addMarker]);
+		window.addEventListener('mousemove', move);
+		window.addEventListener('mouseup', up);
+		window.addEventListener('keydown', esc);
+		return cleanup;
+	}, [dragPreview, addMarker]);
 
 	// Отображение загрузки
 	if (loading) {
@@ -744,10 +741,10 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								</Group>
 							))}
 						</Layer>
-						{/* Призрак перетаскиваемой метки */}
+						{/* Призрак перетаскиваемой метки (используем dragPreview) */}
 						{dragPreview && (
 							<Layer listening={false}>
-								<KonvaImage image={getMarkerImage(dragPreview.name)} x={dragPreview.x} y={dragPreview.y} width={24} height={50} opacity={0.5} listening={false} />
+								<KonvaImage image={getMarkerImage(dragPreview.name)} x={dragPreview.x} y={dragPreview.y} width={24} height={50} opacity={0.6} listening={false} />
 							</Layer>
 						)}
 					</Stage>
@@ -768,15 +765,33 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 						{pointerImages.map(fn => {
 							const active = selectedPointer===fn;
 							return (
-								<button key={fn} disabled={markers.length>=20}
-									className={`relative border rounded p-1 hover:border-amber-400 ${active? 'border-emerald-500 bg-stone-700':'border-stone-600'}`}
-									onClick={()=> { setSelectedPointer(p=> p===fn? null: fn); markersAddingRef.current = true; }}
-									draggable={! (markers.length>=20)}
-									onDragStart={e => { if (markers.length>=20) return; dragPointerRef.current = fn; setDragPreview({name: fn, x: -9999, y: -9999}); e.dataTransfer.setData('application/x-pointer', fn); e.dataTransfer.effectAllowed='copy'; }}
-									onDragEnd={() => { dragPointerRef.current = null; setDragPreview(null); }}
+								<button
+									key={fn}
+									disabled={markers.length>=20}
+									className={`relative border rounded p-1 hover:border-amber-400 select-none ${active? 'border-emerald-500 bg-stone-700':'border-stone-600'}`}
+									onClick={(e)=> {
+										// Если сейчас идёт кастомный drag — игнор клика
+										if (dragPreview) return;
+										setSelectedPointer(p=> p===fn? null: fn);
+										markersAddingRef.current = true;
+									}}
+									onMouseDown={(e) => {
+										if (markers.length>=20) return;
+										// Левая кнопка
+										if (e.button !== 0) return;
+										startPointerDrag(fn, e.clientX, e.clientY);
+										// Снимаем выделение текста
+										e.preventDefault();
+									}}
+									onTouchStart={(e) => {
+										if (markers.length>=20) return;
+										const touch = e.touches[0];
+										startPointerDrag(fn, touch.clientX, touch.clientY);
+										setSelectedPointer(null); // в touch режиме сразу drag
+									}}
 									title="Перетащите на карту или кликните, затем клик по карте"
 								>
-									<img src={`/images/pointers/${fn}`} alt={fn} draggable={false} className="w-10 h-10 object-contain select-none" />
+									<img src={`/images/pointers/${fn}`} alt={fn} className="w-10 h-10 object-contain pointer-events-none" />
 								</button>
 							);
 						})}
