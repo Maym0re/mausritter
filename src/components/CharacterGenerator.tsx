@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { generateRandomCharacter } from "@/lib/characterUtils";
 import { FullCharacter } from "@/types/character";
+import { t } from '@/i18n';
 
 interface CharacterGeneratorProps {
   onCancel?: () => void;
@@ -49,7 +50,7 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
 
   const handleSave = () => {
     if (!character || !character.name.trim()) {
-      alert('Пожалуйста, введите имя персонажа');
+      alert(t('charGen.nameAlert'));
       return;
     }
     onSave(character);
@@ -61,10 +62,10 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
         <div className="text-center py-8">
           <div className="text-6xl mb-4">🎲</div>
           <h3 className="text-xl font-medium text-stone-900 mb-4">
-            Генератор персонажей Mausritter
+            {t('charGen.title')}
           </h3>
           <p className="mb-6">
-            Создайте случайного мышонка-авантюриста по правилам игры
+            {t('charGen.subtitle')}
           </p>
 
           <button
@@ -72,7 +73,7 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
             disabled={isGenerating}
             className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-3 rounded-md font-medium"
           >
-            {isGenerating ? 'Генерация...' : 'Сгенерировать персонажа'}
+            {isGenerating ? t('charGen.generating') : t('charGen.generate')}
           </button>
         </div>
       ) : (
@@ -80,14 +81,14 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
           {/* Имя персонажа */}
           <div>
             <label htmlFor="characterName" className="block text-sm font-medium text-stone-700 mb-2">
-              Имя персонажа *
+              {t('charGen.nameLabel')}
             </label>
             <input
               type="text"
               id="characterName"
               value={character.name}
               onChange={(e) => setCharacter({ ...character, name: e.target.value })}
-              placeholder="Введите имя для вашего мышонка"
+              placeholder={t('charGen.namePlaceholder')}
               className="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -95,12 +96,12 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
           {/* Атрибуты */}
           <div className="bg-stone-50 p-4 rounded-lg">
             <div className="flex justify-between items-center mb-3">
-              <h4 className="font-medium text-stone-900">Атрибуты</h4>
+              <h4 className="font-medium text-stone-900">{t('charGen.attributes')}</h4>
               <button
                 onClick={() => handleReroll('attributes')}
                 className="text-sm text-blue-600 hover:text-blue-800"
               >
-                🎲 Перебросить
+                🎲 {t('charGen.reroll')}
               </button>
             </div>
             <div className="grid grid-cols-3 gap-4">
@@ -122,19 +123,19 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
           {/* Предыстория */}
           <div className="bg-stone-50 p-4 rounded-lg">
             <div className="flex justify-between items-center mb-3">
-              <h4 className="font-medium text-stone-900">Предыстория</h4>
+              <h4 className="font-medium text-stone-900">{t('charGen.background')}</h4>
               <button
                 onClick={() => handleReroll('background')}
                 className="text-sm text-blue-600 hover:text-blue-800"
               >
-                🎲 Перебросить
+                🎲 {t('charGen.reroll')}
               </button>
             </div>
             <div className="space-y-2">
-              <div><strong>Профессия:</strong> {character?.background.name}</div>
+              <div><strong>{t('charGen.profession')}</strong> {character?.background.name}</div>
               <div><strong>HP:</strong> {character.hp}</div>
               <div><strong>Pips:</strong> {character.pips}</div>
-              <div><strong>Стартовые предметы:</strong></div>
+              <div><strong>{t('charGen.startItems')}</strong></div>
               <ul className="list-disc list-inside ml-4 text-sm">
 	              {character.inventory.map((item, index) => (
                   <li key={index}>{item.name}</li>
@@ -146,18 +147,18 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
           {/* Детали внешности */}
           <div className="bg-stone-50 p-4 rounded-lg">
             <div className="flex justify-between items-center mb-3">
-              <h4 className="font-medium text-stone-900">Внешность</h4>
+              <h4 className="font-medium text-stone-900">{t('charGen.appearance')}</h4>
               <button
                 onClick={() => handleReroll('details')}
                 className="text-sm text-blue-600 hover:text-blue-800"
               >
-                🎲 Перебросить
+                🎲 {t('charGen.reroll')}
               </button>
             </div>
             <div className="space-y-2">
-              <div><strong>Знак рождения:</strong> {character.birthsign.sign}</div>
-              <div><strong>Шерсть:</strong> {character.coat.color}, {character.coat.pattern}</div>
-              <div><strong>Особенность:</strong> {character.physicalDetail}</div>
+              <div><strong>{t('charGen.birthsign')}</strong> {character.birthsign.sign}</div>
+              <div><strong>{t('charGen.coat')}</strong> {character.coat.color}, {character.coat.pattern}</div>
+              <div><strong>{t('charGen.feature')}</strong> {character.physicalDetail}</div>
             </div>
           </div>
 
@@ -168,7 +169,7 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
                 onClick={handleGenerate}
                 className="bg-stone-600 hover:bg-stone-700 text-white px-4 py-2 rounded-md"
               >
-                Создать нового
+                {t('charGen.createNew')}
               </button>
             </div>
 
@@ -177,14 +178,14 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
                 onClick={onCancel}
                 className="bg-stone-300 hover:bg-stone-400 text-stone-700 px-4 py-2 rounded-md"
               >
-                Отмена
+                {t('charGen.cancel')}
               </button>
               <button
                 onClick={handleSave}
                 disabled={!character.name.trim()}
                 className="bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-4 py-2 rounded-md"
               >
-                Создать персонажа
+                {t('charGen.create')}
               </button>
             </div>
           </div>
