@@ -14,18 +14,15 @@ import {
   GiCrystalBall
 } from 'react-icons/gi';
 
-// Функция для конвертации React-иконки в SVG data URL
 export const iconToDataUrl = (IconComponent: React.ComponentType<any>, size: number = 24, color: string = '#000000') => {
   const svgString = renderToStaticMarkup(
     <IconComponent size={size} color={color} />
   );
 
-  // Создаем data URL из SVG
   const dataUrl = `data:image/svg+xml;base64,${btoa(svgString)}`;
   return dataUrl;
 };
 
-// Предварительно созданные data URLs для иконок
 export const iconDataUrls = {
   countryside: iconToDataUrl(GiWheat, 24, '#000000'),
   forest: iconToDataUrl(GiPineTree, 24, '#000000'),
@@ -40,7 +37,6 @@ export const iconDataUrls = {
   landmark_default: iconToDataUrl(GiCrystalBall, 26, '#000000'),
 };
 
-// Функция для получения иконки по типу гекса
 export const getHexTypeIconUrl = (hexTypeId: string): string => {
   const iconMap: { [key: string]: string } = {
     'countryside': iconDataUrls.countryside,
@@ -53,7 +49,6 @@ export const getHexTypeIconUrl = (hexTypeId: string): string => {
   return iconMap[hexTypeId] || iconDataUrls.countryside;
 };
 
-// Функция для получения иконки ориентира
 export const getLandmarkIconUrl = (landmarkName: string): string => {
   const name = landmarkName.toLowerCase();
 

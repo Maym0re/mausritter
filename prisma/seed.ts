@@ -26,7 +26,6 @@ async function seedHexDictionaries() {
     skipDuplicates: true,
   });
 
-  // Landmarks (объединяем все четыре массива)
   const allLandmarks = [
     ...COUNTRYSIDE_LANDMARKS,
     ...FOREST_LANDMARKS,
@@ -55,7 +54,6 @@ async function seedHexDictionaries() {
 }
 
 async function seedCharacterDictionaries() {
-  // Background — берём уникальные по имени
   const uniqueBackgrounds = Array.from(
     new Map(
       BACKGROUND_TABLE.map(b => [b.name, { name: b.name, itemA: b.itemA, itemB: b.itemB }]),
@@ -73,14 +71,12 @@ async function seedCharacterDictionaries() {
     skipDuplicates: true,
   });
 
-  // Coat — создадим все комбинации цветов и паттернов (у нас в схеме @@unique([color, pattern]))
   const coats = COAT_COLORS.flatMap(color => COAT_PATTERNS.map(pattern => ({ color, pattern })));
   await prisma.coat.createMany({
     data: coats,
     skipDuplicates: true,
   });
 
-  // Conditions
   await prisma.condition.createMany({
     data: CONDITIONS.map(c => ({
       id: c.id,
@@ -94,7 +90,6 @@ async function seedCharacterDictionaries() {
 }
 
 async function seedTimeDictionaries() {
-  // Преобразуем ключ сезона в enum Prisma (SPRING/SUMMER/AUTUMN/WINTER)
   const toSeasonEnum = (s: 'spring' | 'summer' | 'autumn' | 'winter'): SeasonName => {
     switch (s) {
       case 'spring': return SeasonName.SPRING;
@@ -104,7 +99,6 @@ async function seedTimeDictionaries() {
     }
   };
 
-  // WeatherEntry
   const weatherRows: Prisma.WeatherEntryCreateManyInput[] = [];
   (Object.keys(WEATHER_TABLES) as Array<'spring'|'summer'|'autumn'|'winter'>).forEach(seasonKey => {
     const season = toSeasonEnum(seasonKey)!;
@@ -120,7 +114,6 @@ async function seedTimeDictionaries() {
     });
   }
 
-  // SeasonalEvent
   const eventRows: Prisma.SeasonalEventCreateManyInput[] = [];
   (Object.keys(SEASONAL_EVENTS) as Array<'spring'|'summer'|'autumn'|'winter'>).forEach(seasonKey => {
     const season = toSeasonEnum(seasonKey)!;
@@ -140,20 +133,16 @@ async function seedTimeDictionaries() {
 async function main() {
   console.log('Starting database seeding...');
 
-  // Гоним в транзакциях батчами (по смыслу)
   await prisma.$transaction([
-    // сначала словари для персонажей (не зависят от карты)
-    prisma.$executeRaw`SELECT 1`, // placeholder, чтобы не передавать пустые trx
+    prisma.$executeRaw`SELECT 1`
   ]);
   await seedCharacterDictionaries();
 
-  // затем словари карты (landmarks ссылаются на hexType)
   await prisma.$transaction([
     prisma.$executeRaw`SELECT 1`,
   ]);
   await seedHexDictionaries();
 
-  // затем таблицы времени/погоды/сезонных событий
   await seedTimeDictionaries();
 
   console.log('Database seeding completed!');

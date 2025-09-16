@@ -5,42 +5,41 @@ const prisma = new PrismaClient();
 async function seedMapData() {
   console.log('Seeding map data...');
 
-  // Создаем типы гексов
   const hexTypes = [
     {
       id: 'countryside',
       name: 'Countryside',
-      color: '#F5F5F5', // Светло-серый
+      color: '#F5F5F5',
       description: 'Open fields and farmland'
     },
     {
       id: 'forest',
       name: 'Forest',
-      color: '#D3D3D3', // Средне-серый
+      color: '#D3D3D3',
       description: 'Dense woodland'
     },
     {
       id: 'river',
       name: 'River',
-      color: '#C0C0C0', // Серебристый
+      color: '#C0C0C0',
       description: 'Flowing water'
     },
     {
       id: 'human_town',
       name: 'Human Town',
-      color: '#A9A9A9', // Темно-серый
+      color: '#A9A9A9',
       description: 'Human settlement'
     },
     {
       id: 'mountains',
       name: 'Mountains',
-      color: '#808080', // Серый
+      color: '#808080',
       description: 'Rocky peaks and cliffs'
     },
     {
       id: 'swamp',
       name: 'Swamp',
-      color: '#696969', // Dim gray
+      color: '#696969',
       description: 'Marshy wetlands'
     }
   ];
@@ -53,7 +52,6 @@ async function seedMapData() {
     });
   }
 
-  // Создаем ориентиры для countryside
   const countrysideLandmarks = [
     {
       id: 'anthill',
@@ -117,7 +115,6 @@ async function seedMapData() {
     }
   ];
 
-  // Создаем ориентиры для forest
   const forestLandmarks = [
     {
       id: 'abandoned_shack',
@@ -179,7 +176,6 @@ async function seedMapData() {
     });
   }
 
-  // Создаем детали ориентиров
   const landmarkDetails = [
     {
       id: 'detail_treasure',
@@ -216,7 +212,6 @@ async function seedMapData() {
     });
   }
 
-  // Создаем поселения
   const settlements = [
     {
       id: 'acorndale',

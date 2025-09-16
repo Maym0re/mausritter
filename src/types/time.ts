@@ -11,7 +11,6 @@ export type GameTimeCore = Pick<PrismaGameTime, 'rounds' | 'turns' | 'watches' |
 
 export type WeatherEntryLight = Pick<WeatherEntry, 'roll' | 'weather' | 'isPoorCondition'>;
 
-// Система времени из SRD
 export type TimeScale = 'round' | 'turn' | 'watch';
 
 
@@ -20,12 +19,6 @@ export interface Season {
   weatherTable: WeatherEntry[];
   events: SeasonalEvent[];
 }
-
-// export interface WeatherEntry {
-//   roll: number;
-//   weather: string;
-//   isPoorCondition: boolean; // Требует STR сейв или Exhausted
-// }
 
 export interface SeasonalEvent {
   description: string;
@@ -41,7 +34,6 @@ export interface TravelState {
   isPoorWeather: boolean;
 }
 
-// Погодные таблицы из SRD
 export const WEATHER_TABLES: Record<Season['name'], WeatherEntryLight[]> = {
   spring: [
     { roll: 2, weather: 'Rain storm', isPoorCondition: true },
@@ -97,7 +89,6 @@ export const WEATHER_TABLES: Record<Season['name'], WeatherEntryLight[]> = {
   ]
 };
 
-// Сезонные события из SRD
 export const SEASONAL_EVENTS: Record<Season['name'], SeasonalEvent[]> = {
   spring: [
     { description: 'Flooding washes away an important landmark' },
@@ -133,7 +124,6 @@ export const SEASONAL_EVENTS: Record<Season['name'], SeasonalEvent[]> = {
   ]
 };
 
-// Типы отдыха из SRD
 export type RestType = 'short' | 'long' | 'full';
 
 export interface RestResult {
@@ -144,12 +134,11 @@ export interface RestResult {
   timeTaken: string;
 }
 
-// Случайные встречи
 export interface EncounterCheck {
   timeScale: TimeScale;
   location: 'dungeon' | 'wilderness';
   shouldRoll: boolean;
-  frequency: number; // Каждые N ходов/часов
+  frequency: number; //Every N turns
 }
 
 export const ENCOUNTER_FREQUENCIES: Record<string, EncounterCheck> = {
@@ -157,17 +146,16 @@ export const ENCOUNTER_FREQUENCIES: Record<string, EncounterCheck> = {
     timeScale: 'turn',
     location: 'dungeon',
     shouldRoll: true,
-    frequency: 3 // Каждые 3 хода
+    frequency: 3 // every 3 turns
   },
   wildernessTravel: {
     timeScale: 'watch',
     location: 'wilderness',
     shouldRoll: true,
-    frequency: 2 // Утром и вечером
+    frequency: 2 // Morning and evening
   }
 };
 
-// Система усталости и истощения
 export interface FatigueState {
   hasRestedToday: boolean;
   consecutiveDaysWithoutRest: number;

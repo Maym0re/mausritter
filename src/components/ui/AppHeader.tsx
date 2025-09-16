@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
+import { t } from '@/i18n';
 
 export function AppHeader() {
   const { data: session } = useSession();
@@ -17,7 +18,7 @@ export function AppHeader() {
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
               className="px-3 py-1 text-xs rounded bg-stone-800 text-white hover:bg-stone-700"
-            >Выйти</button>
+            >{t('auth.logout')}</button>
           </>
         )}
       </div>

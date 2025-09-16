@@ -110,7 +110,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Создаем персонажа
     const {
       id,
       playerId,

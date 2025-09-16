@@ -42,7 +42,6 @@ export type BackgroundInitial = BackgroundLite & {
 export type InventoryItemLite = Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt' | 'characterId'>;
 export type ConditionLite = Omit<Condition, 'createdAt' | 'updatedAt'>;
 
-// Таблицы генерации из SRD
 export const BACKGROUND_TABLE: BackgroundInitial[] = [
 	{hp: 1, pips: 1, name: "Test subject", itemA: "Spell: Magic missile", itemB: "Lead coat (Heavy armour)"},
 	{hp: 1, pips: 2, name: "Kitchen forager", itemA: "Shield & jerkin (Light armour)", itemB: "Cookpots"},
@@ -103,7 +102,6 @@ export const PHYSICAL_DETAILS = [
 	"Cropped tail", "Whip-like tail", "Tufted tail", "Stubby tail", "Prehensile tail", "Curly tail"
 ];
 
-// Условия из SRD
 export const CONDITIONS: ConditionLite[] = [
 	{
 		id: 'injured',
@@ -142,7 +140,6 @@ export const CONDITIONS: ConditionLite[] = [
 	}
 ];
 
-// Базовое снаряжение
 export const BASIC_EQUIPMENT: InventoryItemLite[] = [
 	{
 		name: 'Torches',
@@ -168,7 +165,6 @@ export const BASIC_EQUIPMENT: InventoryItemLite[] = [
 	}
 ];
 
-// Оружие
 export const WEAPONS: InventoryItemLite[] = [
 	{
 		name: 'Dagger',

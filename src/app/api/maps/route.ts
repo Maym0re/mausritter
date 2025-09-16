@@ -3,7 +3,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-// GET /api/maps?campaignId=xxx - получить карту кампании
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -18,7 +17,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Campaign ID required' }, { status: 400 });
     }
 
-    // Проверяем доступ к кампании
     const campaign = await prisma.campaign.findFirst({
       where: {
         id: campaignId,
@@ -33,7 +31,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Campaign not found' }, { status: 404 });
     }
 
-    // Получаем карту с ячейками
     const hexMap = await prisma.hexMap.findUnique({
       where: { campaignId },
       include: {
@@ -46,11 +43,10 @@ export async function GET(request: NextRequest) {
           }
         },
         images: true,
-        markers: true // добавлено
+        markers: true
       }
     });
 
-    // Если карты нет - возвращаем пустую структуру
     if (!hexMap) {
       return NextResponse.json({
         id: null,
@@ -60,7 +56,7 @@ export async function GET(request: NextRequest) {
         centerY: 2,
         cells: [],
         images: [],
-        markers: [] // добавлено
+        markers: []
       });
     }
 
@@ -71,7 +67,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/maps - создать новую карту для кампании
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -86,7 +81,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Campaign ID required' }, { status: 400 });
     }
 
-    // Проверяем, что пользователь - мастер кампании
     const campaign = await prisma.campaign.findFirst({
       where: {
         id: campaignId,
@@ -98,7 +92,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Only GM can create maps' }, { status: 403 });
     }
 
-    // Проверяем, не существует ли уже карта для этой кампании
     const existingMap = await prisma.hexMap.findUnique({
       where: { campaignId }
     });
@@ -107,7 +100,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Map already exists for this campaign' }, { status: 400 });
     }
 
-    // Создаем карту
     const hexMap = await prisma.hexMap.create({
       data: {
         campaignId,

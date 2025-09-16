@@ -35,7 +35,7 @@ export default function HomePage() {
         setCampaigns(data);
       }
     } catch (error) {
-      console.error('Ошибка загрузки кампаний:', error);
+      console.error('Failed to load campaigns:', error);
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +62,7 @@ export default function HomePage() {
         setNewCampaignDescription('');
       }
     } catch (error) {
-      console.error('Ошибка создания кампании:', error);
+      console.error('Failed to create campaign:', error);
     }
   };
 
@@ -83,7 +83,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-stone-50">
-      {/* Основное содержимое без локального хедера (используется глобальный AppHeader) */}
+      {/* Main content without local header (global AppHeader used) */}
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
@@ -158,7 +158,7 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* Быстрые ссылки */}
+        {/* Quick links */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
           <Link
             href="/tools"
@@ -197,7 +197,7 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* Модальное окно создания кампании */}
+      {/* Create campaign modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full p-6">

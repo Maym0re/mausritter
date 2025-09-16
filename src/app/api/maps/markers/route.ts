@@ -15,10 +15,8 @@ export async function POST(req: NextRequest) {
     }
     const map = await prisma.hexMap.findUnique({ where: { id: hexMapId }, include: { campaign: true, markers: true } });
     if (!map) return NextResponse.json({ error: 'Map not found' }, { status: 404 });
-    // Только ГМ может добавлять метки
     if (map.campaign.gmId !== session.user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     if (map.markers.length >= 20) return NextResponse.json({ error: 'Marker limit reached' }, { status: 409 });
-    // (лимит 20 меток реализован здесь; для обновления/удаления см. файл [id]/route.ts)
 
     const created = await prisma.mapMarker.create({ data: { hexMapId, image, x, y, z } });
     return NextResponse.json(created, { status: 201 });

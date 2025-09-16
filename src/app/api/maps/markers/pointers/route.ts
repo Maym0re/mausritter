@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 
-// GET /api/maps/markers/pointers - список доступных файлов в public/images/pointers
 export async function GET(_req: NextRequest) {
   try {
     const dir = path.join(process.cwd(), 'public', 'images', 'pointers');

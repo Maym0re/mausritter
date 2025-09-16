@@ -50,7 +50,6 @@ export async function PUT(
       )
     }
 
-    // Обновляем персонажа - исключаем только системные поля и связанные объекты
     const {
       playerId,
       campaignId,

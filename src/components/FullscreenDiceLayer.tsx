@@ -178,7 +178,7 @@ export default function FullscreenDiceLayer() {
       {/* Canvas container */}
       <div
         id={containerId}
-        className="fixed top-0 left-0 w-screen h-screen z-[400]" // pointer-events отключены стилем внутри
+        className="fixed top-0 left-0 w-screen h-screen z-[400]"
         style={{ background: 'transparent' }}
       />
 

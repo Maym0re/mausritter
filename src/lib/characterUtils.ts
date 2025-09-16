@@ -365,7 +365,7 @@ export function moveItemToSlot(
   const item = inventory[itemIndex];
   const newInventory = [...inventory];
 
-  // Проверяем, есть ли место в целевом слоте
+  // Check if there is space in target slot
   const slotCapacity = {
     PAWS: 2,
     BODY: 2,
@@ -379,7 +379,7 @@ export function moveItemToSlot(
     return { success: false, inventory, error: 'Not enough space in target slot' };
   }
 
-  // Обновляем предмет
+  // Update item
   newInventory[itemIndex] = {
     ...item,
     slotType: newSlotType,

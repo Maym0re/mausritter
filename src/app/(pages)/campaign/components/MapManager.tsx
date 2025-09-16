@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { t } from '@/i18n';
 
 interface MapManagerProps {
   campaignId: string;
@@ -29,11 +30,11 @@ export function MapManager({ campaignId }: MapManagerProps) {
       } else {
         const error = await response.json();
         console.error('Map creation error:', error);
-        alert(`Ошибка создания карты: ${error.error || 'Неизвестная ошибка'}`);
+        alert(`${t('map.manager.errorCreate')}: ${error.error || 'Error'}`);
       }
     } catch (error) {
       console.error('Failed to create map:', error);
-      alert('Ошибка создания карты');
+      alert(t('map.manager.errorCreate'));
     } finally {
       setIsCreating(false);
       setShowOptions(false);
@@ -112,11 +113,11 @@ export function MapManager({ campaignId }: MapManagerProps) {
       } else {
         const error = await mapResponse.json();
         console.error('Map creation error:', error);
-        alert(`Ошибка создания карты: ${error.error || 'Неизвестная ошибка'}`);
+        alert(`${t('map.manager.errorGenerate')}: ${error.error || 'Error'}`);
       }
     } catch (error) {
       console.error('Failed to generate random map:', error);
-      alert('Ошибка генерации карты');
+      alert(t('map.manager.errorGenerate'));
     } finally {
       setIsCreating(false);
       setShowOptions(false);
@@ -135,7 +136,7 @@ export function MapManager({ campaignId }: MapManagerProps) {
         disabled={isCreating}
         className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
       >
-        {isCreating ? 'Создание...' : 'Управление картой'}
+        {isCreating ? t('map.manager.creating') : t('map.manager.title')}
       </button>
 
       {showOptions && (
@@ -146,14 +147,14 @@ export function MapManager({ campaignId }: MapManagerProps) {
               disabled={isCreating}
               className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
-              Создать пустую карту
+              {t('map.manager.createEmpty')}
             </button>
             <button
               onClick={handleGenerateRandomMap}
               disabled={isCreating}
               className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
-              Генерировать случайную карту
+              {t('map.manager.generateRandom')}
             </button>
           </div>
         </div>

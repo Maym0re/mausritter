@@ -55,30 +55,25 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
       return;
     }
 
-    // Удаляем предмет из исходного инвентаря
     const removeResult = removeItemFromInventory(sourceChar.inventory, draggedItem.item.name);
     if (!removeResult.success) {
       return;
     }
 
-    // Перемещаем предмет в целевой слот
     const moveResult = moveItemToSlot(removeResult.inventory, draggedItem.item.name, targetSlotType, targetSlotIndex);
 
     if (moveResult.success) {
-      // Если это один и тот же персонаж
       if (draggedItem.sourceCharacterId === targetCharacterId) {
         onCharacterUpdate(targetCharacterId, {
           ...targetChar,
           inventory: moveResult.inventory
         });
       } else {
-        // Разные персонажи
         onCharacterUpdate(draggedItem.sourceCharacterId, {
           ...sourceChar,
           inventory: removeResult.inventory
         });
 
-        // Добавляем предмет в инвентарь целевого персонажа
         const addResult = addItemToInventory(targetChar.inventory, draggedItem.item);
         if (addResult.success) {
           onCharacterUpdate(targetCharacterId, {
@@ -200,7 +195,6 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     <div className="max-w-6xl mx-auto p-6 bg-amber-50 rounded-lg border-2 border-amber-200">
       <h2 className="text-3xl font-bold text-amber-900 mb-6 text-center">🎒 Advanced Inventory Manager</h2>
 
-      {/* Выбор персонажа */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-amber-700 mb-2">Select Character</label>
         <select
@@ -218,7 +212,6 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
 
       {selectedChar && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Основная информация персонажа */}
           <div className="lg:col-span-1">
             <CharacterInfo
               character={selectedChar}
@@ -226,7 +219,6 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
             />
           </div>
 
-          {/* Инвентарь */}
           <div className="lg:col-span-2">
             <InventoryGrid
               character={selectedChar}
@@ -242,12 +234,10 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
         </div>
       )}
 
-      {/* Модальное окно редактирования предмета */}
       {editingItem && (
         <ItemEditModal
           item={editingItem.item}
           onSave={(updatedItem) => {
-            // Обновляем предмет в инвентаре
             const character = characters.find(c => c.id === editingItem.characterId);
             if (character) {
               const updatedInventory = character.inventory.map(invItem => {
@@ -268,7 +258,6 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
         />
       )}
 
-      {/* Модальное окно добавления предмета */}
       {showAddItemModal && (
         <AddItemModal
           onAddItem={handleAddItem}
@@ -279,7 +268,6 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
   );
 }
 
-// Компонент информации о персонаже
 function CharacterInfo({
   character,
   onRemoveCondition
@@ -296,7 +284,6 @@ function CharacterInfo({
     <div className="bg-white rounded-lg p-4 border border-amber-200">
       <h3 className="text-xl font-bold text-amber-900 mb-4">{character.name}</h3>
 
-      {/* Статистика инвентаря */}
       <div className="mb-4 p-3 bg-gray-50 rounded">
         <div className="text-sm space-y-1">
           <div className="flex justify-between">
@@ -319,7 +306,6 @@ function CharacterInfo({
         </div>
       </div>
 
-      {/* Условия */}
       <div className="mb-4">
         <h4 className="font-bold text-amber-800 mb-2">Conditions</h4>
         <div className="space-y-2">
@@ -346,7 +332,6 @@ function CharacterInfo({
         </div>
       </div>
 
-      {/* Пипсы */}
       <div className="p-3 bg-yellow-50 rounded border border-yellow-200">
         <div className="flex justify-between items-center">
           <span className="font-medium text-yellow-800">Pips:</span>
@@ -357,7 +342,6 @@ function CharacterInfo({
   );
 }
 
-// Компонент сетки инвентаря
 function InventoryGrid({
   character,
   onDragStart,
@@ -379,7 +363,6 @@ function InventoryGrid({
 }) {
   const [showAddItemModal, setShowAddItemModal] = useState(false);
 
-  // Получаем структурированное представление инвентаря
   const inventorySlots = getInventorySlots(character.inventory);
 
   return (
@@ -394,7 +377,6 @@ function InventoryGrid({
         </button>
       </div>
 
-      {/* Слоты лап */}
       <InventorySection
         title="Paws (2 slots)"
         items={inventorySlots.paws}
@@ -410,7 +392,6 @@ function InventoryGrid({
         onEditItem={onEditItem}
       />
 
-      {/* Слоты тела */}
       <InventorySection
         title="Body (2 slots)"
         items={inventorySlots.body}
@@ -426,7 +407,6 @@ function InventoryGrid({
         onEditItem={onEditItem}
       />
 
-      {/* Слоты рюкзака */}
       <InventorySection
         title="Pack (6 slots)"
         items={inventorySlots.pack}
@@ -443,7 +423,6 @@ function InventoryGrid({
         onEditItem={onEditItem}
       />
 
-      {/* Модальное окно добавления предмета */}
       {showAddItemModal && (
         <AddItemModal
           onAddItem={onAddItem}
@@ -454,7 +433,6 @@ function InventoryGrid({
   );
 }
 
-// Компонент секции инвентаря
 function InventorySection({
   title,
   items,
@@ -484,17 +462,14 @@ function InventorySection({
   onRepairItem: (characterId: string, item: InventoryItem) => void;
   onEditItem: (item: InventoryItem) => void;
 }) {
-  // Создаем массив слотов с учетом максимального количества и размера предметов
   const slots: (InventoryItem | null)[] = [];
   let currentSlotIndex = 0;
 
   for (const item of items) {
-    // Добавляем предмет в текущий слот
     slots[currentSlotIndex] = item;
     currentSlotIndex += item.size;
   }
 
-  // Заполняем оставшиеся слоты пустыми
   while (slots.length < maxSlots) {
     slots.push(null);
   }
@@ -524,7 +499,6 @@ function InventorySection({
   );
 }
 
-// Компонент слота инвентаря
 function InventorySlot({
   item,
   slotIndex,
@@ -580,7 +554,6 @@ function InventorySlot({
               {item.type} • Size: {item.size}
             </div>
 
-            {/* Точки использования */}
             <div className="flex items-center gap-1 mb-1">
               <span className="text-xs">Usage:</span>
               {Array.from({ length: item.maxUsage ?? 0 }, (_, i) => (
@@ -604,7 +577,6 @@ function InventorySlot({
             )}
           </div>
 
-          {/* Контекстное меню */}
           {showContextMenu && (
             <div className="absolute top-0 right-0 bg-white border border-gray-300 rounded shadow-lg z-10">
               <button
@@ -652,7 +624,6 @@ function InventorySlot({
   );
 }
 
-// Модальное окно редактирования предмета
 function ItemEditModal({
   item,
   onSave,
@@ -747,7 +718,6 @@ function ItemEditModal({
   );
 }
 
-// Модальное окно добавления предмета
 function AddItemModal({
   onAddItem,
   onClose

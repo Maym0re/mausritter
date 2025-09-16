@@ -28,7 +28,6 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
       const r = await fetch(`/api/characters?campaignId=${campaignId}`);
       if (!r.ok) throw new Error(t('characters.loadError'));
       const data = await r.json();
-      // Сортировка: персонажи текущего пользователя сверху
       data.sort((a: FullCharacter, b: FullCharacter) => (a.playerId === currentUserId ? -1 : 1) - (b.playerId === currentUserId ? -1 : 1));
       setCharacters(data);
     } catch (e:any) {

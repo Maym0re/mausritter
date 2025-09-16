@@ -27,7 +27,6 @@ export function TimeTracker({
   const [timeManager] = useState(() => {
     const tm = new GameTimeManager();
     if (initialTime) {
-      // Используем новый метод setTime
       tm.setTime(initialTime);
     }
     return tm;
@@ -36,7 +35,6 @@ export function TimeTracker({
   const [currentWeather, setCurrentWeather] = useState<WeatherEntryLight | null>(initialWeather || null);
   const [todaysEvent, setTodaysEvent] = useState<string | null>(initialEvent || null);
 
-  // Обновляем время каждую секунду для отображения
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(timeManager.getCurrentTime());
@@ -45,14 +43,12 @@ export function TimeTracker({
     return () => clearInterval(interval);
   }, [timeManager]);
 
-  // Генерируем погоду при новом дне
   useEffect(() => {
     if (currentTime.days > 0 && !currentWeather) {
       const season = timeManager.getCurrentSeason();
       const weather = rollWeather(season);
       setCurrentWeather(weather);
 
-      // Генерируем сезонное событие с шансом 1 из 6
       if (Math.random() < 1/6) {
         const event = rollSeasonalEvent(season);
         setTodaysEvent(event);
@@ -74,13 +70,11 @@ export function TimeTracker({
     }
     setCurrentTime(timeManager.getCurrentTime());
 
-    // При новом дне сбрасываем погоду
     if (type === 'watches' && amount >= 4) {
       setCurrentWeather(null);
       setTodaysEvent(null);
     }
 
-    // Вызываем коллбэк обновления времени
     if (onTimeUpdate) {
       onTimeUpdate(timeManager.getCurrentTime(), timeManager.getCurrentSeason(), currentWeather, todaysEvent);
     }
@@ -95,7 +89,6 @@ export function TimeTracker({
 
     onCharacterUpdate(characterId, updatedCharacter);
 
-    // Добавляем время отдыха
     switch (restType) {
       case 'short':
         timeManager.addTurns(1);
@@ -104,7 +97,7 @@ export function TimeTracker({
         timeManager.addWatches(1);
         break;
       case 'full':
-        timeManager.addWatches(28); // Неделя = 28 периодов
+        timeManager.addWatches(28);
         break;
     }
 
@@ -127,7 +120,6 @@ export function TimeTracker({
         <p className="text-stone-700">{t('timeTracker.subtitle')}</p>
       </div>
 
-      {/* Текущее время */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-lg p-4 border border-stone-200 text-center">
           <h3 className="font-bold text-stone-900 mb-2">{t('timeTracker.currentTime')}</h3>
@@ -164,7 +156,6 @@ export function TimeTracker({
         </div>
       </div>
 
-      {/* Добавление времени */}
       <div className="bg-white rounded-lg p-6 border border-stone-200 mb-6">
         <h3 className="font-bold text-stone-900 mb-4">{t('timeTracker.addTime')}</h3>
 
@@ -225,7 +216,6 @@ export function TimeTracker({
         </div>
       </div>
 
-      {/* Сезонное событие */}
       {todaysEvent && (
         <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200 mb-6">
           <h3 className="font-bold text-yellow-900 mb-2">📅 {t('timeTracker.todayEvent')}</h3>
@@ -239,7 +229,6 @@ export function TimeTracker({
         </div>
       )}
 
-      {/* Отдых персонажей */}
       {characters.length > 0 && (
         <div className="bg-white rounded-lg p-6 border border-stone-200">
           <h3 className="font-bold text-stone-900 mb-4">{t('timeTracker.characterRest')}</h3>
@@ -286,7 +275,6 @@ export function TimeTracker({
         </div>
       )}
 
-      {/* Справочная информация */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
         <h4 className="font-bold text-gray-900 mb-2">{t('timeTracker.reference')}</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">

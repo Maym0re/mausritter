@@ -3,7 +3,7 @@ export interface HexType {
   name: string;
   color: string;
   description: string;
-  icon?: string; // Добавляем поле для иконки
+  icon?: string;
 }
 
 export interface Landmark {
@@ -42,7 +42,7 @@ export interface HexData {
   isRevealed: boolean;
   notes: string;
   customName?: string;
-  masterNotes?: string; // скрыто для игроков
+  masterNotes?: string;
 }
 
 export interface MapState {
@@ -51,53 +51,51 @@ export interface MapState {
   mode: 'master' | 'player';
 }
 
-// Предопределенные типы из SRD с черно-белой палитрой
 export const HEX_TYPES: HexType[] = [
   {
     id: 'countryside',
     name: 'Countryside',
-    color: '#F5F5F5', // Светло-серый
+    color: '#F5F5F5',
     description: 'Open fields and farmland',
     icon: 'GiWheat'
   },
   {
     id: 'forest',
     name: 'Forest',
-    color: '#D3D3D3', // Средне-серый
+    color: '#D3D3D3',
     description: 'Dense woodland',
     icon: 'GiPineTree'
   },
   {
     id: 'river',
     name: 'River',
-    color: '#C0C0C0', // Серебристый
+    color: '#C0C0C0',
     description: 'Flowing water',
     icon: 'GiWaterDrop'
   },
   {
     id: 'human_town',
     name: 'Human Town',
-    color: '#A9A9A9', // Темно-серый
+    color: '#A9A9A9',
     description: 'Human settlement',
     icon: 'GiTownHall'
   },
   {
     id: 'mountains',
     name: 'Mountains',
-    color: '#808080', // Серый
+    color: '#808080',
     description: 'Rocky peaks and cliffs',
     icon: 'GiMountainPeak'
   },
   {
     id: 'swamp',
     name: 'Swamp',
-    color: '#696969', // Dim gray
+    color: '#696969',
     description: 'Marshy wetlands',
     icon: 'GiSwamp'
   }
 ];
 
-// Полный список ориентиров из SRD
 export const COUNTRYSIDE_LANDMARKS: Landmark[] = [
   { id: 'anthill', name: 'Anthill', description: 'A large mound of earth teeming with industrious ants', hexTypeId: 'countryside' },
   { id: 'beech_split', name: 'Beech, lightning split', description: 'A massive beech tree split by ancient lightning', hexTypeId: 'countryside' },
@@ -190,7 +188,6 @@ export const HUMAN_TOWN_LANDMARKS: Landmark[] = [
   { id: 'woodshed', name: 'Woodshed', description: 'A small building storing timber', hexTypeId: 'human_town' },
 ];
 
-// Детали ориентиров по категориям из SRD
 export const LANDMARK_DETAILS: LandmarkDetail[] = [
   // Mouse settlements
   { id: 'mouse_settlement', description: 'Mouse settlement...' },

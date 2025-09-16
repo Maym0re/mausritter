@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-// GET /api/maps/types - получить все типы гексов
 export async function GET() {
   try {
     const hexTypes = await prisma.hexType.findMany({

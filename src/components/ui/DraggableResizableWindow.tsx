@@ -90,7 +90,6 @@ export function DraggableResizableWindow({
           <button
             onClick={onClose}
             className="text-stone-300 hover:text-white transition-colors"
-            aria-label="Закрыть"
           >
             ✕
           </button>

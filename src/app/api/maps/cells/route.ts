@@ -3,7 +3,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-// PUT /api/maps/cells - обновить ячейку карты
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -42,7 +41,6 @@ export async function PUT(request: NextRequest) {
     const isPlayer = campaign.players.some(p => p.userId === session.user.id);
     if (!isGM && !isPlayer) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
-    // Игрок может менять только notes
     if (!isGM) {
       const attemptedOtherChange = [hexTypeId, landmarkId, landmarkDetailId, settlementId, customName, masterNotes, isRevealed]
         .some(v => v !== undefined && v !== null);
@@ -51,7 +49,6 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    // masterNotes и isRevealed может менять только ГМ (доп.проверка)
     if (!isGM && (masterNotes !== undefined || isRevealed !== undefined)) {
       return NextResponse.json({ error: 'Only GM can edit masterNotes or isRevealed' }, { status: 403 });
     }
@@ -94,7 +91,6 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// POST /api/maps/cells - создать новую ячейку
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -109,7 +105,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Проверяем доступ к карте
     const hexMap = await prisma.hexMap.findUnique({
       where: { id: hexMapId },
       include: { campaign: true }
@@ -119,7 +114,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Map not found' }, { status: 404 });
     }
 
-    // Проверяем, что пользователь - мастер кампании
     const campaign = await prisma.campaign.findFirst({
       where: {
         id: hexMap.campaignId,
@@ -131,7 +125,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Only GM can create hex cells' }, { status: 403 });
     }
 
-    // Создаем ячейку
     const hexCell = await prisma.hexCell.create({
       data: {
         hexMapId,
@@ -157,7 +150,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE /api/maps/cells - удалить ячейку карты
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -172,7 +164,6 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Проверяем карту и кампанию
     const hexMap = await prisma.hexMap.findUnique({
       where: { id: hexMapId },
       include: { campaign: true }
@@ -181,12 +172,10 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Map not found' }, { status: 404 });
     }
 
-    // Только ГМ
     if (hexMap.campaign.gmId !== session.user.id) {
       return NextResponse.json({ error: 'Only GM can delete hex cells' }, { status: 403 });
     }
 
-    // Удаляем
     await prisma.hexCell.delete({
       where: {
         hexMapId_q_r_s: { hexMapId, q, r, s }

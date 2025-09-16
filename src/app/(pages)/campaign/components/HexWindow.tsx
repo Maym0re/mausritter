@@ -51,7 +51,6 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
     isRevealed: hex.isRevealed,
   }));
 
-  // Обновление при смене hex
   useEffect(() => {
     setForm({
       customName: hex.customName || '',

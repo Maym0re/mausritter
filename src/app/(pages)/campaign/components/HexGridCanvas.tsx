@@ -66,20 +66,14 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const [selectedPointer, setSelectedPointer] = useState<string | null>(null);
 	const [markers, setMarkers] = useState<{ id: string; image: string; x: number; y: number; z: number }[]>([]);
 	const markersAddingRef = useRef(false);
-	// Визуальный призрак во время drag&drop
 	const [dragPreview, setDragPreview] = useState<{name: string; x: number; y: number} | null>(null);
-	// Удаляем: dragPointerRef, dragImageRef
-	// const dragPointerRef = useRef<string | null>(null);
-	// const dragImageRef = useRef<HTMLCanvasElement | null>(null);
 	const markersPanelRef = useRef<HTMLDivElement | null>(null);
 
-	// Загрузка изображений фонов (один слой на гекс)
 	const [imgCountryside] = useImage('/images/hexes/hex-vilage.webp');
 	const [imgForest] = useImage('/images/hexes/hex-forest.webp');
 	const [imgRiver] = useImage('/images/hexes/hex-river.webp');
 	const [imgCity] = useImage('/images/hexes/hex-city.webp');
 	const [imgBlank] = useImage('/images/hexes/hex-blank.webp');
-	// Составной фон заголовка
 	const [imgTitleLeft] = useImage('/images/hexes/hex-title-left.webp');
 	const [imgTitleMiddle] = useImage('/images/hexes/hex-title-middle.webp');
 	const [imgTitleRight] = useImage('/images/hexes/hex-title-right.webp');
@@ -105,13 +99,10 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const imagesLayerRef = useRef<CanvasImagesLayerHandle | null>(null);
 	const toast = useToast();
 
-	// refs групп гексов для анимации
 	const hexGroupRefs = useRef<Record<string, Konva.Group>>({});
 
-	// После всех предыдущих хуков, чтобы порядок оставался стабильным при хот-релоаде
 	const HEX_HEIGHT = useMemo(() => Math.sqrt(3) * radius, [radius]);
 
-	// Контекст для точного измерения текста
 	const measureCtxRef = useRef<CanvasRenderingContext2D | null>(null);
 	useEffect(() => {
 		const canvas = document.createElement('canvas');
@@ -124,7 +115,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		return ctx.measureText(text).width;
 	}, []);
 
-	// Загрузка данных карты
 	const loadMapData = useCallback(async () => {
 		try {
 			setLoading(true);
@@ -170,7 +160,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		}
 	}, []);
 
-	// Теперь эффект после объявлений
 	useEffect(() => {
 		if (campaignId) {
 			loadMapData();
@@ -183,7 +172,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		const upd = () => {
 			const w = window.innerWidth;
 			const h = window.innerHeight;
-			const header = 74; // актуальная высота верхней пане��и
+			const header = 74;
 			const avail = h - header;
 			setCanvasSize({width: w, height: Math.max(avail, 400)});
 			setPos({x: w / 2, y: Math.max(avail, 400) / 2});
@@ -249,10 +238,8 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			return {...p, hexes: nh};
 		});
 		await updateHexCell(k, data);
-		// оставляем окно открытым для последовательного редактирования
 	}, [updateHexCell]);
 
-	// Удаление гекса (перенесено выше ранних return)
 	const handleHexDelete = useCallback(async (k: string) => {
 		if (!mapData?.id) return;
 		const hex = mapState.hexes.get(k);
@@ -274,7 +261,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		}
 	}, [mapData?.id, mapState.hexes]);
 
-	// Создание одного нового гекса по координатам (примыкающего)
 	const createHexAt = useCallback(async (q: number, r: number) => {
 		if (!mapData?.id) return;
 		const key = hexKey(q, r);
@@ -310,7 +296,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		}
 	}, [mapData?.id, mapState.hexes, mode, onAddHexModeChange]);
 
-	// Потенциальные координаты для добавления (граница)
 	const potentialHexes = useMemo(() => {
 		if (!isAddHexMode) return [] as { q: number; r: number }[];
 		const occupied = mapState.hexes;
@@ -325,11 +310,9 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 				}
 			});
 		});
-		// Можно фильтровать по count>=1 (у нас всегда так) — оставляем всё
 		return Array.from(border.values()).map(v => ({q: v.q, r: v.r}));
 	}, [isAddHexMode, mapState.hexes]);
 
-	// Загрузка списка доступных изображений маркеров при открытии панели
 	useEffect(() => {
 		if (markersPanelOpen && pointerImages.length === 0) {
 			fetch('/api/maps/markers/pointers')
@@ -340,7 +323,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		if (!markersPanelOpen) setSelectedPointer(null);
 	}, [markersPanelOpen, pointerImages.length]);
 
-	// Работа с метками
 	const addMarker = useCallback(async (image: string, x: number, y: number) => {
 		if (!mapData?.id) return;
 		try {
@@ -370,7 +352,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		fetch(`/api/maps/markers/${id}`, { method: 'DELETE' }).catch(()=>{});
 	}, []);
 
-	// Кастомный старт перетаскивания метки (без HTML5 ghost)
 	const startPointerDrag = useCallback((name: string, clientX: number, clientY: number) => {
 		const stage = stageRef.current;
 		if (!stage) return;
@@ -381,7 +362,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		setDragPreview({name, x, y});
 	}, []);
 
-	// Глобальные обработчики для кастомного DnD
 	useEffect(() => {
 		if (!dragPreview) return;
 		const move = (e: MouseEvent) => {
@@ -393,12 +373,10 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			setDragPreview(p => p ? {...p, x, y} : p);
 		};
 		const up = (e: MouseEvent) => {
-			// Проверяем панель – если внутри, отменяем
 			if (markersPanelRef.current && e.target && markersPanelRef.current.contains(e.target as Node)) {
 				setDragPreview(null);
 				return cleanup();
 			}
-			// Добавляем метку если внутри канваса
 			const stage = stageRef.current; if (stage) {
 				const rect = stage.container().getBoundingClientRect();
 				if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
@@ -423,7 +401,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		return cleanup;
 	}, [dragPreview, addMarker]);
 
-	// Отображение загрузки
 	if (loading) {
 		return (
 			<div className="flex items-center justify-center h-full">
@@ -435,7 +412,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		);
 	}
 
-	// Если карты нет и это не мастер
 	if (!mapData?.id && mode === 'player') {
 		return (
 			<div className="flex items-center justify-center h-full">
@@ -447,7 +423,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		);
 	}
 
-	// Если карты нет и это мастер
 	if (!mapData?.id && mode === 'master') {
 		return (
 			<div className="flex items-center justify-center h-full">
@@ -478,15 +453,14 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			case 'human_town':
 				return imgCity;
 			case 'mountains':
-				return imgForest; // временный выбор
+				return imgForest;
 			case 'swamp':
-				return imgCountryside; // временный выбор
+				return imgCountryside;
 			default:
 				return imgBlank;
 		}
 	};
 
-	// Рендер одного изображения внутри гекса с клипом
 	const renderHexImage = (img: HTMLImageElement | undefined, x: number, y: number) => {
 		if (!img) return null;
 		return (
@@ -508,27 +482,21 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		);
 	};
 
-	// Рендер лейбла (составной свиток) при наведении или выборе — компактный вариант
 	const renderHexLabel = (hex: HexData, x: number, y: number) => {
 		const fontSize = 11;
-		const paddingX = 6; // горизонтальные отступы
+		const paddingX = 6;
 		const label = hex.customName || hex.settlement?.name || hex.landmark?.name || hex.hexType.name;
 		const txtW = Math.ceil(measureTextWidth(label, fontSize));
-		// Оригинальные размеры частей
 		const lwOrig = imgTitleLeft?.width || 14;
 		const lhOrig = imgTitleLeft?.height || 24;
 		const mwOrig = imgTitleMiddle?.width || 32;
 		const mhOrig = imgTitleMiddle?.height || lhOrig;
 		const rwOrig = imgTitleRight?.width || 14;
-		// Желаемая высота = половина высоты гекса
-		const desiredHeight = HEX_HEIGHT / 2; // фиксированная высота
-		// Масштаб по высоте для сохранения пропорций левой/правой частей
+		const desiredHeight = HEX_HEIGHT / 2;
 		const scaleY = desiredHeight / mhOrig;
 		const leftW = lwOrig * scaleY;
 		const rightW = rwOrig * scaleY;
-		// Middle высоту задаем напрямую (desiredHeight), ширину вычисляем из текста
 		const contentWidth = txtW + paddingX * 2;
-		// Минимальная ширина middle = (mwOrig * scaleY) чтобы не схлопывалось; растягиваем только по ширине без изменения высоты
 		const middleMinWidth = mwOrig * scaleY;
 		const middleWidth = Math.max(middleMinWidth, contentWidth);
 		const totalWidth = leftW + middleWidth + rightW;
@@ -617,7 +585,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 							if (!ptr) return;
 							const x = (ptr.x - stage.x()) / scale;
 							const y = (ptr.y - stage.y()) / scale;
-							addMarker(selectedPointer, x - 16, y - 32); // смещение чтобы наконечник "указывал"
+							addMarker(selectedPointer, x - 16, y - 32);
 							setSelectedPointer(null);
 							markersAddingRef.current = false;
 							return;
@@ -658,12 +626,11 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 											rotation={30}
 											radius={radius}
 											fillEnabled={true}
-											fill={'rgba(0,0,0,0.001)'} // прозрачный fill для корректного hover/click
+											fill={'rgba(0,0,0,0.001)'}
 											stroke={getHexStroke(key)}
 											onClick={() => handleHexClick(key)}
 											shadowBlur={mapState.selectedHex === key ? 10 : 0}
 											shadowColor="gold"/>
-										{/* Лейблы перенесены в отдельный слой выше */}
 									</Group>
 								);
 							})}
@@ -706,7 +673,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								);
 							})}
 						</Layer>
-						{/* Отдельный слой для лейблов поверх всего */}
 						<Layer listening={false}>
 							{Array.from(mapState.hexes.entries()).map(([key, hex]) => {
 								const isActive = mapState.selectedHex === key || hoveredHex === key;
@@ -728,7 +694,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 							hexMapId={mapData?.id || undefined}
 							initialImages={mapData?.images || []}
 						/>
-						{/* Слой меток */}
 						<Layer>
 							{markers.map(m => (
 								<Group key={m.id}
@@ -742,7 +707,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								</Group>
 							))}
 						</Layer>
-						{/* Призрак перетаскиваемой метки (используем dragPreview) */}
 						{dragPreview && (
 							<Layer listening={false}>
 								<KonvaImage image={getMarkerImage(dragPreview.name)} x={dragPreview.x} y={dragPreview.y} width={24} height={50} opacity={0.6} listening={false} />
@@ -787,7 +751,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 										startPointerDrag(fn, touch.clientX, touch.clientY);
 										setSelectedPointer(null);
 									}}
-									title="Перетащите на карту или кликните, затем клик по карте"
 								>
 									<img src={`/images/pointers/${fn}`} alt={fn} className="w-10 h-10 object-contain pointer-events-none" />
 								</button>

@@ -8,27 +8,24 @@ export async function POST(request: NextRequest) {
 
     if (!name || !email || !password) {
       return NextResponse.json(
-        { error: "Все поля обязательны" },
+        { error: "All fields required" },
         { status: 400 }
       )
     }
 
-    // Проверяем, существует ли пользователь
     const existingUser = await prisma.user.findUnique({
       where: { email }
     })
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "Пользователь с таким email уже существует" },
+        { error: "Email is not unique" },
         { status: 400 }
       )
     }
 
-    // Хешируем пароль
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // Создаем пользователя
     const user = await prisma.user.create({
       data: {
         name,
@@ -38,13 +35,13 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(
-      { message: "Пользователь успешно создан", userId: user.id },
+      { message: "The user is created", userId: user.id },
       { status: 201 }
     )
   } catch (error) {
-    console.error("Ошибка регистрации:", error)
+    console.error("Registration error:", error)
     return NextResponse.json(
-      { error: "Внутренняя ошибка сервера" },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
