@@ -1,9 +1,8 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type DiceBox from '@3d-dice/dice-box';
+import { t } from '@/i18n';
 
-// Полноэкранный прозрачный слой с 3D кубами, доступен на всех страницах.
-// Минималистичная панель управления в углу.
 
 const ASSET_PATH = '/dice-assets/';
 
@@ -19,13 +18,13 @@ export default function FullscreenDiceLayer() {
   const [autoClear, setAutoClear] = useState(true);
   const clearTimeoutRef = useRef<number | null>(null);
 
-  const colorOptions: { id: string; name: string; filter: string; preview: string }[] = [
-    { id: 'default', name: 'Стандарт', filter: 'none', preview: '#e5e7eb' },
-    { id: 'amber', name: 'Янтарь', filter: 'hue-rotate(25deg) saturate(1.25)', preview: '#f59e0b' },
-    { id: 'emerald', name: 'Изумруд', filter: 'hue-rotate(115deg) saturate(1.35)', preview: '#059669' },
-    { id: 'sapphire', name: 'Сапфир', filter: 'hue-rotate(205deg) saturate(1.4)', preview: '#2563eb' },
-    { id: 'amethyst', name: 'Аметист', filter: 'hue-rotate(275deg) saturate(1.4)', preview: '#7c3aed' },
-    { id: 'crimson', name: 'Багряный', filter: 'hue-rotate(-15deg) saturate(1.45)', preview: '#dc2626' },
+  const colorOptions: { id: string; filter: string; preview: string }[] = [
+    { id: 'default', filter: 'none', preview: '#e5e7eb' },
+    { id: 'amber', filter: 'hue-rotate(25deg) saturate(1.25)', preview: '#f59e0b' },
+    { id: 'emerald', filter: 'hue-rotate(115deg) saturate(1.35)', preview: '#059669' },
+    { id: 'sapphire', filter: 'hue-rotate(205deg) saturate(1.4)', preview: '#2563eb' },
+    { id: 'amethyst', filter: 'hue-rotate(275deg) saturate(1.4)', preview: '#7c3aed' },
+    { id: 'crimson', filter: 'hue-rotate(-15deg) saturate(1.45)', preview: '#dc2626' },
   ];
 
   const normalizeNotation = (input: string): string => {
@@ -34,9 +33,8 @@ export default function FullscreenDiceLayer() {
 
   useEffect(() => {
     let cancelled = false;
-    let onResize: (() => void) | null = null; // сохраняем ссылку для cleanup
+    let onResize: (() => void) | null = null; // keep reference for cleanup
 
-    // Выносим applySize, чтобы был доступен в cleanup
     const applySize = () => {
       const container = document.getElementById(containerId);
       if (!container) return;
@@ -59,17 +57,17 @@ export default function FullscreenDiceLayer() {
       if (!container) return;
       const canvas = container.querySelector('canvas') as HTMLCanvasElement | null;
       if (!canvas) return;
-      // Если offscreen активен, изменение width/height бросит исключение — ловим и пропускаем.
+      // If offscreen active, changing width/height may throw – swallow.
       try {
         const dpr = window.devicePixelRatio || 1;
         const targetW = Math.floor(window.innerWidth * dpr);
         const targetH = Math.floor(window.innerHeight * dpr);
         if (canvas.width !== targetW || canvas.height !== targetH) {
-          canvas.width = targetW; // повышаем внутреннее разрешение
+          canvas.width = targetW; // increase internal resolution
           canvas.height = targetH;
         }
       } catch {
-        // Offscreen режим – пропускаем.
+        // Offscreen mode – ignore.
       }
     };
 
@@ -82,7 +80,7 @@ export default function FullscreenDiceLayer() {
       canvas.style.filter = option ? option.filter : 'none';
     };
 
-    // Ставим размеры сразу до init
+    // Set size before init
     applySize();
     applyColorFilter();
 
@@ -99,7 +97,7 @@ export default function FullscreenDiceLayer() {
           friction: 0.5,
           lightIntensity: 1.1,
           throwForce: 4,
-          offscreen: false, // отключаем Offscreen чтобы можно было повысить DPI
+          offscreen: false, // disable Offscreen to allow higher DPI
         });
         await instance.init();
         applySize();
@@ -128,7 +126,7 @@ export default function FullscreenDiceLayer() {
     };
   }, []);
 
-  // Применяем цвет при смене diceColor после инициализации
+  // Apply color when diceColor changes after init
   useEffect(() => {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -159,7 +157,7 @@ export default function FullscreenDiceLayer() {
     }
   }, [notation, autoClear]);
 
-  // Горячие клавиши: D d20, Escape скрыть панель (убран повтор R)
+  // Hotkeys: D => d20, Escape toggle panel
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (['INPUT','TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
@@ -177,19 +175,19 @@ export default function FullscreenDiceLayer() {
 
   return (
     <>
-      {/* Контейнер для canvas кубов */}
+      {/* Canvas container */}
       <div
         id={containerId}
         className="fixed top-0 left-0 w-screen h-screen z-[400]" // pointer-events отключены стилем внутри
         style={{ background: 'transparent' }}
       />
 
-      {/* Панель управления */}
+      {/* Control panel */}
       <div className="fixed bottom-4 right-4 z-[450] flex flex-col items-end gap-2">
         <button
           onClick={() => setOpen(o => !o)}
           className="px-3 py-1 rounded-md text-xs font-medium bg-stone-700 text-white hover:bg-stone-600 shadow"
-        >{open ? 'Кубы ▼' : 'Кубы ▲'}</button>
+        >{open ? t('dice.toggle.open') : t('dice.toggle.closed')}</button>
         {open && (
           <div className="w-60 p-3 rounded-lg bg-white/90 backdrop-blur shadow border border-stone-200 space-y-2">
             <div className="flex gap-2 flex-wrap">
@@ -199,23 +197,23 @@ export default function FullscreenDiceLayer() {
                   type="button"
                   onClick={e => { setNotation(p); if (e.shiftKey) roll(p); }}
                   className="px-2 py-1 text-xs rounded bg-stone-200 hover:bg-stone-300 relative group"
-                  title="Клик: выбрать • Shift+клик: сразу бросить"
+                  title={t('dice.hotkeysHint')}
                 >{p}</button>
               ))}
             </div>
-            {/* Блок выбора цвета */}
+            {/* Color picker */}
             <div className="space-y-1">
               <div className="text-xs font-medium text-stone-600 flex items-center justify-between">
-                <span>Цвет</span>
-                <span className="text-[10px] text-stone-400">фильтр canvas</span>
+                <span>{t('dice.colors.title')}</span>
+                <span className="text-[10px] text-stone-400">{t('dice.colors.filterLabel')}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {colorOptions.map(opt => (
                   <button
                     key={opt.id}
                     type="button"
-                    aria-label={opt.name}
-                    title={opt.name}
+                    aria-label={t(`dice.colors.${opt.id}`)}
+                    title={t(`dice.colors.${opt.id}`)}
                     onClick={() => setDiceColor(opt.id)}
                     className={`w-6 h-6 rounded-full border flex items-center justify-center relative transition ring-offset-1 ${diceColor===opt.id? 'ring-2 ring-stone-600 border-stone-700':'border-stone-300 hover:border-stone-500'}`}
                     style={{ background: opt.preview }}
@@ -225,7 +223,7 @@ export default function FullscreenDiceLayer() {
                 ))}
               </div>
             </div>
-            {/* Автоочистка */}
+            {/* Auto clear */}
             <div className="flex items-center gap-2 text-xs">
               <label className="flex items-center gap-1 cursor-pointer select-none">
                 <input
@@ -234,12 +232,12 @@ export default function FullscreenDiceLayer() {
                   checked={autoClear}
                   onChange={e => setAutoClear(e.target.checked)}
                 />
-                Автоочистка
+                {t('dice.autoclear')}
               </label>
-              {!autoClear && <span className="text-[10px] text-stone-400">ручная очистка</span>}
+              {!autoClear && <span className="text-[10px] text-stone-400">{t('dice.manualClear')}</span>}
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-stone-600">Нотация</label>
+              <label className="text-xs font-medium text-stone-600">{t('dice.notation')}</label>
               <input
                 value={notation}
                 onChange={e => setNotation(e.target.value)}
@@ -253,16 +251,16 @@ export default function FullscreenDiceLayer() {
                 disabled={loading || rolling}
                 onClick={() => roll()}
                 className="flex-1 px-3 py-1 rounded bg-stone-600 text-white text-sm disabled:opacity-50"
-              >{rolling ? '...' : 'Бросить'}</button>
+              >{rolling ? '...' : t('dice.roll')}</button>
               <button
                 disabled={loading}
                 onClick={() => { try { boxRef.current?.clear(); } catch {} }}
                 className="px-3 py-1 rounded bg-stone-200 text-stone-800 text-sm disabled:opacity-50"
-              >Очистить</button>
+              >{t('dice.clear')}</button>
             </div>
-            {loading && <div className="text-xs text-stone-500">Инициализация...</div>}
+            {loading && <div className="text-xs text-stone-500">{t('dice.initializing')}</div>}
             {error && <div className="text-xs text-red-600 break-all">{error}</div>}
-            <div className="text-[10px] text-stone-400 pt-1">D d20 • Esc скрыть • Shift+клик пресета = бросок</div>
+            <div className="text-[10px] text-stone-400 pt-1">{t('dice.hotkeysHint')}</div>
           </div>
         )}
       </div>
