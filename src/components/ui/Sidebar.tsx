@@ -29,22 +29,21 @@ export function Sidebar({
 
   return (
     <>
-      {/* Backdrop - затемнение фона */}
+      {/* Backdrop overlay */}
       <div
         className="fixed inset-0 bg-black opacity-50 z-40"
         onClick={onClose}
       />
 
-      {/* Сайдбар */}
       <div
-        className={`
-          fixed top-0 ${sideClass} h-full ${width} 
+        className={
+          `fixed top-0 ${sideClass} h-full ${width} 
           bg-white border-l border-gray-200 shadow-xl z-50
           flex flex-col
-          ${slideClass} ${className}
-        `}
+          ${slideClass} ${className}`
+        }
       >
-        {/* Заголовок с кнопкой закрытия */}
+        {/* Header with close button */}
         {title && (
           <div className="flex flex-row justify-between items-center p-4 border-b border-gray-200 bg-gray-50">
             <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
@@ -59,7 +58,6 @@ export function Sidebar({
           </div>
         )}
 
-        {/* Контент */}
         <div className="flex-1 flex-row overflow-y-auto p-4">
           {children}
         </div>
