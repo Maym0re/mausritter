@@ -78,7 +78,7 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
         </div>
       ) : (
         <div className="space-y-6">
-          {/* Имя персонажа */}
+          {/* Character name */}
           <div>
             <label htmlFor="characterName" className="block text-sm font-medium text-stone-700 mb-2">
               {t('charGen.nameLabel')}
@@ -93,7 +93,7 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
             />
           </div>
 
-          {/* Атрибуты */}
+          {/* Attributes section */}
           <div className="bg-stone-50 p-4 rounded-lg">
             <div className="flex justify-between items-center mb-3">
               <h4 className="font-medium text-stone-900">{t('charGen.attributes')}</h4>
@@ -120,7 +120,7 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
             </div>
           </div>
 
-          {/* Предыстория */}
+          {/* Background section */}
           <div className="bg-stone-50 p-4 rounded-lg">
             <div className="flex justify-between items-center mb-3">
               <h4 className="font-medium text-stone-900">{t('charGen.background')}</h4>
@@ -144,7 +144,7 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
             </div>
           </div>
 
-          {/* Детали внешности */}
+          {/* Appearance details */}
           <div className="bg-stone-50 p-4 rounded-lg">
             <div className="flex justify-between items-center mb-3">
               <h4 className="font-medium text-stone-900">{t('charGen.appearance')}</h4>
@@ -162,7 +162,7 @@ export function CharacterGenerator({ onCancel, onSave }: CharacterGeneratorProps
             </div>
           </div>
 
-          {/* Кнопки действий */}
+          {/* Action buttons */}
           <div className="flex justify-between pt-4">
             <div className="space-x-2">
               <button

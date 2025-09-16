@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// Обновить персонажа
+// Update character
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -12,7 +12,7 @@ export async function PUT(
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
@@ -22,12 +22,12 @@ export async function PUT(
 
     if (!characterData) {
       return NextResponse.json(
-        { error: "Данные персонажа обязательны" },
+        { error: "Character data is required" },
         { status: 400 }
       )
     }
 
-    // Проверяем права доступа к персонажу
+    // Access check: character must belong to a campaign where user is GM or player
     const character = await prisma.character.findFirst({
       where: {
         id,
@@ -45,7 +45,7 @@ export async function PUT(
 
     if (!character) {
       return NextResponse.json(
-        { error: "Персонаж не найден или нет прав на редактирование" },
+        { error: "Character not found or no permission" },
         { status: 404 }
       )
     }
@@ -91,15 +91,15 @@ export async function PUT(
 
     return NextResponse.json(updatedCharacter)
   } catch (error) {
-    console.error("Ошибка обновления персонажа:", error)
+    console.error("Failed to update character:", error)
     return NextResponse.json(
-      { error: "Ошибка при обновлении персонажа" },
+      { error: "Failed to update character" },
       { status: 500 }
     )
   }
 }
 
-// Получить персонажа
+// Get character
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -108,14 +108,14 @@ export async function GET(
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
 
     console.log('GET Request:', { id, sessionUserId: session.user.id })
 
-    // Проверяем права доступа к персонажу
+    // Access check
     const character = await prisma.character.findFirst({
       where: {
         id,
@@ -145,22 +145,22 @@ export async function GET(
 
     if (!character) {
       return NextResponse.json(
-        { error: "Персонаж не найден или нет прав доступа" },
+        { error: "Character not found or no access" },
         { status: 404 }
       )
     }
 
     return NextResponse.json(character)
   } catch (error) {
-    console.error("Ошибка получения персонажа:", error)
+    console.error("Failed to fetch character:", error)
     return NextResponse.json(
-      { error: "Ошибка при получении персонажа" },
+      { error: "Failed to fetch character" },
       { status: 500 }
     )
   }
 }
 
-// Удалить персонажа
+// Delete character
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -169,12 +169,12 @@ export async function DELETE(
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
 
-    // Проверяем права доступа к персонажу
+    // Access check
     const character = await prisma.character.findFirst({
       where: {
         id,
@@ -189,7 +189,7 @@ export async function DELETE(
 
     if (!character) {
       return NextResponse.json(
-        { error: "Персонаж не найден или нет прав на удаление" },
+        { error: "Character not found or no permission to delete" },
         { status: 404 }
       )
     }
@@ -198,11 +198,11 @@ export async function DELETE(
       where: { id }
     })
 
-    return NextResponse.json({ message: "Персонаж удален" })
+    return NextResponse.json({ message: "Character deleted" })
   } catch (error) {
-    console.error("Ошибка удаления персонажа:", error)
+    console.error("Failed to delete character:", error)
     return NextResponse.json(
-      { error: "Ошибка при удалении персонажа" },
+      { error: "Failed to delete character" },
       { status: 500 }
     )
   }

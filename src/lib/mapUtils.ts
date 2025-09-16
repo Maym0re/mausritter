@@ -1,6 +1,6 @@
 import { HexData, HEX_TYPES, COUNTRYSIDE_LANDMARKS, FOREST_LANDMARKS, LANDMARK_DETAILS } from '@/types/map';
 
-// Функции для генерации случайного контента на основе SRD
+// Functions for generating random content based on SRD
 export function rollD6(): number {
   return Math.floor(Math.random() * 6) + 1;
 }
@@ -37,10 +37,9 @@ export function getRandomLandmarkDetail() {
   const roll = rollD6();
   const detailRoll = rollD6();
 
-  // Упрощенная версия таблицы деталей из SRD
+  // Simplified version of SRD landmark details table
   if (roll === 1) return LANDMARK_DETAILS[0]; // Mouse settlement
   if (roll === 2) return LANDMARK_DETAILS[detailRoll - 1];
-  // ... можно расширить логику
 
   return LANDMARK_DETAILS[Math.floor(Math.random() * LANDMARK_DETAILS.length)];
 }
@@ -146,7 +145,7 @@ function calculatePopulation(size: string): number {
   }
 }
 
-// Утилиты для работы с координатами гексов
+// Hex coordinate utilities
 export function hexKey(q: number, r: number): string {
   return `${q},${r}`;
 }
