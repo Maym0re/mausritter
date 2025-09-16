@@ -10,7 +10,7 @@ import {
 } from '@/types/character';
 import { InventoryItem } from "@prisma/client";
 
-// Функция для броска 3d6, оставляем 2 лучших
+// Roll 3d6 and keep the best 2
 export function roll3d6KeepBest2(): number {
   const rolls = [
     Math.floor(Math.random() * 6) + 1,
@@ -22,41 +22,41 @@ export function roll3d6KeepBest2(): number {
   return rolls[0] + rolls[1];
 }
 
-// Функция для броска d6
+// Roll 1d6
 export function rollD6(): number {
   return Math.floor(Math.random() * 6) + 1;
 }
 
-// Функция для броска d66 (для физических деталей)
+// Roll d66 (for physical details table)
 export function rollD66(): number {
   const tens = rollD6();
   const ones = rollD6();
   return tens * 10 + ones;
 }
 
-// Генерация случайного персонажа
+// Generate random character
 export function generateRandomCharacter(): FullCharacter {
-  // 1. Генерируем атрибуты
+  // 1. Generate attributes
   const str = roll3d6KeepBest2();
   const dex = roll3d6KeepBest2();
   const wil = roll3d6KeepBest2();
 
-  // 2. HP и пипы
+  // 2. HP and pips
   const hp = rollD6();
   const pips = rollD6();
 
-  // 3. Находим предысторию по таблице
+  // 3. Find background entry by table
   const backgroundEntry = BACKGROUND_TABLE.find(entry =>
     entry.hp === hp && entry.pips === pips
   ) || BACKGROUND_TABLE[0]; // fallback
 
-  // 4. Генерируем внешность
+  // 4. Generate appearance
   const birthsign = BIRTHSIGNS[rollD6() - 1];
   const coatColor = COAT_COLORS[rollD6() - 1];
   const coatPattern = COAT_PATTERNS[rollD6() - 1];
   const physicalDetail = PHYSICAL_DETAILS[rollD66() - 11] || PHYSICAL_DETAILS[0];
 
-  // 5. Определяем дополнительные предметы для слабых персонажей
+  // 5. Determine bonus items for weak characters
   const highestAttribute = Math.max(str, dex, wil);
   const bonusItems: string[] = [];
 
@@ -66,7 +66,7 @@ export function generateRandomCharacter(): FullCharacter {
     bonusItems.push(Math.random() < 0.5 ? backgroundEntry.itemA : backgroundEntry.itemB);
   }
 
-  // 6. Создаем инвентарь
+  // 6. Create initial inventory
   const inventory = createStartingInventory(backgroundEntry, bonusItems);
 
 	const character: FullCharacter = {
@@ -119,11 +119,11 @@ export function generateRandomCharacter(): FullCharacter {
   return character;
 }
 
-// Создание стартовог�� инвентаря
+// Create starting inventory
 function createStartingInventory(backgroundEntry: BackgroundInitial, bonusItems: string[]): InventoryItem[] {
   const items: InventoryItem[] = [];
 
-  // Базовое снаряжение
+  // Basic equipment
   items.push(...BASIC_EQUIPMENT.map(item => ({
     ...item,
     id: generateId(),
@@ -134,16 +134,16 @@ function createStartingInventory(backgroundEntry: BackgroundInitial, bonusItems:
     updatedAt: new Date()
   })));
 
-  // Предметы из предыстории
+  // Background items
   items.push(createItemFromDescription(backgroundEntry.itemA));
   items.push(createItemFromDescription(backgroundEntry.itemB));
 
-  // Дополнительные предмет�� для слабых персонажей
+  // Bonus items (for weak characters)
   bonusItems.forEach(itemDesc => {
     items.push(createItemFromDescription(itemDesc));
   });
 
-  // Оружие по выбору (берем случайное)
+  // Random weapon choice
   const randomWeapon = WEAPONS[Math.floor(Math.random() * WEAPONS.length)];
   items.push({
     ...randomWeapon,
@@ -155,11 +155,11 @@ function createStartingInventory(backgroundEntry: BackgroundInitial, bonusItems:
     updatedAt: new Date()
   });
 
-  // Размещаем предметы в слотах
+  // Place items into slots
   return assignItemsToSlots(items);
 }
 
-// Создание предмета из описания
+// Create item from description
 function createItemFromDescription(description: string): InventoryItem {
   const item: InventoryItem = {
     id: generateId(),
@@ -177,7 +177,7 @@ function createItemFromDescription(description: string): InventoryItem {
 	  characterId: ''
   };
 
-  // Определяем тип ��редмета по описанию
+  // Determine item type by description
   if (description.includes('Spell:')) {
     item.type = 'spell';
     item.name = description.replace('Spell: ', '');
@@ -196,12 +196,12 @@ function createItemFromDescription(description: string): InventoryItem {
   return item;
 }
 
-// Генерация простого ID
+// Simple ID generator
 function generateId(): string {
   return Math.random().toString(36).substr(2, 9);
 }
 
-// Генерация имени мыши
+// Generate mouse name
 function generateMouseName(): string {
   const names = [
     'Acorn', 'Basil', 'Berry', 'Biscuit', 'Bramble', 'Brie', 'Burdock',
@@ -214,22 +214,23 @@ function generateMouseName(): string {
   return names[Math.floor(Math.random() * names.length)];
 }
 
-// Функция для получения предмета из инвентаря
+// Get item from inventory by id
 export function getItemFromInventory(character: FullCharacter, itemId: string): InventoryItem | null {
   return character.inventory.find(item => item?.id === itemId) || null;
 }
 
-// Размещение предметов в слотах
+// Assign items to slots
 function assignItemsToSlots(items: InventoryItem[]): InventoryItem[] {
   const result: InventoryItem[] = [];
 
-  // Определяем количество слотов для каждого типа
+  // Slot capacities
   const slotCapacity = {
     PAWS: 2,
     BODY: 2,
     PACK: 6
   };
 
+  // Track current indices
   const currentSlotIndex = {
     PAWS: 0,
     BODY: 0,
@@ -239,13 +240,13 @@ function assignItemsToSlots(items: InventoryItem[]): InventoryItem[] {
   for (const item of items) {
     let placed = false;
 
-    // Пробуем разместить в порядке приоритета: PACK -> BODY -> PAWS
+    // Try placing items priority: PAWS -> BODY -> PACK
     const slotTypes = ['PACK', 'BODY', 'PAWS'] as const;
 
     for (const slotType of slotTypes) {
       const availableSlots = slotCapacity[slotType] - currentSlotIndex[slotType];
 
-      // Проверяем, поместится ли предмет
+      // Check if item fits
       if (availableSlots >= item.size) {
         const newItem = {
           ...item,
@@ -388,7 +389,6 @@ export function moveItemToSlot(
   return { success: true, inventory: newInventory };
 }
 
-// Проверка н�� перегрузку
 export function isEncumbered(character: FullCharacter): boolean {
   const totalSlots = 10; // 2 paws + 2 body + 6 pack
   const usedSlots = getTotalUsedSlots(character);
@@ -410,7 +410,6 @@ export function getTotalUsedSlots(character: FullCharacter): number {
   return used;
 }
 
-// Получение доступных слотов
 export function getAvailableSlots(character: FullCharacter): number {
   const totalSlots = 10;
   const usedSlots = getTotalUsedSlots(character);

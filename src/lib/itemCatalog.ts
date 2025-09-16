@@ -1,14 +1,14 @@
 import { BASIC_EQUIPMENT, InventoryItemLite, WEAPONS } from '@/types/character';
 
-// Расширенный список предметов для добавления
+// Extended item catalog for adding to inventory
 export const ITEM_CATALOG: InventoryItemLite[] = [
-  // Базовое снаряжение
+  // Basic equipment
   ...BASIC_EQUIPMENT,
 
-  // Оружие
+  // Weapons
   ...WEAPONS,
 
-  // Инструменты
+  // Tools
   {
     name: 'Rope',
     type: 'equipment',
@@ -65,7 +65,7 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
 	  slotIndex: 0
   },
 
-  // Броня
+  // Armor
   {
     name: 'Light Armor',
     type: 'armor',
@@ -89,7 +89,7 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
 	  slotIndex: 0
   },
 
-  // Заклинания
+  // Spells
   {
     name: 'Heal',
     type: 'spell',
@@ -125,7 +125,7 @@ export const ITEM_CATALOG: InventoryItemLite[] = [
   }
 ];
 
-// Функция для создания копии предмета с уникальным ID
+// Function to create a copy (currently shallow clone)
 export function createItemCopy(templateItem: InventoryItemLite): InventoryItemLite {
   return {
     ...templateItem,
