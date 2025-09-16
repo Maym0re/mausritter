@@ -43,7 +43,7 @@ export default function CampaignPage() {
   }, [session?.user?.id, fetchCampaigns]);
 
   useEffect(() => {
-    // Если есть параметр campaign в url, выбираем его
+    // If there is a campaign param in URL select it
     const searchParams = new URLSearchParams(window.location.search);
     const campaignParam = searchParams.get('campaign');
     if (campaignParam && campaigns.length > 0) {
@@ -90,7 +90,7 @@ export default function CampaignPage() {
 
   return (
     <div className="h-[calc(100vh-56px)] w-screen overflow-hidden relative">{/* 56px = header height */}
-      {/* Селектор кампаний если несколько */}
+      {/* Campaign selector if multiple */}
       {campaigns.length > 1 && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1100] flex gap-2 bg-stone-900/80 px-3 py-1.5 rounded-full border border-stone-700">
           {campaigns.map(c => (
@@ -99,7 +99,7 @@ export default function CampaignPage() {
         </div>
       )}
 
-      {/* Карта */}
+      {/* Map */}
       {selectedCampaign && userRole && (
         <HexGridCanvas
           mode={userRole}
@@ -111,7 +111,7 @@ export default function CampaignPage() {
         />
       )}
 
-      {/* Окна */}
+      {/* Windows */}
       {showCharacters && selectedCampaign && session?.user?.id && (
         <CharacterManagerWindow
           campaignId={selectedCampaign}
@@ -133,7 +133,7 @@ export default function CampaignPage() {
         </DraggableResizableWindow>
       )}
 
-      {/* Нижнее меню */}
+      {/* Bottom menu */}
       <div className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1100] border border-stone-700">
         <button onClick={()=>setShowCharacters(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showCharacters? 'bg-purple-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.characters')}</button>
         <button onClick={()=>setShowTime(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showTime? 'bg-blue-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.time')}</button>

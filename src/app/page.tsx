@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FullCampaign } from "@/types/character";
+import { t } from '@/i18n';
 
 export default function HomePage() {
   const { data: session, status } = useSession();
@@ -70,7 +71,7 @@ export default function HomePage() {
       <div className="min-h-screen bg-stone-50 flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4">🐭</div>
-          <div className="text-lg text-stone-600">Загрузка...</div>
+          <div className="text-lg text-stone-600">{t('home.loading')}</div>
         </div>
       </div>
     );
@@ -86,12 +87,12 @@ export default function HomePage() {
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl font-bold text-stone-900">Мои кампании</h2>
+            <h2 className="text-3xl font-bold text-stone-900">{t('home.myCampaigns')}</h2>
             <button
               onClick={() => setShowCreateModal(true)}
               className="bg-stone-600 hover:bg-stone-700 text-white px-4 py-2 rounded-md font-medium"
             >
-              Создать кампанию
+              {t('home.createCampaign')}
             </button>
           </div>
 
@@ -99,16 +100,16 @@ export default function HomePage() {
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🏰</div>
               <h3 className="text-xl font-medium text-stone-900 mb-2">
-                У вас пока нет кампаний
+                {t('home.noCampaignsTitle')}
               </h3>
               <p className="text-stone-600 mb-6">
-                Создайте новую кампанию, чтобы начать приключения в мире Mausritter
+                {t('home.noCampaignsHint')}
               </p>
               <button
                 onClick={() => setShowCreateModal(true)}
                 className="bg-stone-600 hover:bg-stone-700 text-white px-6 py-3 rounded-md font-medium"
               >
-                Создать первую кампанию
+                {t('home.createFirst')}
               </button>
             </div>
           ) : (
@@ -127,7 +128,7 @@ export default function HomePage() {
                         ? 'bg-purple-100 text-purple-800'
                         : 'bg-blue-100 text-blue-800'
                     }`}>
-                      {campaign.gm?.id === session.user?.id ? 'Мастер' : 'Игрок'}
+                      {campaign.gm?.id === session.user?.id ? t('home.role.gm') : t('home.role.player')}
                     </span>
                   </div>
 
@@ -138,9 +139,9 @@ export default function HomePage() {
                   )}
 
                   <div className="text-sm text-stone-500 mb-4">
-                    <div>Игроков: {campaign.players?.length || 0}</div>
-                    <div>Персонажей: {campaign._count?.characters || 0}</div>
-                    <div>Сезон: {campaign.season}</div>
+                    <div>{t('home.playersCount')} {campaign.players?.length || 0}</div>
+                    <div>{t('home.charactersCount')} {campaign._count?.characters || 0}</div>
+                    <div>{t('home.season')} {campaign.season}</div>
                   </div>
 
                   <div className="flex space-x-2">
@@ -148,7 +149,7 @@ export default function HomePage() {
                       href={`/campaign?campaign=${campaign.id}`}
                       className="flex-1 text-center bg-stone-800 hover:bg-stone-900 text-white px-4 py-2 rounded-md text-sm font-medium"
                     >
-                      Открыть
+                      {t('home.open')}
                     </Link>
                   </div>
                 </div>
@@ -164,9 +165,9 @@ export default function HomePage() {
             className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 text-center"
           >
             <div className="text-4xl mb-3">⚒️</div>
-            <h3 className="text-lg font-semibold text-stone-900 mb-2">Инструменты</h3>
+            <h3 className="text-lg font-semibold text-stone-900 mb-2">{t('home.quick.tools')}</h3>
             <p className="text-stone-600 text-sm">
-              Генераторы персонажей, инвентарь и другие полезные инструменты
+              {t('home.quick.toolsHint')}
             </p>
           </Link>
 
@@ -175,9 +176,9 @@ export default function HomePage() {
             className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 text-center"
           >
             <div className="text-4xl mb-3">🗺️</div>
-            <h3 className="text-lg font-semibold text-stone-900 mb-2">Кампания / Карта</h3>
+            <h3 className="text-lg font-semibold text-stone-900 mb-2">{t('home.quick.campaign')}</h3>
             <p className="text-stone-600 text-sm">
-              Откройте выбранную кампанию и её карту
+              {t('home.quick.campaignHint')}
             </p>
           </Link>
 
@@ -188,9 +189,9 @@ export default function HomePage() {
             className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 text-center"
           >
             <div className="text-4xl mb-3">📚</div>
-            <h3 className="text-lg font-semibold text-stone-900 mb-2">Правила</h3>
+            <h3 className="text-lg font-semibold text-stone-900 mb-2">{t('home.quick.rules')}</h3>
             <p className="text-stone-600 text-sm">
-              Официальные правила Mausritter и дополнительные материалы
+              {t('home.quick.rulesHint')}
             </p>
           </a>
         </div>
@@ -201,13 +202,13 @@ export default function HomePage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-stone-900 mb-4">
-              Создать новую кампанию
+              {t('home.modal.createTitle')}
             </h3>
 
             <form onSubmit={createCampaign} className="space-y-4">
               <div>
                 <label htmlFor="campaignName" className="block text-sm font-medium text-gray-700">
-                  Название кампании
+                  {t('home.modal.nameLabel')}
                 </label>
                 <input
                   id="campaignName"
@@ -216,13 +217,13 @@ export default function HomePage() {
                   value={newCampaignName}
                   onChange={(e) => setNewCampaignName(e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-stone-500 focus:border-stone-500"
-                  placeholder="Например: Приключения в Мышином королевстве"
+                  placeholder={t('home.modal.namePlaceholder')}
                 />
               </div>
 
               <div>
                 <label htmlFor="campaignDescription" className="block text-sm font-medium text-gray-700">
-                  Описание (необязательно)
+                  {t('home.modal.descriptionLabel')}
                 </label>
                 <textarea
                   id="campaignDescription"
@@ -230,7 +231,7 @@ export default function HomePage() {
                   onChange={(e) => setNewCampaignDescription(e.target.value)}
                   rows={3}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-stone-500 focus:border-stone-500"
-                  placeholder="Краткое описание вашей кампании..."
+                  placeholder={t('home.modal.descriptionPlaceholder')}
                 />
               </div>
 
@@ -244,13 +245,13 @@ export default function HomePage() {
                   }}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
                 >
-                  Отмена
+                  {t('home.modal.cancel')}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 px-4 py-2 bg-stone-600 hover:bg-stone-700 text-white rounded-md"
                 >
-                  Создать
+                  {t('home.modal.submit')}
                 </button>
               </div>
             </form>
