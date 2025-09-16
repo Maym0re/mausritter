@@ -50,4 +50,19 @@ export const en = {
   // Common / misc
   'common.reload': 'Reload',
   'common.error': 'Error',
+  // Auth
+  'auth.loginRequiredTitle': 'Login Required',
+  'auth.loginRequiredHint': 'Please sign in to access the campaign.',
+  // Campaign
+  'campaign.noneTitle': 'No campaigns available',
+  'campaign.noneHint': 'Create or join a campaign on the home page.',
+  // Time
+  'time.tracker': 'Time Tracker',
+  // Menu
+  'menu.characters': 'Characters',
+  'menu.time': 'Time',
+  'menu.markers': 'Markers',
+  'menu.addHex': 'Add Hex',
+  'menu.finishAdd': 'Finish Add',
+  'menu.pickPlace': 'Pick a place on the map…',
 };

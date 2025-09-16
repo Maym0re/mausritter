@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { FullCharacter } from '@/types/character';
 import { DraggableResizableWindow } from '@/components/ui/DraggableResizableWindow';
+import { t } from '@/i18n';
 
 interface CharacterManagerWindowProps {
   campaignId: string;
@@ -25,13 +26,13 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
     setLoading(true); setError(null);
     try {
       const r = await fetch(`/api/characters?campaignId=${campaignId}`);
-      if (!r.ok) throw new Error('Ошибка загрузки');
+      if (!r.ok) throw new Error(t('characters.loadError'));
       const data = await r.json();
       // Сортировка: персонажи текущего пользователя сверху
       data.sort((a: FullCharacter, b: FullCharacter) => (a.playerId === currentUserId ? -1 : 1) - (b.playerId === currentUserId ? -1 : 1));
       setCharacters(data);
     } catch (e:any) {
-      setError(e.message || 'Ошибка');
+      setError(e.message || t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -58,20 +59,20 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ characterData: data })
       });
-      if (!r.ok) throw new Error('Ошибка сохранения');
+      if (!r.ok) throw new Error(t('characters.saveError'));
       const upd = await r.json();
       setCharacters(list => list.map(c => c.id === id ? upd : c));
       setEditState(p => ({...p, [id]: upd}));
     } catch (e:any) {
-      alert(e.message || 'Не удалось сохранить');
+      alert(e.message || t('characters.saveFailed'));
     } finally {
       setSaving(s => ({...s, [id]: false}));
     }
   };
 
   return (
-    <DraggableResizableWindow id="characters" title="Персонажи" initialX={150} initialY={80} initialWidth={600} initialHeight={560} onClose={onClose}>
-      {loading && <div className="text-sm text-stone-500">Загрузка...</div>}
+    <DraggableResizableWindow id="characters" title={t('characters.title')} initialX={150} initialY={80} initialWidth={600} initialHeight={560} onClose={onClose}>
+      {loading && <div className="text-sm text-stone-500">{t('characters.loading')}</div>}
       {error && <div className="text-sm text-red-600 mb-2">{error}</div>}
       <div className="space-y-2">
         {characters.map(ch => {
@@ -89,16 +90,16 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
                   <span className="text-xs text-stone-500">{ch.hp}/{ch.maxHp} HP</span>
                   <span className="text-xs text-stone-500">{ch.player?.name || ch.player?.email}</span>
                 </div>
-                {isExpanded && <button disabled={saving[ch.id]} onClick={() => saveCharacter(ch.id)} className="text-xs bg-purple-600 text-white px-2 py-1 rounded hover:bg-purple-700 disabled:bg-stone-400">{saving[ch.id] ? '...' : 'Сохранить'}</button>}
+                {isExpanded && <button disabled={saving[ch.id]} onClick={() => saveCharacter(ch.id)} className="text-xs bg-purple-600 text-white px-2 py-1 rounded hover:bg-purple-700 disabled:bg-stone-400">{saving[ch.id] ? '...' : t('characters.save')}</button>}
               </div>
               {isExpanded && es && (
                 <div className="p-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                   <div>
-                    <label className="block mb-1">Имя</label>
+                    <label className="block mb-1">{t('characters.name')}</label>
                     <input value={es.name as any} onChange={e=>updateField(ch.id,'name',e.target.value)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div>
-                    <label className="block mb-1">Уровень</label>
+                    <label className="block mb-1">{t('characters.level')}</label>
                     <input type="number" value={es.level as any} onChange={e=>updateField(ch.id,'level',parseInt(e.target.value)||1)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div>
@@ -130,7 +131,7 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
                     <input type="number" value={es.pips as any} onChange={e=>updateField(ch.id,'pips',parseInt(e.target.value)||0)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div className="col-span-2 md:col-span-4">
-                    <label className="block mb-1">Заметки</label>
+                    <label className="block mb-1">{t('characters.notes')}</label>
                     <textarea value={es.notes as any || ''} onChange={e=>updateField(ch.id,'notes',e.target.value)} className="w-full border rounded px-2 py-1 h-20" />
                   </div>
                 </div>
@@ -138,9 +139,8 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
             </div>
           );
         })}
-        {!loading && characters.length === 0 && <div className="text-xs text-stone-500">Нет персонажей.</div>}
+        {!loading && characters.length === 0 && <div className="text-xs text-stone-500">{t('characters.none')}</div>}
       </div>
     </DraggableResizableWindow>
   );
 }
-
