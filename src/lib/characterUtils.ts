@@ -262,19 +262,19 @@ function assignItemsToSlots(items: InventoryItem[]): InventoryItem[] {
     }
 
     if (!placed) {
-      console.warn(`Не удалось разместить предмет ${item.name}`);
+      console.warn(`Failed to place item ${item.name}`);
     }
   }
 
   return result;
 }
 
-// Новая функция для добавления предмета в инвентарь
+// Add new item to inventory
 export function addItemToInventory(inventory: InventoryItemLite[], item: InventoryItemLite): { success: boolean; inventory: InventoryItemLite[] } {
-  // Создаем копию инвентаря
+  // Create a shallow copy of inventory
   const newInventory = [...inventory];
 
-  // Подсчитываем занятые слоты по типам
+  // Count used slots per type
   const usedSlots = {
     PAWS: 0,
     BODY: 0,
@@ -291,14 +291,14 @@ export function addItemToInventory(inventory: InventoryItemLite[], item: Invento
     PACK: 6
   };
 
-  // Пробуем разместить в порядке приоритета: PACK -> BODY -> PAWS
+  // Try placing in priority: PACK -> BODY -> PAWS
   const slotTypes = ['PACK', 'BODY', 'PAWS'] as const;
 
   for (const slotType of slotTypes) {
     const availableSlots = slotCapacity[slotType] - usedSlots[slotType];
 
     if (availableSlots >= item.size) {
-      // Находим индекс для размещения
+      // Determine index to place item
       let slotIndex = 0;
       const itemsInSlot = newInventory.filter(i => i.slotType === slotType).sort((a, b) => a.slotIndex - b.slotIndex);
 
@@ -323,7 +323,7 @@ export function addItemToInventory(inventory: InventoryItemLite[], item: Invento
   return { success: false, inventory };
 }
 
-// Функция для удаления предмета из инвентаря
+// Remove item from inventory
 export function removeItemFromInventory(inventory: InventoryItem[], itemName: string): { success: boolean; inventory: InventoryItem[] } {
   const itemIndex = inventory.findIndex(item => item.name === itemName);
 
@@ -335,12 +335,12 @@ export function removeItemFromInventory(inventory: InventoryItem[], itemName: st
   return { success: true, inventory: newInventory };
 }
 
-// Функция для получения предметов по типу слота
+// Get items by slot type
 export function getItemsBySlotType(inventory: InventoryItem[], slotType: 'PAWS' | 'BODY' | 'PACK'): InventoryItem[] {
   return inventory.filter(item => item.slotType === slotType).sort((a, b) => a.slotIndex - b.slotIndex);
 }
 
-// Функция для получения структурированного представления инвентаря (для UI)
+// Structured inventory representation (for UI)
 export function getInventorySlots(inventory: InventoryItem[]) {
   return {
     paws: getItemsBySlotType(inventory, 'PAWS'),
@@ -349,7 +349,7 @@ export function getInventorySlots(inventory: InventoryItem[]) {
   };
 }
 
-// Функция для перемещения предмета в другой слот
+// Move item to another slot
 export function moveItemToSlot(
   inventory: InventoryItem[],
   itemName: string,
@@ -359,7 +359,7 @@ export function moveItemToSlot(
   const itemIndex = inventory.findIndex(item => item.name === itemName);
 
   if (itemIndex === -1) {
-    return { success: false, inventory, error: 'Предмет не найден' };
+    return { success: false, inventory, error: 'Item not found' };
   }
 
   const item = inventory[itemIndex];
@@ -376,7 +376,7 @@ export function moveItemToSlot(
   const usedSlotsInTarget = itemsInTargetSlot.reduce((sum, i) => sum + i.size, 0);
 
   if (usedSlotsInTarget + item.size > slotCapacity[newSlotType]) {
-    return { success: false, inventory, error: 'Недостаточно места в целевом слоте' };
+    return { success: false, inventory, error: 'Not enough space in target slot' };
   }
 
   // Обновляем предмет
@@ -389,6 +389,7 @@ export function moveItemToSlot(
   return { success: true, inventory: newInventory };
 }
 
+// Encumbrance check
 export function isEncumbered(character: FullCharacter): boolean {
   const totalSlots = 10; // 2 paws + 2 body + 6 pack
   const usedSlots = getTotalUsedSlots(character);
@@ -397,7 +398,7 @@ export function isEncumbered(character: FullCharacter): boolean {
   return (usedSlots + conditionSlots) > totalSlots;
 }
 
-// Подсчет использованных слотов
+// Count used slots
 export function getTotalUsedSlots(character: FullCharacter): number {
   let used = 0;
 
