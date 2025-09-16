@@ -3,22 +3,22 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// Получить все кампании пользователя
+// List all campaigns accessible to current user
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const campaigns = await prisma.campaign.findMany({
       where: {
         OR: [
-          { gmId: session.user.id }, // Кампании, где пользователь GM
+          { gmId: session.user.id }, // Campaigns where user is GM
           {
             players: {
-              some: { userId: session.user.id } // Кампании, где пользователь игрок
+              some: { userId: session.user.id } // Campaigns where user is a player
             }
           }
         ]
@@ -50,28 +50,28 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(campaigns)
   } catch (error) {
-    console.error("Ошибка получения кампаний:", error)
+    console.error("Failed to fetch campaigns:", error)
     return NextResponse.json(
-      { error: "Ошибка при получении кампаний" },
+      { error: "Failed to fetch campaigns" },
       { status: 500 }
     )
   }
 }
 
-// Создать новую кампанию
+// Create new campaign
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { name, description } = await request.json()
 
     if (!name) {
       return NextResponse.json(
-        { error: "Название кампании обязательно" },
+        { error: "Campaign name is required" },
         { status: 400 }
       )
     }
@@ -109,9 +109,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(campaign, { status: 201 })
   } catch (error) {
-    console.error("Ошибка создания кампании:", error)
+    console.error("Failed to create campaign:", error)
     return NextResponse.json(
-      { error: "Ошибка при создании кампании" },
+      { error: "Failed to create campaign" },
       { status: 500 }
     )
   }

@@ -3,31 +3,31 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// Получить персонажей кампании
+// Get characters of a campaign
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
     const campaignId = searchParams.get('campaignId')
 
     if (!campaignId) {
-      return NextResponse.json({ error: "ID кампании обязателен" }, { status: 400 })
+      return NextResponse.json({ error: "campaignId is required" }, { status: 400 })
     }
 
-    // Проверяем доступ к кампании
+    // Check campaign access
     const campaign = await prisma.campaign.findFirst({
       where: {
         id: campaignId,
         OR: [
-          { gmId: session.user.id }, // Пользователь является GM
+          { gmId: session.user.id }, // User is GM
           {
             players: {
-              some: { userId: session.user.id } // Пользователь является игроком
+              some: { userId: session.user.id } // User is a player
             }
           }
         ]
@@ -35,10 +35,10 @@ export async function GET(request: NextRequest) {
     })
 
     if (!campaign) {
-      return NextResponse.json({ error: "Кампания не найдена" }, { status: 404 })
+      return NextResponse.json({ error: "Campaign not found" }, { status: 404 })
     }
 
-    // Получаем персонажей кампании
+    // Fetch active characters
     const characters = await prisma.character.findMany({
       where: {
         campaignId,
@@ -62,41 +62,41 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(characters)
   } catch (error) {
-    console.error("Ошибка получения персонажей:", error)
+    console.error("Failed to fetch characters:", error)
     return NextResponse.json(
-      { error: "Ошибка при получении персонажей" },
+      { error: "Failed to fetch characters" },
       { status: 500 }
     )
   }
 }
 
-// Создать нового персонажа
+// Create new character
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { campaignId, characterData } = await request.json()
 
     if (!campaignId || !characterData) {
       return NextResponse.json(
-        { error: "ID кампании и данные персонажа обязательны" },
+        { error: "campaignId and character data are required" },
         { status: 400 }
       )
     }
 
-    // Проверяем доступ к кампании
+    // Check campaign access (GM or player)
     const campaign = await prisma.campaign.findFirst({
       where: {
         id: campaignId,
         OR: [
-          { gmId: session.user.id }, // GM может создавать персонажей
+          { gmId: session.user.id }, // GM can create
           {
             players: {
-              some: { userId: session.user.id } // Игрок может создать своего персонажа
+              some: { userId: session.user.id } // Player can create own character
             }
           }
         ]
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
 
     if (!campaign) {
       return NextResponse.json(
-        { error: "Кампания не найдена или нет прав на создание персонажа" },
+        { error: "Campaign not found or no permission to create character" },
         { status: 404 }
       )
     }
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
     console.log('Character data before filtering:', characterData);
     console.log('Character data for create:', characterDataForCreate);
 
-    // Создаем или находим background
+    // Create or reuse background
     const backgroundRecord = await prisma.background.upsert({
       where: { name: background.name },
       update: {},
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Создаем или находим birthsign
+    // Create or reuse birthsign
     const birthsignRecord = await prisma.birthsign.upsert({
       where: { sign: birthsign.sign },
       update: {},
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Создаем или находим coat
+    // Create or reuse coat
     const coatRecord = await prisma.coat.upsert({
       where: {
         color_pattern: {
@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Создаем персонажа
+    // Create character
     const character = await prisma.character.create({
       data: {
         ...characterDataForCreate,
@@ -190,7 +190,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Создаем предметы инвентаря
+    // Bulk create inventory items
     if (inventory && inventory.length > 0) {
       await prisma.inventoryItem.createMany({
         data: inventory.map((item: any) => ({
@@ -208,7 +208,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Получаем полный персонаж с инвентарем
+    // Fetch full character with inventory
     const fullCharacter = await prisma.character.findUnique({
       where: { id: character.id },
       include: {
@@ -228,9 +228,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(fullCharacter, { status: 201 })
   } catch (error) {
-    console.error("Ошибка создания персонажа:", error)
+    console.error("Failed to create character:", error)
     return NextResponse.json(
-      { error: "Ошибка при создании персонажа" },
+      { error: "Failed to create character" },
       { status: 500 }
     )
   }

@@ -71,7 +71,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Основная информация */}
+          {/* Basic info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-2">
@@ -100,7 +100,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
             </div>
           </div>
 
-          {/* Характеристики */}
+          {/* Attributes */}
           <div className="bg-stone-50 p-4 rounded-lg">
             <h3 className="text-lg font-semibold text-stone-900 mb-4">{t('character.editor.attributesTitle')}</h3>
             <div className="grid grid-cols-3 gap-4">
@@ -122,7 +122,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
             </div>
           </div>
 
-          {/* Здоровье и характеристики */}
+          {/* HP and stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-2">
@@ -178,7 +178,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
             </div>
           </div>
 
-          {/* Заметки */}
+          {/* Notes */}
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
               {t('character.editor.notes')}
@@ -192,7 +192,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
             />
           </div>
 
-          {/* Детали персонажа (только для просмотра) */}
+          {/* Character details (read-only) */}
           <div className="bg-stone-50 p-4 rounded-lg">
             <h3 className="text-lg font-semibold text-stone-900 mb-4">{t('character.editor.detailsTitle')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">

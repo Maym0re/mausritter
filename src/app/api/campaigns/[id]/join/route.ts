@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// Присоединиться к кампании
+// Join a campaign
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -12,12 +12,12 @@ export async function POST(
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
 
-    // Проверяем, существует ли кампания
+    // Check campaign exists
     const campaign = await prisma.campaign.findUnique({
       where: { id },
       include: {
@@ -29,20 +29,20 @@ export async function POST(
 
     if (!campaign) {
       return NextResponse.json(
-        { error: "Кампания не найдена" },
+        { error: "Campaign not found" },
         { status: 404 }
       )
     }
 
-    // Проверяем, не присоединился ли уже пользователь
+    // Check not already joined
     if (campaign.players.length > 0) {
       return NextResponse.json(
-        { error: "Вы уже участвуете в этой кампании" },
+        { error: "Already participating in this campaign" },
         { status: 400 }
       )
     }
 
-    // Добавляем игрока к кампании
+    // Add player to campaign
     try {
       await prisma.campaignPlayer.create({
         data: {
@@ -51,17 +51,17 @@ export async function POST(
         }
       })
     } catch (prismaError) {
-      // Обрабатываем ошибку уникального ограничения
+      // Unique constraint violation handling
       if (prismaError.code === 'P2002') {
         return NextResponse.json(
-          { error: "Вы уже участвуете в этой кампании" },
+          { error: "Already participating in this campaign" },
           { status: 400 }
         )
       }
       throw prismaError
     }
 
-    // Возвращаем обновленную кампанию
+    // Return updated campaign
     const updatedCampaign = await prisma.campaign.findUnique({
       where: { id },
       include: {
@@ -86,9 +86,9 @@ export async function POST(
 
     return NextResponse.json(updatedCampaign)
   } catch (error) {
-    console.error("Ошибка присоединения к кампании:", error)
+    console.error("Failed to join campaign:", error)
     return NextResponse.json(
-      { error: "Ошибка при присоединении к кампании" },
+      { error: "Failed to join campaign" },
       { status: 500 }
     )
   }

@@ -25,7 +25,6 @@ export function MapManager({ campaignId }: MapManagerProps) {
       });
 
       if (response.ok) {
-        // Перезагружаем страницу или обновляем состояние карты
         window.location.reload();
       } else {
         const error = await response.json();
@@ -44,7 +43,7 @@ export function MapManager({ campaignId }: MapManagerProps) {
   const handleGenerateRandomMap = async () => {
     setIsCreating(true);
     try {
-      // Сначала создаем карту
+      // Create map first
       const mapResponse = await fetch('/api/maps', {
         method: 'POST',
         headers: {
@@ -59,13 +58,13 @@ export function MapManager({ campaignId }: MapManagerProps) {
       if (mapResponse.ok) {
         const mapData = await mapResponse.json();
 
-        // Затем генерируем случайные ячейки для карты 5x5
+        // Generate random cells for 5x5 hex map
         const promises = [];
         for (let q = -2; q <= 2; q++) {
           for (let r = Math.max(-2, -q-2); r <= Math.min(2, -q+2); r++) {
             const s = -q - r;
 
-            // Центральная ячейка (0,0,0) - всегда стартовое поселение
+            // Center hex (0,0,0) is always the starting settlement
             if (q === 0 && r === 0) {
               promises.push(
                 fetch('/api/maps/cells', {
@@ -87,7 +86,7 @@ export function MapManager({ campaignId }: MapManagerProps) {
                 })
               );
             } else {
-              // Остальные ячейки - случайные
+              // Other hexes are random
               promises.push(
                 fetch('/api/maps/cells', {
                   method: 'POST',
@@ -160,7 +159,7 @@ export function MapManager({ campaignId }: MapManagerProps) {
         </div>
       )}
 
-      {/* Закрытие меню при клике вне его */}
+      {/* Close menu on outside click */}
       {showOptions && (
         <div
           className="fixed inset-0 z-40"

@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// Получить данные кампании
+// Get campaign data
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -12,12 +12,12 @@ export async function GET(
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
 
-    // Сначала проверяем, существует ли кампания
+    // First check campaign existence
     const campaign = await prisma.campaign.findUnique({
       where: { id },
       include: {
@@ -49,17 +49,17 @@ export async function GET(
 
     if (!campaign) {
       return NextResponse.json(
-        { error: "Кампания не найдена" },
+        { error: "Campaign not found" },
         { status: 404 }
       )
     }
 
-    // Проверяем, является ли пользователь участником кампании
+    // Check if user participates in campaign
     const isGM = campaign.gmId === session.user.id
     const isPlayer = campaign.players.some(p => p.userId === session.user.id)
     const isParticipant = isGM || isPlayer
 
-    // Если пользователь не участник, возвращаем только базовую информацию для приглашения
+    // If not participant return limited info (for invite)
     if (!isParticipant) {
       return NextResponse.json({
         id: campaign.id,
@@ -75,18 +75,18 @@ export async function GET(
       })
     }
 
-    // Если пользователь участник, возвращаем полную информацию
+    // If participant return full info
     return NextResponse.json(campaign)
   } catch (error) {
-    console.error("Ошибка получения кампании:", error)
+    console.error("Failed to fetch campaign:", error)
     return NextResponse.json(
-      { error: "Ошибка при получении кампании" },
+      { error: "Failed to fetch campaign" },
       { status: 500 }
     )
   }
 }
 
-// Обновить кампанию
+// Update campaign
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -95,12 +95,12 @@ export async function PATCH(
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
 
-    // Проверяем, что пользователь является GM кампании
+    // Ensure user is GM
     const existingCampaign = await prisma.campaign.findFirst({
       where: {
         id,
@@ -110,7 +110,7 @@ export async function PATCH(
 
     if (!existingCampaign) {
       return NextResponse.json(
-        { error: "Кампания не найдена или нет прав на редактирование" },
+        { error: "Campaign not found or no permission" },
         { status: 404 }
       )
     }
@@ -138,15 +138,15 @@ export async function PATCH(
 
     return NextResponse.json(campaign)
   } catch (error) {
-    console.error("Ошибка обновления кампании:", error)
+    console.error("Failed to update campaign:", error)
     return NextResponse.json(
-      { error: "Ошибка при обновлении кампании" },
+      { error: "Failed to update campaign" },
       { status: 500 }
     )
   }
 }
 
-// Удалить кампанию
+// Delete campaign
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -155,12 +155,12 @@ export async function DELETE(
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Не авторизован" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { id } = await params
 
-    // Проверяем, что пользователь является GM кампании
+    // Ensure user is GM
     const existingCampaign = await prisma.campaign.findFirst({
       where: {
         id,
@@ -170,7 +170,7 @@ export async function DELETE(
 
     if (!existingCampaign) {
       return NextResponse.json(
-        { error: "Кампания не найдена или нет прав на удаление" },
+        { error: "Campaign not found or no permission" },
         { status: 404 }
       )
     }
@@ -179,11 +179,11 @@ export async function DELETE(
       where: { id }
     })
 
-    return NextResponse.json({ message: "Кампания удалена" })
+    return NextResponse.json({ message: "Campaign deleted" })
   } catch (error) {
-    console.error("Ошибка удаления кампании:", error)
+    console.error("Failed to delete campaign:", error)
     return NextResponse.json(
-      { error: "Ошибка при удалении кампании" },
+      { error: "Failed to delete campaign" },
       { status: 500 }
     )
   }
