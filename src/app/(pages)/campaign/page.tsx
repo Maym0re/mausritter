@@ -6,6 +6,7 @@ import { HexGridCanvas } from '@/app/(pages)/campaign/components/HexGridCanvas';
 import { CharacterManagerWindow } from '@/app/(pages)/campaign/components/CharacterManagerWindow';
 import { DraggableResizableWindow } from '@/components/ui/DraggableResizableWindow';
 import { TimeTracker } from '@/components/TimeTracker';
+import { t } from '@/i18n';
 
 interface CampaignListItem { id: string; name: string; gmId: string }
 
@@ -69,8 +70,8 @@ export default function CampaignPage() {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Вход требуется</h2>
-          <p className="text-gray-600">Пожалуйста, войдите в систему для доступа к кампании.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('auth.loginRequiredTitle')}</h2>
+          <p className="text-gray-600">{t('auth.loginRequiredHint')}</p>
         </div>
       </div>
     );
@@ -80,8 +81,8 @@ export default function CampaignPage() {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Нет доступных кампаний</h2>
-          <p className="text-gray-600">Создайте или присоединитесь к кампании на главной странице.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('campaign.noneTitle')}</h2>
+          <p className="text-gray-600">{t('campaign.noneHint')}</p>
         </div>
       </div>
     );
@@ -121,7 +122,7 @@ export default function CampaignPage() {
       {showTime && (
         <DraggableResizableWindow
           id="time-tracker"
-          title="Тайм-трекер"
+          title={t('time.tracker')}
           initialX={200}
           initialY={140}
           initialWidth={640}
@@ -134,10 +135,10 @@ export default function CampaignPage() {
 
       {/* Нижнее меню */}
       <div className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1100] border border-stone-700">
-        <button onClick={()=>setShowCharacters(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showCharacters? 'bg-purple-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>Персонажи</button>
-        <button onClick={()=>setShowTime(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showTime? 'bg-blue-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>Время</button>
-        {userRole==='master' && <button onClick={()=>setIsAddHexMode(m=>!m)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${isAddHexMode? 'bg-amber-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{isAddHexMode? 'Finish Add':'Add Hex'}</button>}
-        {userRole==='master' && <button onClick={()=>setShowMarkersPanel(v=>!v)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showMarkersPanel? 'bg-emerald-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>Метки</button>}
+        <button onClick={()=>setShowCharacters(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showCharacters? 'bg-purple-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.characters')}</button>
+        <button onClick={()=>setShowTime(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showTime? 'bg-blue-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.time')}</button>
+        {userRole==='master' && <button onClick={()=>setIsAddHexMode(m=>!m)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${isAddHexMode? 'bg-amber-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{isAddHexMode? t('menu.finishAdd'): t('menu.addHex')}</button>}
+        {userRole==='master' && <button onClick={()=>setShowMarkersPanel(v=>!v)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showMarkersPanel? 'bg-emerald-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.markers')}</button>}
         <div className="w-px h-6 bg-stone-700" />
         <button disabled className="text-xs px-3 py-1.5 rounded-full bg-stone-800 text-stone-500 cursor-default">+</button>
       </div>
