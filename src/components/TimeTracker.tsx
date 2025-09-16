@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { GameTimeManager, rollWeather, rollSeasonalEvent, getTimeOfDay, performRest, applyRestResults } from '@/lib/timeUtils';
 import { GameTime, GameTimeCore, RestType, WeatherEntryLight } from "@/types/time";
 import { FullCharacter } from "@/types/character";
+import { t } from '@/i18n';
 
 interface TimeTrackerProps {
   characters?: FullCharacter[];
@@ -122,33 +123,31 @@ export function TimeTracker({
   return (
     <div className="max-w-4xl mx-auto p-6 bg-stone-50 rounded-lg border-2 border-stone-200">
       <div className="text-center mb-6">
-        <h2 className="text-3xl font-bold text-stone-900 mb-2">⏰ Time & Travel Tracker</h2>
-        <p className="text-stone-700">Manage game time, weather, and character rest</p>
+        <h2 className="text-3xl font-bold text-stone-900 mb-2">⏰ {t('timeTracker.title')}</h2>
+        <p className="text-stone-700">{t('timeTracker.subtitle')}</p>
       </div>
 
       {/* Текущее время */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-lg p-4 border border-stone-200 text-center">
-          <h3 className="font-bold text-stone-900 mb-2">Current Time</h3>
+          <h3 className="font-bold text-stone-900 mb-2">{t('timeTracker.currentTime')}</h3>
           <p className="text-lg text-stone-800">{timeManager.getFormattedTime()}</p>
           <p className="text-sm text-stone-600">{timeOfDay}</p>
         </div>
 
         <div className="bg-white rounded-lg p-4 border border-stone-200 text-center">
-          <h3 className="font-bold text-stone-900 mb-2">Season</h3>
+          <h3 className="font-bold text-stone-900 mb-2">{t('timeTracker.season')}</h3>
           <p className="text-lg text-stone-800 capitalize">{season}</p>
-          <p className="text-sm text-stone-600">Day {currentTime.days + 1}</p>
+          <p className="text-sm text-stone-600">{t('timeTracker.day', { day: currentTime.days + 1 })}</p>
         </div>
 
         <div className="bg-white rounded-lg p-4 border border-stone-200 text-center">
-          <h3 className="font-bold text-stone-900 mb-2">Weather</h3>
+          <h3 className="font-bold text-stone-900 mb-2">{t('timeTracker.weather')}</h3>
           {currentWeather ? (
             <>
-              <p className={`text-lg ${currentWeather.isPoorCondition ? 'text-red-600' : 'text-green-600'}`}>
-                {currentWeather.weather}
-              </p>
+              <p className={`text-lg ${currentWeather.isPoorCondition ? 'text-red-600' : 'text-green-600'}`}>\n                {currentWeather.weather}\n              </p>
               {currentWeather.isPoorCondition && (
-                <p className="text-xs text-red-500">⚠️ Poor conditions</p>
+                <p className="text-xs text-red-500">⚠️ {t('timeTracker.poorConditions')}</p>
               )}
             </>
           ) : (
@@ -159,7 +158,7 @@ export function TimeTracker({
               }}
               className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
             >
-              Roll Weather
+              {t('timeTracker.rollWeather')}
             </button>
           )}
         </div>
@@ -167,11 +166,11 @@ export function TimeTracker({
 
       {/* Добавление времени */}
       <div className="bg-white rounded-lg p-6 border border-stone-200 mb-6">
-        <h3 className="font-bold text-stone-900 mb-4">Add Time</h3>
+        <h3 className="font-bold text-stone-900 mb-4">{t('timeTracker.addTime')}</h3>
 
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center">
-            <h4 className="font-medium text-stone-700 mb-2">Rounds (Combat)</h4>
+            <h4 className="font-medium text-stone-700 mb-2">{t('timeTracker.rounds')}</h4>
             <div className="flex gap-2 justify-center">
               <button
                 onClick={() => addTime('rounds', 1)}
@@ -189,7 +188,7 @@ export function TimeTracker({
           </div>
 
           <div className="text-center">
-            <h4 className="font-medium text-stone-700 mb-2">Turns (Exploration)</h4>
+            <h4 className="font-medium text-stone-700 mb-2">{t('timeTracker.turns')}</h4>
             <div className="flex gap-2 justify-center">
               <button
                 onClick={() => addTime('turns', 1)}
@@ -207,7 +206,7 @@ export function TimeTracker({
           </div>
 
           <div className="text-center">
-            <h4 className="font-medium text-stone-700 mb-2">Watches (Travel)</h4>
+            <h4 className="font-medium text-stone-700 mb-2">{t('timeTracker.watches')}</h4>
             <div className="flex gap-2 justify-center">
               <button
                 onClick={() => addTime('watches', 1)}
@@ -219,7 +218,7 @@ export function TimeTracker({
                 onClick={newDay}
                 className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
               >
-                New Day
+                {t('timeTracker.newDay')}
               </button>
             </div>
           </div>
@@ -229,13 +228,13 @@ export function TimeTracker({
       {/* Сезонное событие */}
       {todaysEvent && (
         <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200 mb-6">
-          <h3 className="font-bold text-yellow-900 mb-2">📅 Today&apos;s Event</h3>
+          <h3 className="font-bold text-yellow-900 mb-2">📅 {t('timeTracker.todayEvent')}</h3>
           <p className="text-yellow-800">{todaysEvent}</p>
           <button
             onClick={() => setTodaysEvent(null)}
             className="text-xs text-yellow-600 hover:text-yellow-800 mt-2"
           >
-            Dismiss
+            {t('timeTracker.dismiss')}
           </button>
         </div>
       )}
@@ -243,7 +242,7 @@ export function TimeTracker({
       {/* Отдых персонажей */}
       {characters.length > 0 && (
         <div className="bg-white rounded-lg p-6 border border-stone-200">
-          <h3 className="font-bold text-stone-900 mb-4">Character Rest</h3>
+          <h3 className="font-bold text-stone-900 mb-4">{t('timeTracker.characterRest')}</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {characters.map(character => (
@@ -257,7 +256,7 @@ export function TimeTracker({
 
                 {character.conditions.length > 0 && (
                   <div className="text-xs text-red-600 mb-2">
-                    Conditions: {character.conditions.map(c => c.name).join(', ')}
+                    {t('timeTracker.conditions')} {character.conditions.map(c => c.name).join(', ')}
                   </div>
                 )}
 
@@ -266,19 +265,19 @@ export function TimeTracker({
                     onClick={() => handleRest(character.id, 'short')}
                     className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
                   >
-                    Short Rest
+                    {t('timeTracker.shortRest')}
                   </button>
                   <button
                     onClick={() => handleRest(character.id, 'long')}
                     className="px-2 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600"
                   >
-                    Long Rest
+                    {t('timeTracker.longRest')}
                   </button>
                   <button
                     onClick={() => handleRest(character.id, 'full')}
                     className="px-2 py-1 bg-purple-500 text-white rounded text-xs hover:bg-purple-600"
                   >
-                    Full Rest
+                    {t('timeTracker.fullRest')}
                   </button>
                 </div>
               </div>
@@ -289,28 +288,28 @@ export function TimeTracker({
 
       {/* Справочная информация */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-        <h4 className="font-bold text-gray-900 mb-2">Time Reference</h4>
+        <h4 className="font-bold text-gray-900 mb-2">{t('timeTracker.reference')}</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
           <div>
-            <strong>Round:</strong> Combat time (~1 minute)
+            <strong>{t('timeTracker.roundLabel')}</strong> {t('timeTracker.roundDesc')}
           </div>
           <div>
-            <strong>Turn:</strong> Exploration time (~10 minutes)
+            <strong>{t('timeTracker.turnLabel')}</strong> {t('timeTracker.turnDesc')}
           </div>
           <div>
-            <strong>Watch:</strong> Travel time (~6 hours)
+            <strong>{t('timeTracker.watchLabel')}</strong> {t('timeTracker.watchDesc')}
           </div>
         </div>
 
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
           <div>
-            <strong>Short Rest:</strong> 1 Turn, d6+1 HP
+            <strong>{t('timeTracker.shortRestLabel')}</strong> {t('timeTracker.shortRestDesc')}
           </div>
           <div>
-            <strong>Long Rest:</strong> 1 Watch, all HP
+            <strong>{t('timeTracker.longRestLabel')}</strong> {t('timeTracker.longRestDesc')}
           </div>
           <div>
-            <strong>Full Rest:</strong> 1 Week, full recovery
+            <strong>{t('timeTracker.fullRestLabel')}</strong> {t('timeTracker.fullRestDesc')}
           </div>
         </div>
       </div>
