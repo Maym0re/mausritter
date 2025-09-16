@@ -16,6 +16,7 @@ import { HexWindow } from './HexWindow';
 import { CanvasImagesLayer, CanvasImagesLayerHandle } from './CanvasImagesLayer';
 import { useToast } from '@/components/ui/ToastProvider';
 import Konva from 'konva';
+import { t } from '@/i18n';
 
 interface HexGridCanvasProps {
 	mode: 'master' | 'player';
@@ -182,7 +183,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		const upd = () => {
 			const w = window.innerWidth;
 			const h = window.innerHeight;
-			const header = 74; // актуальная высота верхней панели
+			const header = 74; // актуальная высота верхней пане��и
 			const avail = h - header;
 			setCanvasSize({width: w, height: Math.max(avail, 400)});
 			setPos({x: w / 2, y: Math.max(avail, 400) / 2});
@@ -352,9 +353,9 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 				const mk = await r.json();
 				setMarkers(prev => [...prev, mk].sort((a,b)=>a.z-b.z));
 			} else if (r.status === 409) {
-				toast.error('Достигнут лимит в 20 меток');
+				toast.error(t('markers.limitToast'));
 			} else {
-				toast.error('Ошибка создания метки');
+				toast.error(t('markers.creationError'));
 			}
 		} catch (e) { console.error(e); }
 	}, [mapData?.id, toast]);
@@ -428,7 +429,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			<div className="flex items-center justify-center h-full">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-amber-900"></div>
-					<p className="mt-4 text-amber-900">Загрузка карты...</p>
+					<p className="mt-4 text-amber-900">{t('map.loading')}</p>
 				</div>
 			</div>
 		);
@@ -439,8 +440,8 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		return (
 			<div className="flex items-center justify-center h-full">
 				<div className="text-center">
-					<h2 className="text-2xl font-bold text-gray-900 mb-4">Карта не создана</h2>
-					<p className="text-gray-600">Мас��ер еще не создал карту для этой кампании.</p>
+					<h2 className="text-2xl font-bold text-gray-900 mb-4">{t('map.notCreatedTitle')}</h2>
+					<p className="text-gray-600">{t('map.notCreatedHint')}</p>
 				</div>
 			</div>
 		);
@@ -451,13 +452,13 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		return (
 			<div className="flex items-center justify-center h-full">
 				<div className="text-center">
-					<h2 className="text-2xl font-bold text-gray-900 mb-4">Создайте карту</h2>
-					<p className="text-gray-600 mb-6">Для начала создайте карту для вашей кампании.</p>
+					<h2 className="text-2xl font-bold text-gray-900 mb-4">{t('map.createTitle')}</h2>
+					<p className="text-gray-600 mb-6">{t('map.createHint')}</p>
 					<button
 						onClick={() => window.location.reload()}
 						className="px-6 py-3 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors"
 					>
-						Обновить страницу
+						{t('map.reload')}
 					</button>
 				</div>
 			</div>
@@ -722,8 +723,8 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 							editable={mode === 'master'}
 							onSelectionChange={setSelectedImageId}
 							onStorageLimit={(current, limit) => {
-								toast.error(`Лимит изображений исчерпан. ${(current / 1024).toFixed(1)} / ${(limit / 1024).toFixed(1)} КБ.`);
-							}}
+							toast.error(t('images.limitReached', { current: (current / 1024).toFixed(1), limit: (limit / 1024).toFixed(1) }));
+						}}
 							hexMapId={mapData?.id || undefined}
 							initialImages={mapData?.images || []}
 						/>
@@ -757,37 +758,34 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			{markersPanelOpen && mode==='master' && (
 				<div ref={markersPanelRef} className="absolute top-4 right-4 z-[1200] bg-stone-900/90 border border-stone-700 rounded-lg p-3 w-60 max-h-80 overflow-auto space-y-2">
 					<div className="flex justify-between items-center mb-1">
-						<span className="text-xs text-stone-300 font-semibold">Метки ({markers.length}/20)</span>
+						<span className="text-xs text-stone-300 font-semibold">{t('markers.count', { count: markers.length })}</span>
 						<button className="text-xs text-stone-400 hover:text-white" onClick={()=>onMarkersPanelOpenChange?.(false)}>✕</button>
 					</div>
-					{markers.length>=20 && <div className="text-[10px] text-red-400">Лимит достигнут</div>}
+					{markers.length>=20 && <div className="text-[10px] text-red-400">{t('markers.limitReached')}</div>}
 					<div className="grid grid-cols-4 gap-2">
 						{pointerImages.map(fn => {
-							const active = selectedPointer===fn;
+							const isActive = selectedPointer === fn;
+							const disabled = markers.length>=20;
 							return (
-								<button
-									key={fn}
-									disabled={markers.length>=20}
-									className={`relative border rounded p-1 hover:border-amber-400 select-none ${active? 'border-emerald-500 bg-stone-700':'border-stone-600'}`}
+								<button key={fn}
+									className={`relative border rounded p-1 hover:border-amber-400 select-none ${isActive? 'border-emerald-500 bg-stone-700':'border-stone-600'}`}
+									disabled={disabled}
 									onClick={(e)=> {
-										// Если сейчас идёт кастомный drag — игнор клика
-										if (dragPreview) return;
+										if (disabled || dragPreview) return;
 										setSelectedPointer(p=> p===fn? null: fn);
 										markersAddingRef.current = true;
 									}}
 									onMouseDown={(e) => {
-										if (markers.length>=20) return;
-										// Левая кнопка
+										if (disabled) return;
 										if (e.button !== 0) return;
 										startPointerDrag(fn, e.clientX, e.clientY);
-										// Снимаем выделение текста
 										e.preventDefault();
 									}}
-									onTouchStart={(e) => {
-										if (markers.length>=20) return;
+									onTouchStart={(e)=> {
+										if (disabled) return;
 										const touch = e.touches[0];
 										startPointerDrag(fn, touch.clientX, touch.clientY);
-										setSelectedPointer(null); // в touch режиме сразу drag
+										setSelectedPointer(null);
 									}}
 									title="Перетащите на карту или кликните, затем клик по карте"
 								>
@@ -796,7 +794,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 							);
 						})}
 					</div>
-					{selectedPointer && <div className="text-[10px] text-emerald-400 mt-2">Выберите место на карте…</div>}
+					{selectedPointer && <div className="text-[10px] text-emerald-400 mt-2">{t('markers.pickPlace')}</div>}
 				</div>
 			)}
 		</div>
