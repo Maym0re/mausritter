@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { FullCharacter } from "@/types/character";
+import { t } from '@/i18n';
 
 interface CharacterEditorProps {
   character: FullCharacter;
@@ -41,7 +42,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
     try {
       await onSave(editedCharacter);
     } catch (error) {
-      console.error('Ошибка сохранения персонажа:', error);
+      console.error('Character save error:', error);
     } finally {
       setIsSaving(false);
     }
@@ -54,10 +55,10 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold text-stone-900">
-                {isMaster ? 'Редактирование персонажа' : 'Мой персонаж'}
+                {isMaster ? t('character.editor.masterTitle') : t('character.editor.playerTitle')}
               </h2>
               <p className="text-stone-600">
-                Игрок: {character.player?.name || character.player?.email}
+                {t('character.editor.playerLabel')} {character.player?.name || character.player?.email}
               </p>
             </div>
             <button
@@ -74,7 +75,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-2">
-                Имя персонажа
+                {t('character.editor.nameLabel')}
               </label>
               <input
                 type="text"
@@ -86,7 +87,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
 
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-2">
-                Уровень
+                {t('character.editor.levelLabel')}
               </label>
               <input
                 type="number"
@@ -101,12 +102,12 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
 
           {/* Характеристики */}
           <div className="bg-stone-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-stone-900 mb-4">Характеристики</h3>
+            <h3 className="text-lg font-semibold text-stone-900 mb-4">{t('character.editor.attributesTitle')}</h3>
             <div className="grid grid-cols-3 gap-4">
               {(['str', 'dex', 'wil'] as const).map((attr) => (
                 <div key={attr} className="text-center">
                   <label className="block text-sm font-medium text-stone-700 mb-2">
-                    {attr === 'str' ? 'Сила' : attr === 'dex' ? 'Ловкость' : 'Воля'}
+                    {attr === 'str' ? t('character.editor.attr.str') : attr === 'dex' ? t('character.editor.attr.dex') : t('character.editor.attr.wil')}
                   </label>
                   <input
                     type="number"
@@ -125,7 +126,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-2">
-                Текущее HP
+                {t('character.editor.hp.current')}
               </label>
               <input
                 type="number"
@@ -139,7 +140,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
 
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-2">
-                Максимальное HP
+                {t('character.editor.hp.max')}
               </label>
               <input
                 type="number"
@@ -152,7 +153,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
 
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-2">
-                Опыт
+                {t('character.editor.xp')}
               </label>
               <input
                 type="number"
@@ -165,7 +166,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
 
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-2">
-                Пипсы
+                {t('character.editor.pips')}
               </label>
               <input
                 type="number"
@@ -180,32 +181,32 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
           {/* Заметки */}
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              Заметки
+              {t('character.editor.notes')}
             </label>
             <textarea
               value={editedCharacter.notes || ''}
               onChange={(e) => setEditedCharacter(prev => ({ ...prev, notes: e.target.value }))}
               rows={3}
               className="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="Заметки о персонаже..."
+              placeholder={t('character.editor.notesPlaceholder')}
             />
           </div>
 
           {/* Детали персонажа (только для просмотра) */}
           <div className="bg-stone-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-stone-900 mb-4">Детали персонажа</h3>
+            <h3 className="text-lg font-semibold text-stone-900 mb-4">{t('character.editor.detailsTitle')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <strong>Происхождение:</strong> {editedCharacter.background?.name || 'Не указано'}
+                <strong>{t('character.editor.origin')}</strong> {editedCharacter.background?.name || t('character.editor.undefined')}
               </div>
               <div>
-                <strong>Знак рождения:</strong> {editedCharacter.birthsign?.sign || 'Не указано'}
+                <strong>{t('character.editor.birthsign')}</strong> {editedCharacter.birthsign?.sign || t('character.editor.undefined')}
               </div>
               <div>
-                <strong>Цвет шерсти:</strong> {editedCharacter.coat?.color || 'Не указано'}
+                <strong>{t('character.editor.coat')}</strong> {editedCharacter.coat?.color || t('character.editor.undefined')}
               </div>
               <div>
-                <strong>Особенность:</strong> {editedCharacter.physicalDetail || 'Не указано'}
+                <strong>{t('character.editor.feature')}</strong> {editedCharacter.physicalDetail || t('character.editor.undefined')}
               </div>
             </div>
           </div>
@@ -216,14 +217,14 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
             onClick={onCancel}
             className="px-4 py-2 border border-stone-300 rounded-md text-stone-700 hover:bg-stone-50"
           >
-            Отмена
+            {t('character.editor.cancel')}
           </button>
           <button
             onClick={handleSave}
             disabled={isSaving || !editedCharacter.name.trim()}
             className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-stone-300"
           >
-            {isSaving ? 'Сохранение...' : 'Сохранить'}
+            {isSaving ? t('character.editor.saving') : t('character.editor.save')}
           </button>
         </div>
       </div>
