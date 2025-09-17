@@ -32,7 +32,7 @@ export const en = {
   'hex.notes': 'Notes',
   'hex.gmNotes': 'GM Notes',
   'hex.none': '— none —',
-  'hex.customName': 'Custom Name',
+  'hex.name': 'Name',
   'hex.type': 'Hex Type',
   'hex.landmark': 'Landmark',
   'hex.landmarkDetail': 'Landmark Detail',

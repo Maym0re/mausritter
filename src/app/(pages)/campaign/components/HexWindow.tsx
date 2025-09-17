@@ -105,7 +105,6 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
   return (
     <DraggableResizableWindow
       id={`hex-${hex.q}-${hex.r}`}
-      title={`Hex (${hex.q}, ${hex.r})`}
       initialX={80}
       initialY={100}
       initialWidth={480}
@@ -119,7 +118,7 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
       <div className="space-y-4 text-xs">
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block mb-1 font-medium">{t('hex.customName')}</label>
+            <label className="block mb-1 font-medium">{t('hex.name')}</label>
             <input value={form.customName} onChange={e=>handleChange('customName', e.target.value)} className="w-full border rounded px-2 py-1 disabled:bg-gray-100" readOnly={!isGM} />
           </div>
           <div>

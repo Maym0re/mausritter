@@ -3,7 +3,7 @@ import React, { useState, useRef, useCallback } from 'react';
 
 interface DraggableResizableWindowProps {
   id: string;
-  title: string;
+  title?: string;
   initialX?: number;
   initialY?: number;
   initialWidth?: number;
@@ -17,16 +17,17 @@ interface DraggableResizableWindowProps {
 
 export function DraggableResizableWindow({
   id,
-  title,
   initialX = 120,
   initialY = 120,
   initialWidth = 480,
   initialHeight = 520,
   minWidth = 300,
   minHeight = 200,
+	title = '',
   onClose,
   children,
-  footer
+  footer,
+
 }: DraggableResizableWindowProps) {
   const [pos, setPos] = useState({ x: initialX, y: initialY });
   const [size, setSize] = useState({ w: initialWidth, h: initialHeight });
