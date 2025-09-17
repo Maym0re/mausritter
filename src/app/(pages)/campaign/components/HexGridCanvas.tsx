@@ -375,10 +375,6 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 
 	useEffect(() => {
 		if (markersPanelOpen && pointerImages.length === 0) {
-			if (isDemo) {
-				setPointerImages(['pin-paw.webp','pin-house.webp','pin-star.webp','pin-coins.webp','pin-tower.webp']);
-				return;
-			}
 			fetch('/api/maps/markers/pointers')
 				.then(r => r.ok ? r.json() : [])
 				.then((list: string[]) => setPointerImages(list))
