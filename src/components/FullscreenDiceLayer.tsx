@@ -19,12 +19,12 @@ export default function FullscreenDiceLayer() {
   const clearTimeoutRef = useRef<number | null>(null);
 
   const colorOptions: { id: string; filter: string; preview: string }[] = [
-    { id: 'default', filter: 'none', preview: '#e5e7eb' },
-    { id: 'amber', filter: 'hue-rotate(25deg) saturate(1.25)', preview: '#f59e0b' },
-    { id: 'emerald', filter: 'hue-rotate(115deg) saturate(1.35)', preview: '#059669' },
-    { id: 'sapphire', filter: 'hue-rotate(205deg) saturate(1.4)', preview: '#2563eb' },
-    { id: 'amethyst', filter: 'hue-rotate(275deg) saturate(1.4)', preview: '#7c3aed' },
-    { id: 'crimson', filter: 'hue-rotate(-15deg) saturate(1.45)', preview: '#dc2626' },
+    { id: 'default', filter: 'none', preview: '#059669' },
+    { id: 'amber', filter: 'hue-rotate(277deg) saturate(2)', preview: '#f59e0b' },
+    { id: 'amethyst', filter: 'hue-rotate(115deg) saturate(1.35)', preview: '#7c3aed' },
+    { id: 'sapphire', filter: 'hue-rotate(84deg) saturate(2)', preview: '#2563eb' },
+    { id: 'black', filter: 'hue-rotate(0) saturate(0)', preview: '#1c1c1e' },
+    { id: 'crimson', filter: 'hue-rotate(235deg) saturate(2)', preview: '#dc2626' },
   ];
 
   const normalizeNotation = (input: string): string => {
@@ -97,7 +97,7 @@ export default function FullscreenDiceLayer() {
           friction: 0.5,
           lightIntensity: 1.1,
           throwForce: 4,
-          offscreen: false, // disable Offscreen to allow higher DPI
+          offscreen: false,
         });
         await instance.init();
         applySize();
@@ -191,7 +191,7 @@ export default function FullscreenDiceLayer() {
         {open && (
           <div className="w-60 p-3 rounded-lg bg-white/90 backdrop-blur shadow border border-stone-200 space-y-2">
             <div className="flex gap-2 flex-wrap">
-              {['d20','2d6','3d6','4d6kh3','d100'].map(p => (
+              {['d6','2d6','d12','d20','d100'].map(p => (
                 <button
                   key={p}
                   type="button"
