@@ -18,6 +18,26 @@ export default function FullscreenDiceLayer() {
   const [autoClear, setAutoClear] = useState(true);
   const clearTimeoutRef = useRef<number | null>(null);
 
+  // LocalStorage persistence
+  const LS_KEY = 'dicePrefs_v1';
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Partial<{ notation: string; diceColor: string; autoClear: boolean; open: boolean; }>;
+        if (parsed.notation) setNotation(parsed.notation);
+        if (parsed.diceColor) setDiceColor(parsed.diceColor);
+        if (typeof parsed.autoClear === 'boolean') setAutoClear(parsed.autoClear);
+        if (typeof parsed.open === 'boolean') setOpen(parsed.open);
+      }
+    } catch { /* ignore */ }
+  }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify({ notation, diceColor, autoClear, open }));
+    } catch { /* ignore */ }
+  }, [notation, diceColor, autoClear, open]);
+
   const colorOptions: { id: string; filter: string; preview: string }[] = [
     { id: 'default', filter: 'none', preview: '#059669' },
     { id: 'amber', filter: 'hue-rotate(277deg) saturate(2)', preview: '#f59e0b' },
