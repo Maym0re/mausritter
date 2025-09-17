@@ -235,7 +235,12 @@ export default function DemoCampaignPage() {
 				markersPanelOpen={showMarkersPanel}
 				onMarkersPanelOpenChange={setShowMarkersPanel}
 				demo
-				initialDemoMap={{id: 'demo', cells: initialCells, size: 7, centerX: 0, centerY: 0, images: [], markers: []}}
+				initialDemoMap={{
+					id: 'demo', cells: initialCells, size: 7, centerX: 0, centerY: 0, images: [], markers: [
+						{id: 'demo-marker-1', image: 'pin-house.webp', x: -9, y: -48, z: 0},
+						{id: 'demo-marker-2', image: 'pin-skull.webp', x: 40, y: -138, z: 1},
+					]
+				}}
 			/>
 			<div
 				className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1300] border border-stone-700">
