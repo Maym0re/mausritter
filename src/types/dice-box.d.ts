@@ -1,5 +1,4 @@
 declare module '@3d-dice/dice-box' {
-  // The library ships without TS types; we provide a very loose definition.
   interface DiceBoxOptions {
     assetPath?: string;
     scale?: number;

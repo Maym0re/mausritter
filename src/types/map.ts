@@ -80,20 +80,6 @@ export const HEX_TYPES: HexType[] = [
     description: 'Human settlement',
     icon: 'GiTownHall'
   },
-  {
-    id: 'mountains',
-    name: 'Mountains',
-    color: '#808080',
-    description: 'Rocky peaks and cliffs',
-    icon: 'GiMountainPeak'
-  },
-  {
-    id: 'swamp',
-    name: 'Swamp',
-    color: '#696969',
-    description: 'Marshy wetlands',
-    icon: 'GiSwamp'
-  }
 ];
 
 export const COUNTRYSIDE_LANDMARKS: Landmark[] = [
