@@ -225,7 +225,6 @@ export default function FullscreenDiceLayer() {
             <div className="space-y-1">
               <div className="text-xs font-medium text-stone-600 flex items-center justify-between">
                 <span>{t('dice.colors.title')}</span>
-                <span className="text-[10px] text-stone-400">{t('dice.colors.filterLabel')}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {colorOptions.map(opt => (

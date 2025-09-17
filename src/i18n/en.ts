@@ -166,7 +166,6 @@ export const en = {
   'dice.toggle.open': 'Dice ▼',
   'dice.toggle.closed': 'Dice ▲',
   'dice.colors.title': 'Color',
-  'dice.colors.filterLabel': 'canvas filter',
   'dice.colors.default': 'Default',
   'dice.colors.amber': 'Amber',
   'dice.colors.emerald': 'Emerald',

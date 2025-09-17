@@ -667,7 +667,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 											fillEnabled={true}
 											fill={'rgba(0,0,0,0.001)'}
 											stroke={'#888'}
-											strokeWidth={2}
+											strokeWidth={1}
 										/>
 									</Group>
 								);
