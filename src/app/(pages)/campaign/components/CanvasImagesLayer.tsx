@@ -278,8 +278,10 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 	const handleTransformEnd = (node: Konva.Image, id: string) => {
 		const scaleX = node.scaleX();
 		const scaleY = node.scaleY();
-		const newWidth = Math.max(10, node.width() * scaleX);
-		const newHeight = Math.max(10, node.height() * scaleY);
+		const appliedScaleX = Math.abs(scaleX);
+		const appliedScaleY = Math.abs(scaleY);
+		const newWidth = Math.max(10, node.width() * appliedScaleX);
+		const newHeight = Math.max(10, node.height() * appliedScaleY);
 		node.scaleX(1);
 		node.scaleY(1);
 		setImages(prev => prev.map(img => img.id === id ? {
@@ -369,6 +371,12 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 					enabledAnchors={["top-left", "top-right", "bottom-left", "bottom-right"]}
 					anchorSize={10}
 					borderDash={[4, 4]}
+					boundBoxFunc={(oldBox, newBox) => {
+						// Block flipping (negative width/height) and enforce minimum size
+						if (newBox.width < 10 || newBox.height < 10) return oldBox;
+						if (newBox.width < 0 || newBox.height < 0) return oldBox;
+						return newBox;
+					}}
 				/>
 			)}
 			{editable && selectedId && (() => {
