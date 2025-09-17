@@ -54,7 +54,16 @@ interface ApiCell {
 	masterNotes?: string;
 }
 
-export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexModeChange, markersPanelOpen, onMarkersPanelOpenChange, demo = false, initialDemoMap}: HexGridCanvasProps) {
+export function HexGridCanvas({
+	                              mode,
+	                              campaignId,
+	                              isAddHexMode = false,
+	                              onAddHexModeChange,
+	                              markersPanelOpen,
+	                              onMarkersPanelOpenChange,
+	                              demo = false,
+	                              initialDemoMap
+                              }: HexGridCanvasProps) {
 	const [scale, setScale] = useState(1);
 	const [pos, setPos] = useState({x: 400, y: 300});
 	const [mapState, setMapState] = useState<MapState>({hexes: new Map(), selectedHex: null, mode});
@@ -68,7 +77,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const [selectedPointer, setSelectedPointer] = useState<string | null>(null);
 	const [markers, setMarkers] = useState<{ id: string; image: string; x: number; y: number; z: number }[]>([]);
 	const markersAddingRef = useRef(false);
-	const [dragPreview, setDragPreview] = useState<{name: string; x: number; y: number} | null>(null);
+	const [dragPreview, setDragPreview] = useState<{ name: string; x: number; y: number } | null>(null);
 	const markersPanelRef = useRef<HTMLDivElement | null>(null);
 
 	const [imgCountryside] = useImage('/images/hexes/hex-vilage.webp');
@@ -319,7 +328,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const createHexAt = useCallback(async (q: number, r: number) => {
 		// Demo: allow creation even if mapData not yet defined
 		if (isDemo && !mapData) {
-			setMapData({ id: 'demo', campaignId: 'demo', size: 0, centerX: 0, centerY: 0, cells: [], images: [], markers: [] });
+			setMapData({id: 'demo', campaignId: 'demo', size: 0, centerX: 0, centerY: 0, cells: [], images: [], markers: []});
 		}
 		if (!isDemo && !mapData?.id) return; // keep original guard for non-demo
 		const key = hexKey(q, r);
@@ -340,7 +349,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 				isRevealed: mode === 'master',
 				notes: ''
 			});
-			return { ...p, hexes: nh, selectedHex: key };
+			return {...p, hexes: nh, selectedHex: key};
 		});
 		onAddHexModeChange?.(false);
 		setEditingHex(key);
@@ -348,8 +357,8 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		try {
 			await fetch('/api/maps/cells', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ hexMapId: mapData!.id, q, r, s: -(q + r), hexTypeId: ht.id })
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({hexMapId: mapData!.id, q, r, s: -(q + r), hexTypeId: ht.id})
 			});
 		} catch (e) {
 			console.error(e);
@@ -378,7 +387,8 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			fetch('/api/maps/markers/pointers')
 				.then(r => r.ok ? r.json() : [])
 				.then((list: string[]) => setPointerImages(list))
-				.catch(() => {});
+				.catch(() => {
+				});
 		}
 		if (!markersPanelOpen) setSelectedPointer(null);
 	}, [markersPanelOpen, pointerImages.length, isDemo]);
@@ -386,36 +396,44 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	const addMarker = useCallback(async (image: string, x: number, y: number) => {
 		if (!mapData?.id) return;
 		if (isDemo) {
-			setMarkers(prev => [...prev, { id: crypto.randomUUID(), image, x, y, z: prev.length }]);
+			setMarkers(prev => [...prev, {id: crypto.randomUUID(), image, x, y, z: prev.length}]);
 			return;
 		}
 		try {
 			const r = await fetch('/api/maps/markers', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ hexMapId: mapData.id, image, x, y })
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({hexMapId: mapData.id, image, x, y})
 			});
 			if (r.ok) {
 				const mk = await r.json();
-				setMarkers(prev => [...prev, mk].sort((a,b)=>a.z-b.z));
+				setMarkers(prev => [...prev, mk].sort((a, b) => a.z - b.z));
 			} else if (r.status === 409) {
 				toast.error(t('markers.limitToast'));
 			} else {
 				toast.error(t('markers.creationError'));
 			}
-		} catch (e) { console.error(e); }
+		} catch (e) {
+			console.error(e);
+		}
 	}, [mapData?.id, toast, isDemo]);
 
-	const updateMarker = useCallback((id: string, patch: Partial<{x:number;y:number;z:number}>) => {
-		setMarkers(prev => prev.map(m => m.id===id? {...m, ...patch}: m));
+	const updateMarker = useCallback((id: string, patch: Partial<{ x: number; y: number; z: number }>) => {
+		setMarkers(prev => prev.map(m => m.id === id ? {...m, ...patch} : m));
 		if (isDemo) return;
-		fetch(`/api/maps/markers/${id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(patch) }).catch(()=>{});
+		fetch(`/api/maps/markers/${id}`, {
+			method: 'PUT',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify(patch)
+		}).catch(() => {
+		});
 	}, [isDemo]);
 
 	const deleteMarker = useCallback((id: string) => {
-		setMarkers(prev => prev.filter(m => m.id!==id));
+		setMarkers(prev => prev.filter(m => m.id !== id));
 		if (isDemo) return;
-		fetch(`/api/maps/markers/${id}`, { method: 'DELETE' }).catch(()=>{});
+		fetch(`/api/maps/markers/${id}`, {method: 'DELETE'}).catch(() => {
+		});
 	}, [isDemo]);
 
 	const startPointerDrag = useCallback((name: string, clientX: number, clientY: number) => {
@@ -431,7 +449,8 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	useEffect(() => {
 		if (!dragPreview) return;
 		const move = (e: MouseEvent) => {
-			const stage = stageRef.current; if (!stage) return;
+			const stage = stageRef.current;
+			if (!stage) return;
 			const rect = stage.container().getBoundingClientRect();
 			const scale = stage.scaleX();
 			const x = (e.clientX - rect.left - stage.x()) / scale - 16;
@@ -443,7 +462,8 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 				setDragPreview(null);
 				return cleanup();
 			}
-			const stage = stageRef.current; if (stage) {
+			const stage = stageRef.current;
+			if (stage) {
 				const rect = stage.container().getBoundingClientRect();
 				if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
 					const scale = stage.scaleX();
@@ -455,7 +475,12 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			setDragPreview(null);
 			cleanup();
 		};
-		const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') { setDragPreview(null); cleanup(); } };
+		const esc = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') {
+				setDragPreview(null);
+				cleanup();
+			}
+		};
 		const cleanup = () => {
 			window.removeEventListener('mousemove', move);
 			window.removeEventListener('mouseup', up);
@@ -644,16 +669,21 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 							       setPos(p => ({x: p.x - e.evt.deltaX, y: p.y - e.evt.deltaY}));
 						       }
 					       }} onMouseDown={(e) => {
-						if (e.target === e.target.getStage() && selectedImageId) {
-							setSelectedImageId(null);
+						const stage = e.target.getStage();
+						if (e.target === stage) {
+							if (selectedImageId) setSelectedImageId(null);
+							if (!selectedPointer && mapState.selectedHex) {
+								setMapState(p => ({...p, selectedHex: null}));
+								setEditingHex(null);
+							}
 						}
-						if (selectedPointer && mode==='master') {
-							const stage = stageRef.current; if (!stage) return;
-							const scale = stage.scaleX();
+						if (selectedPointer && mode === 'master') {
+							if (!stage) return;
+							const sc = stage.scaleX();
 							const ptr = stage.getPointerPosition();
 							if (!ptr) return;
-							const x = (ptr.x - stage.x()) / scale;
-							const y = (ptr.y - stage.y()) / scale;
+							const x = (ptr.x - stage.x()) / sc;
+							const y = (ptr.y - stage.y()) / sc;
 							addMarker(selectedPointer, x - 16, y - 32);
 							setSelectedPointer(null);
 							markersAddingRef.current = false;
@@ -672,20 +702,22 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								const img = getHexImage(hex);
 								return (
 									<Group key={key}
-                    ref={node => { if (node) hexGroupRefs.current[key] = node; else delete hexGroupRefs.current[key]; }}
-                    onMouseEnter={() => {
-                      setHoveredHex(key);
-                      const g = hexGroupRefs.current[key];
-                      if (g) {
-                        g.moveToTop();
-                        g.to({ y: -3, duration: 0.15, easing: Konva.Easings.EaseOut });
-                      }
-                    }}
-                    onMouseLeave={() => {
-                      const g = hexGroupRefs.current[key];
-                      if (g) g.to({ y: 0, duration: 0.15, easing: Konva.Easings.EaseOut });
-                      setHoveredHex(null);
-                    }}
+									       ref={node => {
+										       if (node) hexGroupRefs.current[key] = node; else delete hexGroupRefs.current[key];
+									       }}
+									       onMouseEnter={() => {
+										       setHoveredHex(key);
+										       const g = hexGroupRefs.current[key];
+										       if (g) {
+											       g.moveToTop();
+											       g.to({y: -3, duration: 0.15, easing: Konva.Easings.EaseOut});
+										       }
+									       }}
+									       onMouseLeave={() => {
+										       const g = hexGroupRefs.current[key];
+										       if (g) g.to({y: 0, duration: 0.15, easing: Konva.Easings.EaseOut});
+										       setHoveredHex(null);
+									       }}
 									>
 										{renderHexImage(img, x, y)}
 										<RegularPolygon
@@ -704,27 +736,30 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 								);
 							})}
 							{isAddHexMode && potentialHexes.map(ph => {
-								const temp = new Tile({ q: ph.q, r: ph.r });
-								const x = temp.x; const y = temp.y;
+								const temp = new Tile({q: ph.q, r: ph.r});
+								const x = temp.x;
+								const y = temp.y;
 								const k = hexKey(ph.q, ph.r);
 								return (
 									<Group
 										key={`potential-${k}`}
-                    ref={node => { if (node) hexGroupRefs.current[`potential-${k}`] = node; else delete hexGroupRefs.current[`potential-${k}`]; }}
-                    onMouseEnter={() => {
-                      setHoveredHex(k);
-                      const g = hexGroupRefs.current[`potential-${k}`];
-                      if (g) {
-                        g.moveToTop();
-                        g.to({ y: -3, duration: 0.15, easing: Konva.Easings.EaseOut });
-                      }
-                    }}
-                    onMouseLeave={() => {
-                      const g = hexGroupRefs.current[`potential-${k}`];
-                      if (g) g.to({ y: 0, duration: 0.15, easing: Konva.Easings.EaseOut });
-                      setHoveredHex(null);
-                    }}
-                    onClick={() => createHexAt(ph.q, ph.r)}
+										ref={node => {
+											if (node) hexGroupRefs.current[`potential-${k}`] = node; else delete hexGroupRefs.current[`potential-${k}`];
+										}}
+										onMouseEnter={() => {
+											setHoveredHex(k);
+											const g = hexGroupRefs.current[`potential-${k}`];
+											if (g) {
+												g.moveToTop();
+												g.to({y: -3, duration: 0.15, easing: Konva.Easings.EaseOut});
+											}
+										}}
+										onMouseLeave={() => {
+											const g = hexGroupRefs.current[`potential-${k}`];
+											if (g) g.to({y: 0, duration: 0.15, easing: Konva.Easings.EaseOut});
+											setHoveredHex(null);
+										}}
+										onClick={() => createHexAt(ph.q, ph.r)}
 									>
 										{renderHexImage(imgBlank, x, y)}
 										<RegularPolygon
@@ -758,8 +793,11 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 							editable={mode === 'master'}
 							onSelectionChange={setSelectedImageId}
 							onStorageLimit={(current, limit) => {
-							toast.error(t('images.limitReached', { current: (current / 1024).toFixed(1), limit: (limit / 1024).toFixed(1) }));
-						}}
+								toast.error(t('images.limitReached', {
+									current: (current / 1024).toFixed(1),
+									limit: (limit / 1024).toFixed(1)
+								}));
+							}}
 							hexMapId={mapData?.id || undefined}
 							initialImages={mapData?.images || []}
 							demo={isDemo}
@@ -767,19 +805,22 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 						<Layer>
 							{markers.map(m => (
 								<Group key={m.id}
-									x={m.x}
-									y={m.y}
-									draggable={mode==='master'}
-									onDragEnd={(e)=> updateMarker(m.id, { x: e.target.x(), y: e.target.y() })}
-									onDblClick={() => { if (mode==='master') deleteMarker(m.id); }}
+								       x={m.x}
+								       y={m.y}
+								       draggable={mode === 'master'}
+								       onDragEnd={(e) => updateMarker(m.id, {x: e.target.x(), y: e.target.y()})}
+								       onDblClick={() => {
+									       if (mode === 'master') deleteMarker(m.id);
+								       }}
 								>
-									<KonvaImage image={getMarkerImage(m.image)} width={24} height={50} listening={mode==='master'} />
+									<KonvaImage image={getMarkerImage(m.image)} width={24} height={50} listening={mode === 'master'}/>
 								</Group>
 							))}
 						</Layer>
 						{dragPreview && (
 							<Layer listening={false}>
-								<KonvaImage image={getMarkerImage(dragPreview.name)} x={dragPreview.x} y={dragPreview.y} width={24} height={50} opacity={0.6} listening={false} />
+								<KonvaImage image={getMarkerImage(dragPreview.name)} x={dragPreview.x} y={dragPreview.y} width={24}
+								            height={50} opacity={0.6} listening={false}/>
 							</Layer>
 						)}
 					</Stage>
@@ -800,40 +841,44 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 					/>
 				);
 			})()}
-			{markersPanelOpen && mode==='master' && (
-				<div ref={markersPanelRef} className="absolute top-4 right-4 z-[1200] bg-stone-900/90 border border-stone-700 rounded-lg p-3 w-60 max-h-80 overflow-auto space-y-2">
+			{markersPanelOpen && mode === 'master' && (
+				<div ref={markersPanelRef}
+				     className="absolute top-4 right-4 z-[1200] bg-stone-900/90 border border-stone-700 rounded-lg p-3 w-60 max-h-80 overflow-auto space-y-2">
 					<div className="flex justify-between items-center mb-1">
-						<span className="text-xs text-stone-300 font-semibold">{t('markers.count', { count: markers.length })}</span>
-						<button className="text-xs text-stone-400 hover:text-white" onClick={()=>onMarkersPanelOpenChange?.(false)}>✕</button>
+						<span className="text-xs text-stone-300 font-semibold">{t('markers.count', {count: markers.length})}</span>
+						<button className="text-xs text-stone-400 hover:text-white"
+						        onClick={() => onMarkersPanelOpenChange?.(false)}>✕
+						</button>
 					</div>
-					{markers.length>=20 && <div className="text-[10px] text-red-400">{t('markers.limitReached')}</div>}
+					{markers.length >= 20 && <div className="text-[10px] text-red-400">{t('markers.limitReached')}</div>}
 					<div className="grid grid-cols-4 gap-2">
 						{pointerImages.map(fn => {
 							const isActive = selectedPointer === fn;
-							const disabled = markers.length>=20;
+							const disabled = markers.length >= 20;
 							return (
 								<button key={fn}
-									className={`relative border rounded p-1 hover:border-amber-400 select-none ${isActive? 'border-emerald-500 bg-stone-700':'border-stone-600'}`}
-									disabled={disabled}
-									onClick={(e)=> {
-										if (disabled || dragPreview) return;
-										setSelectedPointer(p=> p===fn? null: fn);
-										markersAddingRef.current = true;
-									}}
-									onMouseDown={(e) => {
-										if (disabled) return;
-										if (e.button !== 0) return;
-										startPointerDrag(fn, e.clientX, e.clientY);
-										e.preventDefault();
-									}}
-									onTouchStart={(e)=> {
-										if (disabled) return;
-										const touch = e.touches[0];
-										startPointerDrag(fn, touch.clientX, touch.clientY);
-										setSelectedPointer(null);
-									}}
+								        className={`relative border rounded p-1 hover:border-amber-400 select-none ${isActive ? 'border-emerald-500 bg-stone-700' : 'border-stone-600'}`}
+								        disabled={disabled}
+								        onClick={(e) => {
+									        if (disabled || dragPreview) return;
+									        setSelectedPointer(p => p === fn ? null : fn);
+									        markersAddingRef.current = true;
+								        }}
+								        onMouseDown={(e) => {
+									        if (disabled) return;
+									        if (e.button !== 0) return;
+									        startPointerDrag(fn, e.clientX, e.clientY);
+									        e.preventDefault();
+								        }}
+								        onTouchStart={(e) => {
+									        if (disabled) return;
+									        const touch = e.touches[0];
+									        startPointerDrag(fn, touch.clientX, touch.clientY);
+									        setSelectedPointer(null);
+								        }}
 								>
-									<img src={`/images/pointers/${fn}`} alt={fn} className="w-10 h-10 object-contain pointer-events-none" />
+									<img src={`/images/pointers/${fn}`} alt={fn}
+									     className="w-10 h-10 object-contain pointer-events-none"/>
 								</button>
 							);
 						})}
