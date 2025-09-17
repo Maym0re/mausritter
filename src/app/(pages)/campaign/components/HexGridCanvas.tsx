@@ -174,8 +174,17 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		}
 	}, [campaignId, loadMapData, loadHexTypes, isDemo]);
 
+	// Demo initialization (run only once)
+	const demoInitializedRef = useRef(false);
 	useEffect(() => {
-		if (!isDemo || !initialDemoMap) return;
+		if (!isDemo) return;
+		if (demoInitializedRef.current) return;
+		if (!initialDemoMap) {
+			// still mark initialized so user can add hexes even without preset cells
+			demoInitializedRef.current = true;
+			setLoading(false);
+			return;
+		}
 		setLoading(true);
 		const data: MapData = {
 			id: initialDemoMap.id || 'demo',
@@ -207,6 +216,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		});
 		setMapState(p => ({...p, hexes: m}));
 		setMarkers(data.markers || []);
+		demoInitializedRef.current = true;
 		setLoading(false);
 	}, [isDemo, initialDemoMap]);
 
@@ -307,7 +317,11 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	}, [mapData?.id, mapState.hexes, isDemo]);
 
 	const createHexAt = useCallback(async (q: number, r: number) => {
-		if (!mapData?.id) return;
+		// Demo: allow creation even if mapData not yet defined
+		if (isDemo && !mapData) {
+			setMapData({ id: 'demo', campaignId: 'demo', size: 0, centerX: 0, centerY: 0, cells: [], images: [], markers: [] });
+		}
+		if (!isDemo && !mapData?.id) return; // keep original guard for non-demo
 		const key = hexKey(q, r);
 		if (mapState.hexes.has(key)) return;
 		const ht = getRandomHexType();
@@ -326,21 +340,21 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 				isRevealed: mode === 'master',
 				notes: ''
 			});
-			return {...p, hexes: nh, selectedHex: key};
+			return { ...p, hexes: nh, selectedHex: key };
 		});
 		onAddHexModeChange?.(false);
 		setEditingHex(key);
-		if (isDemo) return;
+		if (isDemo) return; // skip server save
 		try {
 			await fetch('/api/maps/cells', {
 				method: 'POST',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({hexMapId: mapData.id, q, r, s: -(q + r), hexTypeId: ht.id})
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ hexMapId: mapData!.id, q, r, s: -(q + r), hexTypeId: ht.id })
 			});
 		} catch (e) {
 			console.error(e);
 		}
-	}, [mapData?.id, mapState.hexes, mode, onAddHexModeChange, isDemo]);
+	}, [mapData, mapState.hexes, mode, onAddHexModeChange, isDemo]);
 
 	const potentialHexes = useMemo(() => {
 		if (!isAddHexMode) return [] as { q: number; r: number }[];
