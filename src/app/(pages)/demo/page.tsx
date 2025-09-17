@@ -237,7 +237,7 @@ export default function DemoCampaignPage() {
 				demo
 				initialDemoMap={{
 					id: 'demo', cells: initialCells, size: 7, centerX: 0, centerY: 0, images: [
-						{id: 'demo-img-bird', data: '/images/demo/bird.png', x: -658, y: -40, width: 244, height: 366},
+						{id: 'demo-img-bird', data: '/images/demo/bird.png', x: -658, y: -40, width: 264, height: 366},
 						{id: 'demo-img-burrow', data: '/images/demo/burrow.png', x: 380, y: -289, width: 244, height: 366},
 					], markers: [
 						{id: 'demo-marker-1', image: 'pin-house.webp', x: -9, y: -48, z: 0},
