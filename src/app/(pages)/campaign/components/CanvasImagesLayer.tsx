@@ -374,8 +374,8 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 			{editable && selectedId && (() => {
 				const img = images.find(i => i.id === selectedId);
 				if (!img) return null;
-				const btnX = img.x + img.width - 14;
-				const btnY = img.y - 6;
+				const btnX = img.x + img.width / 2 - 12; // 12 = half of 24px button diameter
+				const btnY = img.y + img.height + 6; // a bit below image
 				return (
 					<Group
 						key="delete-btn-overlay"
