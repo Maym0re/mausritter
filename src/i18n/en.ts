@@ -206,4 +206,7 @@ export const en = {
   'home.modal.descriptionPlaceholder': 'Short description (optional)',
   'home.modal.cancel': 'Cancel',
   'home.modal.submit': 'Create',
+	// Campaign
+	'campaign.noneTitle': 'No campaigns available',
+	'campaign.noneHint': 'Create or join a campaign on the home page.',
 };
