@@ -52,6 +52,8 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 	const [selectedId, setSelectedId] = useState<string | null>(null);
 	const transformerRef = useRef<Konva.Transformer | null>(null);
 	const selectedNodeRef = useRef<Konva.Image | null>(null);
+	const [overlayPos, setOverlayPos] = useState<{x: number; y: number} | null>(null);
+	const [isTransforming, setIsTransforming] = useState(false);
 
 	useImperativeHandle(ref, () => ({
 		deleteSelected: () => {
@@ -250,9 +252,11 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		if (!stage) return;
 		const handler = (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
 			const target = e.target as Konva.Node;
-			const isImage = target && (target as any).getClassName && (target as any).getClassName() === 'Image';
-			const parent = (target as any)?.getParent && (target as any).getParent();
-			const isTransformer = (target as any)?.getClassName?.() === 'Transformer' || parent?.getClassName?.() === 'Transformer';
+			const className = typeof (target as Konva.Node).getClassName === 'function' ? target.getClassName() : '';
+			const isImage = className === 'Image';
+			const parent = target.getParent && target.getParent();
+			const parentClass = parent && typeof parent.getClassName === 'function' ? parent.getClassName() : '';
+			const isTransformer = className === 'Transformer' || parentClass === 'Transformer';
 			if (!isImage && !isTransformer) {
 				setSelectedId(null);
 				selectedNodeRef.current = null;
@@ -268,6 +272,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		if (!editable) return;
 		setSelectedId(id);
 		selectedNodeRef.current = node;
+		setOverlayPos({ x: node.x() + (node.width() * node.scaleX()) / 2 - 12, y: node.y() + node.height() * node.scaleY() + 6 });
 	};
 
 	const updateServerImage = useCallback((img: CanvasImage) => {
@@ -296,8 +301,10 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 			x: node.x(),
 			y: node.y()
 		} : img));
+		setIsTransforming(false);
+		setOverlayPos({ x: node.x() + newWidth / 2 - 12, y: node.y() + newHeight + 6 });
 		const updated = images.find(i => i.id === id);
-		if (updated) updateServerImage({...updated, width: newWidth, height: newHeight, x: node.x(), y: node.y()});
+		if (updated) updateServerImage({ ...updated, width: newWidth, height: newHeight, x: node.x(), y: node.y() });
 	};
 
 	useEffect(() => {
@@ -358,10 +365,25 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 					opacity={img._pending ? 0.6 : 1}
 					onClick={e => onImageSelect(e.target as Konva.Image, img.id)}
 					onTap={e => onImageSelect(e.target as Konva.Image, img.id)}
+					onDragMove={e => {
+						if (img.id === selectedId) {
+							const node = e.target as Konva.Image;
+							setOverlayPos({ x: node.x() + (node.width() * node.scaleX()) / 2 - 12, y: node.y() + node.height() * node.scaleY() + 6 });
+						}
+					}}
 					onDragEnd={e => {
-						const {x, y} = e.target.position();
-						setImages(prev => prev.map(p => p.id === img.id ? {...p, x, y} : p));
-						updateServerImage({...img, x, y});
+						const { x, y } = e.target.position();
+						setImages(prev => prev.map(p => p.id === img.id ? { ...p, x, y } : p));
+						updateServerImage({ ...img, x, y });
+						if (img.id === selectedId) setOverlayPos({ x: x + img.width / 2 - 12, y: y + img.height + 6 });
+					}}
+					onTransformStart={() => { if (img.id === selectedId) { setIsTransforming(true); } }}
+					onTransform={e => {
+						if (img.id !== selectedId) return;
+						const node = e.target as Konva.Image;
+						const w = node.width() * node.scaleX();
+						const h = node.height() * node.scaleY();
+						setOverlayPos({ x: node.x() + w / 2 - 12, y: node.y() + h + 6 });
 					}}
 					onTransformEnd={e => handleTransformEnd(e.target as Konva.Image, img.id)}
 					ref={node => {
@@ -387,11 +409,11 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 					}}
 				/>
 			)}
-			{editable && selectedId && (() => {
+			{editable && selectedId && !isTransforming && (() => {
 				const img = images.find(i => i.id === selectedId);
 				if (!img) return null;
-				const btnX = img.x + img.width / 2 - 12; // 12 = half of 24px button diameter
-				const btnY = img.y + img.height + 6; // a bit below image
+				const btnX = overlayPos ? overlayPos.x : img.x + img.width / 2 - 12;
+				const btnY = overlayPos ? overlayPos.y : img.y + img.height + 6;
 				return (
 					<Group
 						key="delete-btn-overlay"
