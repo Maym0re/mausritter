@@ -111,6 +111,7 @@ export function HexGridCanvas({
 	const toast = useToast();
 
 	const hexGroupRefs = useRef<Record<string, Konva.Group>>({});
+	const markerGroupRefs = useRef<Record<string, Konva.Group>>({});
 
 	const HEX_HEIGHT = useMemo(() => Math.sqrt(3) * radius, [radius]);
 
@@ -381,6 +382,15 @@ export function HexGridCanvas({
 		});
 		return Array.from(border.values()).map(v => ({q: v.q, r: v.r}));
 	}, [isAddHexMode, mapState.hexes]);
+
+	const markerBelongsToHex = useCallback((m: {x:number;y:number}, hx:number, hy:number) => {
+		const mbx = m.x + 12;
+		const mby = m.y + 48;
+		const dx = mbx - hx;
+		const dy = mby - hy;
+		const dist = Math.sqrt(dx*dx + dy*dy);
+		return dist <= radius * 0.95;
+	}, [radius]);
 
 	useEffect(() => {
 		if (markersPanelOpen && pointerImages.length === 0) {
@@ -702,39 +712,55 @@ export function HexGridCanvas({
 								const img = getHexImage(hex);
 								return (
 									<Group key={key}
-									       ref={node => {
-										       if (node) hexGroupRefs.current[key] = node; else delete hexGroupRefs.current[key];
-									       }}
-									       onMouseEnter={() => {
-										       setHoveredHex(key);
-										       const g = hexGroupRefs.current[key];
-										       if (g) {
-											       g.moveToTop();
-											       g.to({y: -3, duration: 0.15, easing: Konva.Easings.EaseOut});
-										       }
-									       }}
-									       onMouseLeave={() => {
-										       const g = hexGroupRefs.current[key];
-										       if (g) g.to({y: 0, duration: 0.15, easing: Konva.Easings.EaseOut});
-										       setHoveredHex(null);
-									       }}
-									>
-										{renderHexImage(img, x, y)}
-										<RegularPolygon
-											x={x}
-											y={y}
-											sides={6}
-											rotation={30}
-											radius={radius}
-											fillEnabled={true}
-											fill={'rgba(0,0,0,0.001)'}
-											stroke={getHexStroke(key)}
-											onClick={() => handleHexClick(key)}
-											shadowBlur={mapState.selectedHex === key ? 10 : 0}
-											shadowColor="gold"/>
-									</Group>
-								);
-							})}
+                    ref={node => { if (node) hexGroupRefs.current[key] = node; else delete hexGroupRefs.current[key]; }}
+                    onMouseEnter={() => {
+                      setHoveredHex(key);
+                      const g = hexGroupRefs.current[key];
+                      if (g) {
+                        g.moveToTop();
+                        g.to({ y: -3, duration: 0.15, easing: Konva.Easings.EaseOut });
+                      }
+                      markers.forEach(m => {
+                        if (!markerGroupRefs.current[m.id]) return;
+                        if (markerBelongsToHex(m, x, y)) {
+                          const mg = markerGroupRefs.current[m.id];
+                          if (mg && !mg.isDragging()) {
+                            mg.to({ y: m.y - 3, duration: 0.15, easing: Konva.Easings.EaseOut });
+                          }
+                        }
+                      });
+                    }}
+                    onMouseLeave={() => {
+                      const g = hexGroupRefs.current[key];
+                      if (g) g.to({ y: 0, duration: 0.15, easing: Konva.Easings.EaseOut });
+                      setHoveredHex(null);
+                      markers.forEach(m => {
+                        if (!markerGroupRefs.current[m.id]) return;
+                        if (markerBelongsToHex(m, x, y)) {
+                          const mg = markerGroupRefs.current[m.id];
+                          if (mg && !mg.isDragging()) {
+                            mg.to({ y: m.y, duration: 0.15, easing: Konva.Easings.EaseOut });
+                          }
+                        }
+                      });
+                    }}
+					>
+						{renderHexImage(img, x, y)}
+						<RegularPolygon
+							x={x}
+							y={y}
+							sides={6}
+							rotation={30}
+							radius={radius}
+							fillEnabled={true}
+							fill={'rgba(0,0,0,0.001)'}
+							stroke={getHexStroke(key)}
+							onClick={() => handleHexClick(key)}
+							shadowBlur={mapState.selectedHex === key ? 10 : 0}
+							shadowColor="gold"/>
+						</Group>
+					);
+				})}
 							{isAddHexMode && potentialHexes.map(ph => {
 								const temp = new Tile({q: ph.q, r: ph.r});
 								const x = temp.x;
@@ -743,20 +769,18 @@ export function HexGridCanvas({
 								return (
 									<Group
 										key={`potential-${k}`}
-										ref={node => {
-											if (node) hexGroupRefs.current[`potential-${k}`] = node; else delete hexGroupRefs.current[`potential-${k}`];
-										}}
+										ref={node => { if (node) hexGroupRefs.current[`potential-${k}`] = node; else delete hexGroupRefs.current[`potential-${k}`]; }}
 										onMouseEnter={() => {
 											setHoveredHex(k);
 											const g = hexGroupRefs.current[`potential-${k}`];
 											if (g) {
 												g.moveToTop();
-												g.to({y: -3, duration: 0.15, easing: Konva.Easings.EaseOut});
+												g.to({ y: -3, duration: 0.15, easing: Konva.Easings.EaseOut });
 											}
 										}}
 										onMouseLeave={() => {
 											const g = hexGroupRefs.current[`potential-${k}`];
-											if (g) g.to({y: 0, duration: 0.15, easing: Konva.Easings.EaseOut});
+											if (g) g.to({ y: 0, duration: 0.15, easing: Konva.Easings.EaseOut });
 											setHoveredHex(null);
 										}}
 										onClick={() => createHexAt(ph.q, ph.r)}
@@ -804,18 +828,17 @@ export function HexGridCanvas({
 						/>
 						<Layer>
 							{markers.map(m => (
-								<Group key={m.id}
-								       x={m.x}
-								       y={m.y}
-								       draggable={mode === 'master'}
-								       onDragEnd={(e) => updateMarker(m.id, {x: e.target.x(), y: e.target.y()})}
-								       onDblClick={() => {
-									       if (mode === 'master') deleteMarker(m.id);
-								       }}
-								>
-									<KonvaImage image={getMarkerImage(m.image)} width={24} height={50} listening={mode === 'master'}/>
-								</Group>
-							))}
+						<Group key={m.id}
+							ref={node => { if (node) markerGroupRefs.current[m.id] = node as any; else delete markerGroupRefs.current[m.id]; }}
+							x={m.x}
+							y={m.y}
+							draggable={mode==='master'}
+							onDragEnd={(e)=> updateMarker(m.id, { x: e.target.x(), y: e.target.y() })}
+							onDblClick={() => { if (mode==='master') deleteMarker(m.id); }}
+						>
+							<KonvaImage image={getMarkerImage(m.image)} width={24} height={50} listening={mode==='master'} />
+						</Group>
+					))}
 						</Layer>
 						{dragPreview && (
 							<Layer listening={false}>
