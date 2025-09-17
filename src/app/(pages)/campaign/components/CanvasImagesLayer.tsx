@@ -24,6 +24,7 @@ interface CanvasImagesLayerProps {
 	onStorageLimit?: (current: number, limitBytes: number) => void;
 	hexMapId?: string;
 	initialImages?: { id: string; data: string; x: number; y: number; width: number; height: number }[];
+	demo?: boolean;
 }
 
 interface CanvasImage {
@@ -44,7 +45,7 @@ const MAX_IMG_H = 1024;
 const JPEG_QUALITY = 0.85;
 
 export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImagesLayerProps>(function CanvasImagesLayer(
-	{stageRef, containerRef, editable, onSelectionChange, maxTotalMB, onStorageLimit, hexMapId, initialImages},
+	{stageRef, containerRef, editable, onSelectionChange, maxTotalMB, onStorageLimit, hexMapId, initialImages, demo = false},
 	ref
 ) {
 	const [images, setImages] = useState<CanvasImage[]>([]);
@@ -109,6 +110,8 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		return 5 * 1024 * 1024;
 	}, [maxTotalMB]);
 
+	const isDemo = demo;
+
 	const addImage = useCallback((dataUrl: string, x: number, y: number) => {
 		const newSize = dataUrlToSize(dataUrl);
 		setImages(prev => {
@@ -122,7 +125,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 			img.onload = () => {
 				const ratio = img.width / img.height || 1;
 				setImages(p2 => p2.map(im => im.id === tempId ? {...im, ratio, width: img.width, height: img.height, x: x - img.width/2, y: y - img.height/2 } : im));
-				if (hexMapId && editable) {
+				if (hexMapId && editable && !isDemo) {
 					fetch('/api/maps/images', {
 						method: 'POST',
 						headers: {'Content-Type': 'application/json'},
@@ -133,6 +136,8 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 						console.error('Save image failed', err);
 						setImages(p3 => p3.filter(im => im.id !== tempId));
 					});
+				} else {
+					setImages(p3 => p3.map(im => im.id === tempId ? {...im, _pending: false} : im));
 				}
 			};
 			img.src = dataUrl;
@@ -149,7 +154,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 				_pending: true
 			}];
 		});
-	}, [getTotalBytes, resolvedMaxBytes, onStorageLimit, hexMapId, editable]);
+	}, [getTotalBytes, resolvedMaxBytes, onStorageLimit, hexMapId, editable, isDemo]);
 
 	const fileToDataUrl = (blob: Blob) => new Promise<string>((res) => {
 		const r = new FileReader();
@@ -266,14 +271,14 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 	};
 
 	const updateServerImage = useCallback((img: CanvasImage) => {
-		if (!editable || !hexMapId) return;
+		if (!editable || !hexMapId || isDemo) return;
 		if (img.id.startsWith('temp-')) return;
 		fetch(`/api/maps/images/${img.id}`, {
 			method: 'PUT',
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify({ x: img.x, y: img.y, width: img.width, height: img.height })
 		}).catch(e => console.error('Update image failed', e));
-	}, [editable, hexMapId]);
+	}, [editable, hexMapId, isDemo]);
 
 	const handleTransformEnd = (node: Konva.Image, id: string) => {
 		const scaleX = node.scaleX();
@@ -300,6 +305,9 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		const onKey = (e: KeyboardEvent) => {
 			if ((e.key === 'Delete' || e.key === 'Backspace') && selectedId) {
 				setImages(prev => prev.filter(i => i.id !== selectedId));
+				if (editable && hexMapId && !selectedId.startsWith('temp-') && !isDemo) {
+					fetch(`/api/maps/images/${selectedId}`, { method: 'DELETE' }).catch(e => console.error('Delete image failed', e));
+				}
 				setSelectedId(null);
 				selectedNodeRef.current = null;
 				if (transformerRef.current) {
@@ -310,7 +318,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		};
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
-	}, [editable, selectedId]);
+	}, [editable, selectedId, hexMapId, isDemo]);
 
 	useEffect(() => {
 		if (!initialImages) return;
@@ -391,7 +399,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 						y={btnY}
 						onClick={() => {
 							setImages(prev => prev.filter(i => i.id !== selectedId));
-							if (editable && hexMapId && !selectedId.startsWith('temp-')) {
+							if (editable && hexMapId && !selectedId.startsWith('temp-') && !isDemo) {
 								fetch(`/api/maps/images/${selectedId}`, { method: 'DELETE' }).catch(e => console.error('Delete image failed', e));
 							}
 							setSelectedId(null);

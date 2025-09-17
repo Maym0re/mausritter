@@ -25,6 +25,8 @@ interface HexGridCanvasProps {
 	onAddHexModeChange?: (v: boolean) => void;
 	markersPanelOpen?: boolean;
 	onMarkersPanelOpenChange?: (v: boolean) => void;
+	demo?: boolean;
+	initialDemoMap?: Partial<MapData> & { cells: ApiCell[] };
 }
 
 interface MapData {
@@ -52,7 +54,7 @@ interface ApiCell {
 	masterNotes?: string;
 }
 
-export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexModeChange, markersPanelOpen, onMarkersPanelOpenChange}: HexGridCanvasProps) {
+export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexModeChange, markersPanelOpen, onMarkersPanelOpenChange, demo = false, initialDemoMap}: HexGridCanvasProps) {
 	const [scale, setScale] = useState(1);
 	const [pos, setPos] = useState({x: 400, y: 300});
 	const [mapState, setMapState] = useState<MapState>({hexes: new Map(), selectedHex: null, mode});
@@ -115,7 +117,10 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		return ctx.measureText(text).width;
 	}, []);
 
+	const isDemo = demo;
+
 	const loadMapData = useCallback(async () => {
+		if (isDemo) return;
 		try {
 			setLoading(true);
 			const r = await fetch(`/api/maps?campaignId=${campaignId}`);
@@ -147,9 +152,10 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		} finally {
 			setLoading(false);
 		}
-	}, [campaignId, mode]);
+	}, [campaignId, mode, isDemo]);
 
 	const loadHexTypes = useCallback(async () => {
+		if (isDemo) return;
 		try {
 			const r = await fetch('/api/maps/types');
 			if (r.ok) {
@@ -158,14 +164,51 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		} catch (e) {
 			console.error(e);
 		}
-	}, []);
+	}, [isDemo]);
 
 	useEffect(() => {
+		if (isDemo) return;
 		if (campaignId) {
 			loadMapData();
 			loadHexTypes();
 		}
-	}, [campaignId, loadMapData, loadHexTypes]);
+	}, [campaignId, loadMapData, loadHexTypes, isDemo]);
+
+	useEffect(() => {
+		if (!isDemo || !initialDemoMap) return;
+		setLoading(true);
+		const data: MapData = {
+			id: initialDemoMap.id || 'demo',
+			campaignId: 'demo',
+			size: initialDemoMap.size || 5,
+			centerX: initialDemoMap.centerX || 0,
+			centerY: initialDemoMap.centerY || 0,
+			cells: initialDemoMap.cells as any,
+			images: initialDemoMap.images || [],
+			markers: initialDemoMap.markers || []
+		};
+		setMapData(data);
+		const m = new Map<string, HexData>();
+		data.cells.forEach(cell => {
+			const k = hexKey(cell.q, cell.r);
+			m.set(k, {
+				q: cell.q,
+				r: cell.r,
+				s: cell.s,
+				hexType: cell.hexType,
+				landmark: cell.landmark,
+				landmarkDetail: cell.landmarkDetail,
+				settlement: cell.settlement,
+				isRevealed: true,
+				notes: cell.notes || '',
+				customName: cell.customName,
+				masterNotes: cell.masterNotes || ''
+			});
+		});
+		setMapState(p => ({...p, hexes: m}));
+		setMarkers(data.markers || []);
+		setLoading(false);
+	}, [isDemo, initialDemoMap]);
 
 	// resize
 	useEffect(() => {
@@ -193,6 +236,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 
 	// update cell
 	const updateHexCell = useCallback(async (k: string, updates: Partial<HexData>) => {
+		if (isDemo) return;
 		if (!mapData?.id) return;
 		const hex = mapState.hexes.get(k);
 		if (!hex) return;
@@ -219,7 +263,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		} catch (e) {
 			console.error(e);
 		}
-	}, [mapData?.id, mapState.hexes, mode]);
+	}, [mapData?.id, mapState.hexes, mode, isDemo]);
 
 	const handleHexClick = useCallback(async (k: string) => {
 		const hex = mapState.hexes.get(k);
@@ -250,6 +294,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 			return {...p, hexes: nh, selectedHex: p.selectedHex === k ? null : p.selectedHex};
 		});
 		setEditingHex(null);
+		if (isDemo) return;
 		try {
 			await fetch('/api/maps/cells', {
 				method: 'DELETE',
@@ -259,7 +304,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		} catch (e) {
 			console.error('Failed delete hex', e);
 		}
-	}, [mapData?.id, mapState.hexes]);
+	}, [mapData?.id, mapState.hexes, isDemo]);
 
 	const createHexAt = useCallback(async (q: number, r: number) => {
 		if (!mapData?.id) return;
@@ -285,6 +330,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		});
 		onAddHexModeChange?.(false);
 		setEditingHex(key);
+		if (isDemo) return;
 		try {
 			await fetch('/api/maps/cells', {
 				method: 'POST',
@@ -294,7 +340,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 		} catch (e) {
 			console.error(e);
 		}
-	}, [mapData?.id, mapState.hexes, mode, onAddHexModeChange]);
+	}, [mapData?.id, mapState.hexes, mode, onAddHexModeChange, isDemo]);
 
 	const potentialHexes = useMemo(() => {
 		if (!isAddHexMode) return [] as { q: number; r: number }[];
@@ -315,16 +361,24 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 
 	useEffect(() => {
 		if (markersPanelOpen && pointerImages.length === 0) {
+			if (isDemo) {
+				setPointerImages(['pin-paw.webp','pin-house.webp','pin-star.webp','pin-coins.webp','pin-tower.webp']);
+				return;
+			}
 			fetch('/api/maps/markers/pointers')
 				.then(r => r.ok ? r.json() : [])
 				.then((list: string[]) => setPointerImages(list))
 				.catch(() => {});
 		}
 		if (!markersPanelOpen) setSelectedPointer(null);
-	}, [markersPanelOpen, pointerImages.length]);
+	}, [markersPanelOpen, pointerImages.length, isDemo]);
 
 	const addMarker = useCallback(async (image: string, x: number, y: number) => {
 		if (!mapData?.id) return;
+		if (isDemo) {
+			setMarkers(prev => [...prev, { id: crypto.randomUUID(), image, x, y, z: prev.length }]);
+			return;
+		}
 		try {
 			const r = await fetch('/api/maps/markers', {
 				method: 'POST',
@@ -340,17 +394,19 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 				toast.error(t('markers.creationError'));
 			}
 		} catch (e) { console.error(e); }
-	}, [mapData?.id, toast]);
+	}, [mapData?.id, toast, isDemo]);
 
 	const updateMarker = useCallback((id: string, patch: Partial<{x:number;y:number;z:number}>) => {
 		setMarkers(prev => prev.map(m => m.id===id? {...m, ...patch}: m));
+		if (isDemo) return;
 		fetch(`/api/maps/markers/${id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(patch) }).catch(()=>{});
-	}, []);
+	}, [isDemo]);
 
 	const deleteMarker = useCallback((id: string) => {
 		setMarkers(prev => prev.filter(m => m.id!==id));
+		if (isDemo) return;
 		fetch(`/api/maps/markers/${id}`, { method: 'DELETE' }).catch(()=>{});
-	}, []);
+	}, [isDemo]);
 
 	const startPointerDrag = useCallback((name: string, clientX: number, clientY: number) => {
 		const stage = stageRef.current;
@@ -407,12 +463,14 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-amber-900"></div>
 					<p className="mt-4 text-amber-900">{t('map.loading')}</p>
+					{isDemo && <p className="text-xs text-stone-500 mt-2">Demo</p>}
 				</div>
 			</div>
 		);
 	}
 
 	if (!mapData?.id && mode === 'player') {
+		if (isDemo) return null;
 		return (
 			<div className="flex items-center justify-center h-full">
 				<div className="text-center">
@@ -424,6 +482,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 	}
 
 	if (!mapData?.id && mode === 'master') {
+		if (isDemo) return null;
 		return (
 			<div className="flex items-center justify-center h-full">
 				<div className="text-center">
@@ -693,6 +752,7 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 						}}
 							hexMapId={mapData?.id || undefined}
 							initialImages={mapData?.images || []}
+							demo={isDemo}
 						/>
 						<Layer>
 							{markers.map(m => (
@@ -715,10 +775,21 @@ export function HexGridCanvas({mode, campaignId, isAddHexMode = false, onAddHexM
 					</Stage>
 				</div>
 			</div>
-			{editingHex &&
-          <HexWindow mode={mode} hex={mapState.hexes.get(editingHex)!} onSave={(d) => handleHexSave(editingHex, d)}
-                     onDelete={mode === 'master' ? () => handleHexDelete(editingHex) : undefined}
-                     onClose={() => setEditingHex(null)}/>}
+			{/* Safe retrieval of the currently edited hex */}
+			{(() => {
+				if (!editingHex) return null;
+				const hx = mapState.hexes.get(editingHex);
+				if (!hx) return null; // guard: wait until hex is in state
+				return (
+					<HexWindow
+						mode={mode}
+						hex={hx}
+						onSave={(d) => handleHexSave(editingHex, d)}
+						onDelete={mode === 'master' ? () => handleHexDelete(editingHex) : undefined}
+						onClose={() => setEditingHex(null)}
+					/>
+				);
+			})()}
 			{markersPanelOpen && mode==='master' && (
 				<div ref={markersPanelRef} className="absolute top-4 right-4 z-[1200] bg-stone-900/90 border border-stone-700 rounded-lg p-3 w-60 max-h-80 overflow-auto space-y-2">
 					<div className="flex justify-between items-center mb-1">
