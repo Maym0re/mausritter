@@ -116,6 +116,16 @@ export default function HomePage() {
 		}
 	};
 
+	const copyInviteLink = (id: string) => {
+		try {
+			const origin = typeof window !== 'undefined' ? window.location.origin : '';
+			const link = `${origin}/campaign?campaign=${id}`; // link to open campaign
+			navigator.clipboard?.writeText(link).catch(()=>{}); // silent copy
+		} catch (e) {
+			console.error('Copy failed', e);
+		}
+	};
+
 	useEffect(() => {
 		// Close any open menu on outside click
 		const handleDocClick = (e: MouseEvent) => {
@@ -268,29 +278,30 @@ export default function HomePage() {
 													<span className="leading-none">⋯</span>
 												</button>
 												{openMenuId === campaign.id && (
-													<div
-														className="absolute z-20 bottom-full mb-2 right-0 w-44 bg-white border border-stone-200 rounded-md shadow-lg py-1 text-sm">
-														<button
-															type="button"
-															onClick={() => {
-																setOpenMenuId(null);
-																openEdit(campaign.id);
-															}}
-															className="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700"
-														>
-															{t('campaign.edit')}
-														</button>
-														<button
-															onClick={() => {
-																setOpenMenuId(null);
-																deleteCampaign(campaign.id);
-															}}
-															disabled={deletingId === campaign.id}
-															className={`w-full text-left px-3 py-2 hover:bg-red-50 ${deletingId === campaign.id ? 'text-red-400 cursor-wait' : 'text-red-600'}`}
-														>
-															{deletingId === campaign.id ? t('campaign.deleting') : t('campaign.delete')}
-														</button>
-													</div>
+													<div className="absolute z-20 bottom-full mb-2 right-0 w-52 bg-white border border-stone-200 rounded-md shadow-lg py-1 text-sm">
+													<button
+														type="button"
+														onClick={() => { setOpenMenuId(null); openEdit(campaign.id); }}
+														className="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700"
+													>
+														{t('campaign.edit')}
+													</button>
+													<button
+														onClick={() => { setOpenMenuId(null); copyInviteLink(campaign.id); }}
+														className="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700"
+														type="button"
+													>
+														{t('campaign.invite')}
+													</button>
+													<div className="my-1 h-px bg-stone-200" />
+													<button
+														onClick={() => { setOpenMenuId(null); deleteCampaign(campaign.id); }}
+														disabled={deletingId === campaign.id}
+														className={`w-full text-left px-3 py-2 hover:bg-red-50 ${deletingId === campaign.id ? 'text-red-400 cursor-wait' : 'text-red-600'}`}
+													>
+														{deletingId === campaign.id ? t('campaign.deleting') : t('campaign.delete')}
+													</button>
+												</div>
 												)}
 											</div>
 										)}

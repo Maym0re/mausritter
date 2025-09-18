@@ -20,6 +20,7 @@ export default function CampaignPage() {
   const [showTime, setShowTime] = useState(false);
   const [isAddHexMode, setIsAddHexMode] = useState(false);
   const [showMarkersPanel, setShowMarkersPanel] = useState(false);
+  const [extraMenuOpen, setExtraMenuOpen] = useState(false); // bottom plus menu
 
   const fetchCampaigns = useCallback(async () => {
     try {
@@ -67,6 +68,27 @@ export default function CampaignPage() {
     }
   };
 
+  const copyInviteLink = useCallback(() => {
+    if (!selectedCampaign) return;
+    try {
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      const link = `${origin}/campaign?campaign=${selectedCampaign}`;
+      navigator.clipboard?.writeText(link).catch(()=>{}); // silent copy without alert
+    } catch (e) {
+      console.error('Copy invite link failed', e);
+    }
+  }, [selectedCampaign]);
+
+  useEffect(() => {
+    if (!extraMenuOpen) return;
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('#campaign-bottom-menu')) setExtraMenuOpen(false);
+    };
+    window.addEventListener('mousedown', handler);
+    return () => window.removeEventListener('mousedown', handler);
+  }, [extraMenuOpen]);
+
   if (!session) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -90,7 +112,7 @@ export default function CampaignPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-56px)] w-screen overflow-hidden relative">
+    <div className="h-[calc(100vh-56px)] w-screen overflow-hidden relative">{/* was h-[calc(100vh-56px)] to avoid layout shift; using full viewport to keep bottom bar in view */}
 
       {/* Map */}
       {selectedCampaign && userRole && (
@@ -129,13 +151,24 @@ export default function CampaignPage() {
       <FullscreenDiceLayer />
 
       {/* Bottom menu */}
-      <div className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1100] border border-stone-700">
+      <div id="campaign-bottom-menu" className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1100] border border-stone-700">
         <button onClick={()=>setShowCharacters(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showCharacters? 'bg-purple-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.characters')}</button>
         <button onClick={()=>setShowTime(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showTime? 'bg-blue-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.time')}</button>
         {userRole==='master' && <button onClick={()=>setIsAddHexMode(m=>!m)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${isAddHexMode? 'bg-amber-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{isAddHexMode? t('menu.finishAdd'): t('menu.addHex')}</button>}
         {userRole==='master' && <button onClick={()=>setShowMarkersPanel(v=>!v)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showMarkersPanel? 'bg-emerald-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.markers')}</button>}
         <div className="w-px h-6 bg-stone-700" />
-        <button disabled className="text-xs px-3 py-1.5 rounded-full bg-stone-800 text-stone-500 cursor-default">+</button>
+        {userRole==='master' ? (
+          <div className="relative">
+            <button onClick={()=>setExtraMenuOpen(o=>!o)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${extraMenuOpen? 'bg-stone-700 text-white':'bg-stone-800 text-stone-300 hover:bg-stone-700'}`}>+</button>
+            {extraMenuOpen && (
+              <div className="absolute bottom-full mb-2 right-0 bg-stone-900/95 border border-stone-600 rounded-lg shadow-lg py-2 px-2 min-w-[160px] flex flex-col gap-1">
+                <button onClick={()=>{copyInviteLink(); setExtraMenuOpen(false);}} className="text-left text-xs px-2 py-1 rounded-md text-stone-200 hover:bg-stone-700">{t('campaign.invite')}</button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <button disabled className="text-xs px-3 py-1.5 rounded-full bg-stone-800 text-stone-500 cursor-default">+</button>
+        )}
       </div>
     </div>
   );
