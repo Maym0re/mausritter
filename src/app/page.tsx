@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { FullCampaign } from "@/types/character";
 import { t } from '@/i18n';
 import { CampaignModal } from '@/components/CampaignModal';
+import { useToast } from '@/components/ui/ToastProvider';
 
 export default function HomePage() {
 	const {data: session, status} = useSession();
@@ -21,6 +22,7 @@ export default function HomePage() {
 	const [editName, setEditName] = useState('');
 	const [editDescription, setEditDescription] = useState('');
 	const [editSaving, setEditSaving] = useState(false);
+	const toast = useToast();
 
 	useEffect(() => {
 		if (status === 'loading') return;
@@ -120,7 +122,9 @@ export default function HomePage() {
 		try {
 			const origin = typeof window !== 'undefined' ? window.location.origin : '';
 			const link = `${origin}/campaign?campaign=${id}`; // link to open campaign
-			navigator.clipboard?.writeText(link).catch(()=>{}); // silent copy
+			navigator.clipboard?.writeText(link).then(()=>{
+				toast.success(t('campaign.inviteCopied'));
+			}).catch(()=>{});
 		} catch (e) {
 			console.error('Copy failed', e);
 		}

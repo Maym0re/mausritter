@@ -8,6 +8,7 @@ import { DraggableResizableWindow } from '@/components/ui/DraggableResizableWind
 import { TimeTracker } from '@/components/TimeTracker';
 import { t } from '@/i18n';
 import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
+import { useToast } from '@/components/ui/ToastProvider';
 
 interface CampaignListItem { id: string; name: string; gmId: string }
 
@@ -21,6 +22,7 @@ export default function CampaignPage() {
   const [isAddHexMode, setIsAddHexMode] = useState(false);
   const [showMarkersPanel, setShowMarkersPanel] = useState(false);
   const [extraMenuOpen, setExtraMenuOpen] = useState(false); // bottom plus menu
+  const toast = useToast();
 
   const fetchCampaigns = useCallback(async () => {
     try {
@@ -73,11 +75,13 @@ export default function CampaignPage() {
     try {
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
       const link = `${origin}/campaign?campaign=${selectedCampaign}`;
-      navigator.clipboard?.writeText(link).catch(()=>{}); // silent copy without alert
+      navigator.clipboard?.writeText(link)
+        .then(() => toast.success(t('campaign.inviteCopied')))
+        .catch(() => {});
     } catch (e) {
       console.error('Copy invite link failed', e);
     }
-  }, [selectedCampaign]);
+  }, [selectedCampaign, toast]);
 
   useEffect(() => {
     if (!extraMenuOpen) return;
