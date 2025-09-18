@@ -66,17 +66,14 @@ export default function LoginPage() {
 	};
 
 	return (
-		<main className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-stone-50 via-stone-100 to-stone-200 text-stone-800">
+		<main className="relative h-full w-full overflow-hidden bg-gradient-to-br from-stone-50 via-stone-100 to-stone-200 text-stone-800">
 			<div aria-hidden className="pointer-events-none absolute inset-0">
 				<div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-stone-300/40 blur-3xl" />
 				<div className="absolute bottom-0 right-0 h-[360px] w-[360px] rounded-full bg-stone-400/30 blur-3xl" />
 			</div>
-			<div className="relative flex items-center justify-center px-4 py-12">
+			<div className="relative flex items-center justify-center px-4 py-12 pt-20">
 				<div className="w-full max-w-md">
 					<div className="mb-10 flex flex-col items-center text-center select-none">
-						<div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-stone-900 to-stone-600 shadow-lg ring-1">
-							<h4 className="text-2xl font-black tracking-tight text-white drop-shadow-sm">M</h4>
-						</div>
 						<h1 className="text-3xl font-semibold tracking-tight text-stone-900">{t('auth.login.appTitle')}</h1>
 						<p className="mt-2 max-w-sm text-sm text-stone-600">{t('auth.login.subtitle')}</p>
 					</div>
