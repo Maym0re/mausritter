@@ -90,15 +90,7 @@ export default function CampaignPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-56px)] w-screen overflow-hidden relative">{/* 56px = header height */}
-      {/* Campaign selector if multiple */}
-      {campaigns.length > 1 && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1100] flex gap-2 bg-stone-900/80 px-3 py-1.5 rounded-full border border-stone-700">
-          {campaigns.map(c => (
-            <button key={c.id} onClick={() => handleCampaignSelect(c.id)} className={`text-xs px-3 py-1 rounded-full font-medium ${selectedCampaign===c.id? 'bg-amber-500 text-stone-900':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{c.name}</button>
-          ))}
-        </div>
-      )}
+    <div className="h-[calc(100vh-56px)] w-screen overflow-hidden relative">
 
       {/* Map */}
       {selectedCampaign && userRole && (
