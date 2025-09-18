@@ -15,11 +15,9 @@ export default function HomePage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [creating, setCreating] = useState(false);
-	const [deletingId, setDeletingId] = useState<string | null>(null); // id of campaign being deleted
-	const [openMenuId, setOpenMenuId] = useState<string | null>(null); // card id whose bottom actions menu is open
-	const [editingId, setEditingId] = useState<string | null>(null); // campaign currently editing
-	const [editName, setEditName] = useState('');
-	const [editDescription, setEditDescription] = useState('');
+	const [deletingId, setDeletingId] = useState<string | null>(null);
+	const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+	const [editingId, setEditingId] = useState<string | null>(null);
 	const [editSaving, setEditSaving] = useState(false);
 
 	useEffect(() => {
@@ -33,6 +31,7 @@ export default function HomePage() {
 
 	const fetchCampaigns = async () => {
 		try {
+			setIsLoading(true);
 			const response = await fetch('/api/campaigns');
 			if (response.ok) {
 				const data = await response.json();
@@ -52,7 +51,7 @@ export default function HomePage() {
 			const response = await fetch('/api/campaigns', {
 				method: 'POST',
 				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({ name: data.name, description: data.description })
+				body: JSON.stringify({name: data.name, description: data.description})
 			});
 			if (response.ok) {
 				const newCampaign = await response.json();
@@ -72,7 +71,7 @@ export default function HomePage() {
 		if (!confirm(t('campaign.deleteConfirm'))) return;
 		setDeletingId(id);
 		try {
-			const resp = await fetch(`/api/campaigns/${id}`, { method: 'DELETE' });
+			const resp = await fetch(`/api/campaigns/${id}`, {method: 'DELETE'});
 			if (!resp.ok) throw new Error('delete failed');
 			setCampaigns(prev => prev.filter(c => c.id !== id));
 		} catch (e) {
@@ -97,12 +96,16 @@ export default function HomePage() {
 		try {
 			const resp = await fetch(`/api/campaigns/${editingId}`, {
 				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name: data.name, description: data.description })
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({name: data.name, description: data.description})
 			});
 			if (!resp.ok) throw new Error('failed');
 			const updated = await resp.json();
-			setCampaigns(prev => prev.map(c => c.id === updated.id ? { ...c, name: updated.name, description: updated.description } : c));
+			setCampaigns(prev => prev.map(c => c.id === updated.id ? {
+				...c,
+				name: updated.name,
+				description: updated.description
+			} : c));
 			setEditingId(null);
 		} catch (e) {
 			console.error(e);
@@ -225,7 +228,8 @@ export default function HomePage() {
 										<h3 className="text-xl font-semibold text-stone-900 break-words max-w-[75%]">
 											{campaign.name}
 										</h3>
-										<span className={`px-2 py-1 rounded-full text-xs font-medium ${campaign.gm?.id === session.user?.id ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}` }>
+										<span
+											className={`px-2 py-1 rounded-full text-xs font-medium ${campaign.gm?.id === session.user?.id ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
                       {campaign.gm?.id === session.user?.id ? t('home.role.gm') : t('home.role.player')}
                     </span>
 									</div>
@@ -258,21 +262,28 @@ export default function HomePage() {
 														e.stopPropagation();
 														setOpenMenuId(m => m === campaign.id ? null : campaign.id);
 													}}
-													className={`h-full px-3 py-2 rounded-md border text-sm font-medium transition-colors flex items-center gap-1 ${openMenuId===campaign.id ? 'border-stone-400 bg-stone-100 text-stone-800' : 'border-stone-300 text-stone-600 hover:bg-stone-100 hover:border-stone-400'}`}
+													className={`h-full px-3 py-2 rounded-md border text-sm font-medium transition-colors flex items-center gap-1 ${openMenuId === campaign.id ? 'border-stone-400 bg-stone-100 text-stone-800' : 'border-stone-300 text-stone-600 hover:bg-stone-100 hover:border-stone-400'}`}
 												>
 													<span className="leading-none">⋯</span>
 												</button>
 												{openMenuId === campaign.id && (
-													<div className="absolute z-20 bottom-full mb-2 right-0 w-44 bg-white border border-stone-200 rounded-md shadow-lg py-1 text-sm">
+													<div
+														className="absolute z-20 bottom-full mb-2 right-0 w-44 bg-white border border-stone-200 rounded-md shadow-lg py-1 text-sm">
 														<button
 															type="button"
-															onClick={() => { setOpenMenuId(null); openEdit(campaign.id); }}
+															onClick={() => {
+																setOpenMenuId(null);
+																openEdit(campaign.id);
+															}}
 															className="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700"
 														>
 															{t('campaign.edit')}
 														</button>
 														<button
-															onClick={() => { setOpenMenuId(null); deleteCampaign(campaign.id); }}
+															onClick={() => {
+																setOpenMenuId(null);
+																deleteCampaign(campaign.id);
+															}}
 															disabled={deletingId === campaign.id}
 															className={`w-full text-left px-3 py-2 hover:bg-red-50 ${deletingId === campaign.id ? 'text-red-400 cursor-wait' : 'text-red-600'}`}
 														>
@@ -304,10 +315,12 @@ export default function HomePage() {
 			<CampaignModal
 				mode="edit"
 				open={!!editingId}
-				initialName={editingId ? (campaigns.find(c=>c.id===editingId)?.name||'') : ''}
-				initialDescription={editingId ? (campaigns.find(c=>c.id===editingId)?.description||'') : ''}
+				initialName={editingId ? (campaigns.find(c => c.id === editingId)?.name || '') : ''}
+				initialDescription={editingId ? (campaigns.find(c => c.id === editingId)?.description || '') : ''}
 				saving={editSaving}
-				onClose={() => { if (!editSaving) setEditingId(null); }}
+				onClose={() => {
+					if (!editSaving) setEditingId(null);
+				}}
 				onSubmit={submitEdit}
 			/>
 		</div>
