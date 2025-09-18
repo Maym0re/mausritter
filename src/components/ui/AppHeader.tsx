@@ -12,7 +12,7 @@ export function AppHeader() {
         Mausritter
       </Link>
       <div className="ml-auto flex items-center gap-3">
-        {session && (
+        {session ? (
           <>
             <span className="text-xs text-stone-500 max-w-[140px] truncate" title={session.user?.email || session.user?.name || ''}>{session.user?.name || session.user?.email}</span>
             <button
@@ -20,6 +20,10 @@ export function AppHeader() {
               className="px-3 py-1 text-xs rounded bg-stone-800 text-white hover:bg-stone-700"
             >{t('auth.logout')}</button>
           </>
+        ) : (
+          <Link href="/login" className="px-3 py-1 text-xs rounded bg-stone-800 text-white hover:bg-stone-700">
+            {t('auth.login.signIn')}
+          </Link>
         )}
       </div>
     </header>
