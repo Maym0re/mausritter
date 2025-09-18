@@ -7,6 +7,7 @@ import { CharacterManagerWindow } from '@/app/(pages)/campaign/components/Charac
 import { DraggableResizableWindow } from '@/components/ui/DraggableResizableWindow';
 import { TimeTracker } from '@/components/TimeTracker';
 import { t } from '@/i18n';
+import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
 
 interface CampaignListItem { id: string; name: string; gmId: string }
 
@@ -132,6 +133,9 @@ export default function CampaignPage() {
           <TimeTracker />
         </DraggableResizableWindow>
       )}
+
+      {/* Dice only on campaign page */}
+      <FullscreenDiceLayer />
 
       {/* Bottom menu */}
       <div className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1100] border border-stone-700">

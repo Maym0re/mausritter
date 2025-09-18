@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pirata_One } from "next/font/google";
 import "./../../styles/globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
-import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
 import { AppHeader } from '@/components/ui/AppHeader';
 import { ToastProvider } from '@/components/ui/ToastProvider';
 
@@ -39,7 +38,6 @@ export default function RootLayout({children}: Readonly<{
 				<div className="pt-14 h-full">
 					{children}
 				</div>
-				<FullscreenDiceLayer />
 			</AuthProvider>
 			</ToastProvider>
 			</body>

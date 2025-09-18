@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { HexGridCanvas } from '@/app/(pages)/campaign/components/HexGridCanvas';
 import { HEX_TYPES } from '@/types/map';
+import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
 
 // Helper to fetch hex type object
 function hx(id: string) {
@@ -245,6 +246,7 @@ export default function DemoCampaignPage() {
 					]
 				}}
 			/>
+			<FullscreenDiceLayer />
 			<div
 				className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1300] border border-stone-700">
 				<button onClick={() => setIsAddHexMode(m => !m)}
