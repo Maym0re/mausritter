@@ -121,7 +121,7 @@ export default function HomePage() {
 	const copyInviteLink = (id: string) => {
 		try {
 			const origin = typeof window !== 'undefined' ? window.location.origin : '';
-			const link = `${origin}/campaign?campaign=${id}`; // link to open campaign
+			const link = `${origin}/campaign/join/${id}`;
 			navigator.clipboard?.writeText(link).then(()=>{
 				toast.success(t('campaign.inviteCopied'));
 			}).catch(()=>{});

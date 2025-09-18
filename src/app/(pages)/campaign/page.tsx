@@ -74,7 +74,7 @@ export default function CampaignPage() {
     if (!selectedCampaign) return;
     try {
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      const link = `${origin}/campaign?campaign=${selectedCampaign}`;
+      const link = `${origin}/campaign/join/${selectedCampaign}`;
       navigator.clipboard?.writeText(link)
         .then(() => toast.success(t('campaign.inviteCopied')))
         .catch(() => {});
