@@ -15,9 +15,11 @@ export default function HomePage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [creating, setCreating] = useState(false);
-	const [deletingId, setDeletingId] = useState<string | null>(null);
-	const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-	const [editingId, setEditingId] = useState<string | null>(null);
+	const [deletingId, setDeletingId] = useState<string | null>(null); // id of campaign being deleted
+	const [openMenuId, setOpenMenuId] = useState<string | null>(null); // card id whose bottom actions menu is open
+	const [editingId, setEditingId] = useState<string | null>(null); // campaign currently editing
+	const [editName, setEditName] = useState('');
+	const [editDescription, setEditDescription] = useState('');
 	const [editSaving, setEditSaving] = useState(false);
 
 	useEffect(() => {
@@ -31,7 +33,6 @@ export default function HomePage() {
 
 	const fetchCampaigns = async () => {
 		try {
-			setIsLoading(true);
 			const response = await fetch('/api/campaigns');
 			if (response.ok) {
 				const data = await response.json();
