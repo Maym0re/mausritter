@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FullCampaign } from "@/types/character";
 import { t } from '@/i18n';
+import { CampaignModal } from '@/components/CampaignModal';
 
 export default function HomePage() {
 	const {data: session, status} = useSession();
@@ -13,10 +14,13 @@ export default function HomePage() {
 	const [campaigns, setCampaigns] = useState<FullCampaign[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [showCreateModal, setShowCreateModal] = useState(false);
-	const [newCampaignName, setNewCampaignName] = useState('');
-	const [newCampaignDescription, setNewCampaignDescription] = useState('');
+	const [creating, setCreating] = useState(false);
 	const [deletingId, setDeletingId] = useState<string | null>(null); // id of campaign being deleted
 	const [openMenuId, setOpenMenuId] = useState<string | null>(null); // card id whose bottom actions menu is open
+	const [editingId, setEditingId] = useState<string | null>(null); // campaign currently editing
+	const [editName, setEditName] = useState('');
+	const [editDescription, setEditDescription] = useState('');
+	const [editSaving, setEditSaving] = useState(false);
 
 	useEffect(() => {
 		if (status === 'loading') return;
@@ -41,28 +45,25 @@ export default function HomePage() {
 		}
 	};
 
-	const createCampaign = async (e: React.FormEvent) => {
-		e.preventDefault();
-
+	const createCampaign = async (data: { name: string; description: string }) => {
+		if (creating) return;
+		setCreating(true);
 		try {
 			const response = await fetch('/api/campaigns', {
 				method: 'POST',
 				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({
-					name: newCampaignName,
-					description: newCampaignDescription,
-				}),
+				body: JSON.stringify({ name: data.name, description: data.description })
 			});
-
 			if (response.ok) {
 				const newCampaign = await response.json();
-				setCampaigns([...campaigns, newCampaign]);
+				setCampaigns(prev => [...prev, newCampaign]);
 				setShowCreateModal(false);
-				setNewCampaignName('');
-				setNewCampaignDescription('');
 			}
 		} catch (error) {
 			console.error('Failed to create campaign:', error);
+			alert(t('common.error'));
+		} finally {
+			setCreating(false);
 		}
 	};
 
@@ -79,6 +80,35 @@ export default function HomePage() {
 			alert(t('campaign.deleteError'));
 		} finally {
 			setDeletingId(null);
+		}
+	};
+
+	const openEdit = (id: string) => {
+		const c = campaigns.find(c => c.id === id);
+		if (!c) return;
+		setEditingId(id);
+		setEditName(c.name || '');
+		setEditDescription(c.description || '');
+	};
+
+	const submitEdit = async (data: { name: string; description: string }) => {
+		if (!editingId || editSaving) return;
+		setEditSaving(true);
+		try {
+			const resp = await fetch(`/api/campaigns/${editingId}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ name: data.name, description: data.description })
+			});
+			if (!resp.ok) throw new Error('failed');
+			const updated = await resp.json();
+			setCampaigns(prev => prev.map(c => c.id === updated.id ? { ...c, name: updated.name, description: updated.description } : c));
+			setEditingId(null);
+		} catch (e) {
+			console.error(e);
+			alert(t('common.error'));
+		} finally {
+			setEditSaving(false);
 		}
 	};
 
@@ -236,7 +266,7 @@ export default function HomePage() {
 													<div className="absolute z-20 bottom-full mb-2 right-0 w-44 bg-white border border-stone-200 rounded-md shadow-lg py-1 text-sm">
 														<button
 															type="button"
-															onClick={() => { setOpenMenuId(null); /* future: open edit modal */ console.log('edit campaign'); }}
+															onClick={() => { setOpenMenuId(null); openEdit(campaign.id); }}
 															className="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700"
 														>
 															{t('campaign.edit')}
@@ -260,67 +290,26 @@ export default function HomePage() {
 				</div>
 			</main>
 
-			{/* Create campaign modal */}
-			{showCreateModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-					<div className="bg-white rounded-lg max-w-md w-full p-6">
-						<h3 className="text-lg font-semibold text-stone-900 mb-4">
-							{t('home.modal.createTitle')}
-						</h3>
-
-						<form onSubmit={createCampaign} className="space-y-4">
-							<div>
-								<label htmlFor="campaignName" className="block text-sm font-medium text-gray-700">
-									{t('home.modal.nameLabel')}
-								</label>
-								<input
-									id="campaignName"
-									type="text"
-									required
-									value={newCampaignName}
-									onChange={(e) => setNewCampaignName(e.target.value)}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-stone-500 focus:border-stone-500"
-									placeholder={t('home.modal.namePlaceholder')}
-								/>
-							</div>
-
-							<div>
-								<label htmlFor="campaignDescription" className="block text-sm font-medium text-gray-700">
-									{t('home.modal.descriptionLabel')}
-								</label>
-								<textarea
-									id="campaignDescription"
-									value={newCampaignDescription}
-									onChange={(e) => setNewCampaignDescription(e.target.value)}
-									rows={3}
-									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-stone-500 focus:border-stone-500"
-									placeholder={t('home.modal.descriptionPlaceholder')}
-								/>
-							</div>
-
-							<div className="flex space-x-3 pt-4">
-								<button
-									type="button"
-									onClick={() => {
-										setShowCreateModal(false);
-										setNewCampaignName('');
-										setNewCampaignDescription('');
-									}}
-									className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-								>
-									{t('home.modal.cancel')}
-								</button>
-								<button
-									type="submit"
-									className="flex-1 px-4 py-2 bg-stone-900 hover:bg-black text-white rounded-md"
-								>
-									{t('home.modal.submit')}
-								</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			)}
+			{/* Create campaign modal (unified) */}
+			<CampaignModal
+				mode="create"
+				open={showCreateModal}
+				initialName=""
+				initialDescription=""
+				saving={creating}
+				onClose={() => !creating && setShowCreateModal(false)}
+				onSubmit={createCampaign}
+			/>
+			{/* Edit campaign modal (unified) */}
+			<CampaignModal
+				mode="edit"
+				open={!!editingId}
+				initialName={editingId ? (campaigns.find(c=>c.id===editingId)?.name||'') : ''}
+				initialDescription={editingId ? (campaigns.find(c=>c.id===editingId)?.description||'') : ''}
+				saving={editSaving}
+				onClose={() => { if (!editSaving) setEditingId(null); }}
+				onSubmit={submitEdit}
+			/>
 		</div>
 	);
 }
