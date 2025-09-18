@@ -82,7 +82,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="h-full bg-stone-50">
       {/* Main content without local header (global AppHeader used) */}
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
@@ -156,44 +156,6 @@ export default function HomePage() {
               ))}
             </div>
           )}
-        </div>
-
-        {/* Quick links */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-          <Link
-            href="/tools"
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 text-center"
-          >
-            <div className="text-4xl mb-3">⚒️</div>
-            <h3 className="text-lg font-semibold text-stone-900 mb-2">{t('home.quick.tools')}</h3>
-            <p className="text-stone-600 text-sm">
-              {t('home.quick.toolsHint')}
-            </p>
-          </Link>
-
-          <Link
-            href="/campaign"
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 text-center"
-          >
-            <div className="text-4xl mb-3">🗺️</div>
-            <h3 className="text-lg font-semibold text-stone-900 mb-2">{t('home.quick.campaign')}</h3>
-            <p className="text-stone-600 text-sm">
-              {t('home.quick.campaignHint')}
-            </p>
-          </Link>
-
-          <a
-            href="https://mausritter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 text-center"
-          >
-            <div className="text-4xl mb-3">📚</div>
-            <h3 className="text-lg font-semibold text-stone-900 mb-2">{t('home.quick.rules')}</h3>
-            <p className="text-stone-600 text-sm">
-              {t('home.quick.rulesHint')}
-            </p>
-          </a>
         </div>
       </main>
 

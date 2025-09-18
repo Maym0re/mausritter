@@ -1,9 +1,4 @@
 export const en = {
-  // Tools
-  'tools.title': 'Tools',
-  'tools.dicePanelInfo': 'Fullscreen 3D dice are available on every page (control panel at bottom right).',
-  'tools.diceSectionTitle': '3D Dice',
-  'tools.diceUsage': 'Use the “Dice” panel in the bottom-right corner to roll. Press D for a quick d20, Esc to toggle the panel.',
   // Map
   'map.loading': 'Loading map...',
   'map.createTitle': 'Create a Map',

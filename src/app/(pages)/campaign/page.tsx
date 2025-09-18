@@ -134,7 +134,6 @@ export default function CampaignPage() {
         </DraggableResizableWindow>
       )}
 
-      {/* Dice only on campaign page */}
       <FullscreenDiceLayer />
 
       {/* Bottom menu */}

@@ -74,8 +74,8 @@ export default function LoginPage() {
 			<div className="relative flex items-center justify-center px-4 py-12">
 				<div className="w-full max-w-md">
 					<div className="mb-10 flex flex-col items-center text-center select-none">
-						<div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-stone-900 to-stone-600 shadow-lg ring-1 ring-stone-700/60">
-							<span className="text-2xl font-black tracking-tight text-white drop-shadow-sm">M</span>
+						<div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-stone-900 to-stone-600 shadow-lg ring-1">
+							<h4 className="text-2xl font-black tracking-tight text-white drop-shadow-sm">M</h4>
 						</div>
 						<h1 className="text-3xl font-semibold tracking-tight text-stone-900">{t('auth.login.appTitle')}</h1>
 						<p className="mt-2 max-w-sm text-sm text-stone-600">{t('auth.login.subtitle')}</p>
@@ -138,7 +138,6 @@ export default function LoginPage() {
 								</Link>
 							</div>
 						</div>
-						<p className="mt-6 text-center text-[10px] tracking-wide text-stone-500">© {new Date().getFullYear()} Mausritter Tools. {t('auth.login.rights')}</p>
 					</div>
 				</div>
 			</div>
