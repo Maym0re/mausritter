@@ -212,6 +212,13 @@ export const en = {
 	// Campaign
 	'campaign.noneTitle': 'No campaigns available',
 	'campaign.noneHint': 'Create or join a campaign on the home page.',
+	'campaign.loading': 'Loading campaigns...',
+	'campaign.delete': 'Delete',
+	'campaign.deleteConfirm': 'Delete this campaign? This cannot be undone.',
+	'campaign.deleting': 'Deleting...',
+	'campaign.deleteError': 'Failed to delete campaign',
+	'campaign.menu': 'Campaign menu',
+	'campaign.edit': 'Edit',
   'home.landing.title': 'Mausritter roleplaying game',
   'home.landing.subtitle': 'Create and explore hex maps, manage characters, track time and events for your tiny sword & whiskers adventures.',
   'home.landing.ctaPrimary': 'Sign in to create a campaign',

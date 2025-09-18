@@ -15,6 +15,8 @@ export default function HomePage() {
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [newCampaignName, setNewCampaignName] = useState('');
 	const [newCampaignDescription, setNewCampaignDescription] = useState('');
+	const [deletingId, setDeletingId] = useState<string | null>(null); // id of campaign being deleted
+	const [openMenuId, setOpenMenuId] = useState<string | null>(null); // card id whose bottom actions menu is open
 
 	useEffect(() => {
 		if (status === 'loading') return;
@@ -63,6 +65,33 @@ export default function HomePage() {
 			console.error('Failed to create campaign:', error);
 		}
 	};
+
+	const deleteCampaign = async (id: string) => {
+		if (deletingId || !session?.user?.id) return;
+		if (!confirm(t('campaign.deleteConfirm'))) return;
+		setDeletingId(id);
+		try {
+			const resp = await fetch(`/api/campaigns/${id}`, { method: 'DELETE' });
+			if (!resp.ok) throw new Error('delete failed');
+			setCampaigns(prev => prev.filter(c => c.id !== id));
+		} catch (e) {
+			console.error(e);
+			alert(t('campaign.deleteError'));
+		} finally {
+			setDeletingId(null);
+		}
+	};
+
+	useEffect(() => {
+		// Close any open menu on outside click
+		const handleDocClick = (e: MouseEvent) => {
+			if (!openMenuId) return;
+			const target = e.target as HTMLElement;
+			if (!target.closest('[data-campaign-card]')) setOpenMenuId(null);
+		};
+		document.addEventListener('mousedown', handleDocClick);
+		return () => document.removeEventListener('mousedown', handleDocClick);
+	}, [openMenuId]);
 
 	if (status === 'loading') {
 		return (
@@ -158,17 +187,15 @@ export default function HomePage() {
 							{campaigns.map((campaign) => (
 								<div
 									key={campaign.id}
-									className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6"
+									className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 relative"
+									data-campaign-card
 								>
+									{/* Card top bar */}
 									<div className="flex justify-between items-start mb-4">
-										<h3 className="text-xl font-semibold text-stone-900">
+										<h3 className="text-xl font-semibold text-stone-900 break-words max-w-[75%]">
 											{campaign.name}
 										</h3>
-										<span className={`px-2 py-1 rounded-full text-xs font-medium ${
-											campaign.gm?.id === session.user?.id
-												? 'bg-purple-100 text-purple-800'
-												: 'bg-blue-100 text-blue-800'
-										}`}>
+										<span className={`px-2 py-1 rounded-full text-xs font-medium ${campaign.gm?.id === session.user?.id ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}` }>
                       {campaign.gm?.id === session.user?.id ? t('home.role.gm') : t('home.role.player')}
                     </span>
 									</div>
@@ -185,13 +212,46 @@ export default function HomePage() {
 										<div>{t('home.season')} {campaign.season}</div>
 									</div>
 
-									<div className="flex space-x-2">
+									<div className="flex space-x-2 items-stretch relative">
 										<Link
 											href={`/campaign?campaign=${campaign.id}`}
 											className="flex-1 text-center bg-stone-800 hover:bg-stone-900 text-white px-4 py-2 rounded-md text-sm font-medium"
 										>
 											{t('home.open')}
 										</Link>
+										{campaign.gm?.id === session.user?.id && (
+											<div className="relative">
+												<button
+													type="button"
+													aria-label={t('campaign.menu')}
+													onClick={(e) => {
+														e.stopPropagation();
+														setOpenMenuId(m => m === campaign.id ? null : campaign.id);
+													}}
+													className={`h-full px-3 py-2 rounded-md border text-sm font-medium transition-colors flex items-center gap-1 ${openMenuId===campaign.id ? 'border-stone-400 bg-stone-100 text-stone-800' : 'border-stone-300 text-stone-600 hover:bg-stone-100 hover:border-stone-400'}`}
+												>
+													<span className="leading-none">⋯</span>
+												</button>
+												{openMenuId === campaign.id && (
+													<div className="absolute z-20 bottom-full mb-2 right-0 w-44 bg-white border border-stone-200 rounded-md shadow-lg py-1 text-sm">
+														<button
+															type="button"
+															onClick={() => { setOpenMenuId(null); /* future: open edit modal */ console.log('edit campaign'); }}
+															className="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700"
+														>
+															{t('campaign.edit')}
+														</button>
+														<button
+															onClick={() => { setOpenMenuId(null); deleteCampaign(campaign.id); }}
+															disabled={deletingId === campaign.id}
+															className={`w-full text-left px-3 py-2 hover:bg-red-50 ${deletingId === campaign.id ? 'text-red-400 cursor-wait' : 'text-red-600'}`}
+														>
+															{deletingId === campaign.id ? t('campaign.deleting') : t('campaign.delete')}
+														</button>
+													</div>
+												)}
+											</div>
+										)}
 									</div>
 								</div>
 							))}
