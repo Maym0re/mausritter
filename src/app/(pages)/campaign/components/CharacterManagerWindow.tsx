@@ -26,12 +26,16 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
     setLoading(true); setError(null);
     try {
       const r = await fetch(`/api/characters?campaignId=${campaignId}`);
-      if (!r.ok) throw new Error(t('characters.loadError'));
-      const data = await r.json();
-      data.sort((a: FullCharacter, b: FullCharacter) => (a.playerId === currentUserId ? -1 : 1) - (b.playerId === currentUserId ? -1 : 1));
+      if (!r.ok) {
+        setError(t('characters.loadError'));
+        return;
+      }
+      const data: FullCharacter[] = await r.json();
+      data.sort((a, b) => (a.playerId === currentUserId ? -1 : 1) - (b.playerId === currentUserId ? -1 : 1));
       setCharacters(data);
-    } catch (e:any) {
-      setError(e.message || t('common.error'));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(msg || t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -44,8 +48,15 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
     setEditState(p => ({...p, [ch.id]: p[ch.id] || {...ch}}));
   };
 
-  const updateField = (id: string, field: keyof FullCharacter, value: any) => {
+  // Generic typed field updater
+  const updateField = <K extends keyof FullCharacter>(id: string, field: K, value: FullCharacter[K]) => {
     setEditState(p => ({...p, [id]: {...p[id], [field]: value}}));
+  };
+
+  // Helper for numeric fields to parse safely
+  const updateNumberField = <K extends keyof FullCharacter>(id: string, field: K, raw: string, fallback: number) => {
+    const parsed = parseInt(raw, 10);
+    updateField(id, field, (isNaN(parsed) ? fallback : parsed) as FullCharacter[K]);
   };
 
   const saveCharacter = async (id: string) => {
@@ -58,12 +69,16 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ characterData: data })
       });
-      if (!r.ok) throw new Error(t('characters.saveError'));
-      const upd = await r.json();
+      if (!r.ok) {
+        alert(t('characters.saveFailed'));
+        return;
+      }
+      const upd: FullCharacter = await r.json();
       setCharacters(list => list.map(c => c.id === id ? upd : c));
       setEditState(p => ({...p, [id]: upd}));
-    } catch (e:any) {
-      alert(e.message || t('characters.saveFailed'));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      alert(msg || t('characters.saveFailed'));
     } finally {
       setSaving(s => ({...s, [id]: false}));
     }
@@ -76,7 +91,7 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
       <div className="space-y-2">
         {characters.map(ch => {
           const es = editState[ch.id];
-          const isExpanded = !!expanded[ch.id];
+          const isExpanded = expanded[ch.id];
           return (
             <div key={ch.id} className="border border-stone-200 rounded-md">
               <div className="flex items-center justify-between px-3 py-2 bg-stone-100">
@@ -95,43 +110,43 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
                 <div className="p-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                   <div>
                     <label className="block mb-1">{t('characters.name')}</label>
-                    <input value={es.name as any} onChange={e=>updateField(ch.id,'name',e.target.value)} className="w-full border rounded px-2 py-1" />
+                    <input value={es.name ?? ''} onChange={e=>updateField(ch.id,'name',e.target.value)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div>
                     <label className="block mb-1">{t('characters.level')}</label>
-                    <input type="number" value={es.level as any} onChange={e=>updateField(ch.id,'level',parseInt(e.target.value)||1)} className="w-full border rounded px-2 py-1" />
+                    <input type="number" value={es.level ?? ''} onChange={e=>updateNumberField(ch.id,'level',e.target.value,1)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div>
                     <label className="block mb-1">STR</label>
-                    <input type="number" value={es.str as any} onChange={e=>updateField(ch.id,'str',parseInt(e.target.value)||1)} className="w-full border rounded px-2 py-1" />
+                    <input type="number" value={es.str ?? ''} onChange={e=>updateNumberField(ch.id,'str',e.target.value,1)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div>
                     <label className="block mb-1">DEX</label>
-                    <input type="number" value={es.dex as any} onChange={e=>updateField(ch.id,'dex',parseInt(e.target.value)||1)} className="w-full border rounded px-2 py-1" />
+                    <input type="number" value={es.dex ?? ''} onChange={e=>updateNumberField(ch.id,'dex',e.target.value,1)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div>
                     <label className="block mb-1">WIL</label>
-                    <input type="number" value={es.wil as any} onChange={e=>updateField(ch.id,'wil',parseInt(e.target.value)||1)} className="w-full border rounded px-2 py-1" />
+                    <input type="number" value={es.wil ?? ''} onChange={e=>updateNumberField(ch.id,'wil',e.target.value,1)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div>
                     <label className="block mb-1">HP</label>
-                    <input type="number" value={es.hp as any} onChange={e=>updateField(ch.id,'hp',parseInt(e.target.value)||0)} className="w-full border rounded px-2 py-1" />
+                    <input type="number" value={es.hp ?? ''} onChange={e=>updateNumberField(ch.id,'hp',e.target.value,0)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div>
                     <label className="block mb-1">Max HP</label>
-                    <input type="number" value={es.maxHp as any} onChange={e=>updateField(ch.id,'maxHp',parseInt(e.target.value)||1)} className="w-full border rounded px-2 py-1" />
+                    <input type="number" value={es.maxHp ?? ''} onChange={e=>updateNumberField(ch.id,'maxHp',e.target.value,1)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div>
                     <label className="block mb-1">XP</label>
-                    <input type="number" value={es.xp as any} onChange={e=>updateField(ch.id,'xp',parseInt(e.target.value)||0)} className="w-full border rounded px-2 py-1" />
+                    <input type="number" value={es.xp ?? ''} onChange={e=>updateNumberField(ch.id,'xp',e.target.value,0)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div>
                     <label className="block mb-1">Pips</label>
-                    <input type="number" value={es.pips as any} onChange={e=>updateField(ch.id,'pips',parseInt(e.target.value)||0)} className="w-full border rounded px-2 py-1" />
+                    <input type="number" value={es.pips ?? ''} onChange={e=>updateNumberField(ch.id,'pips',e.target.value,0)} className="w-full border rounded px-2 py-1" />
                   </div>
                   <div className="col-span-2 md:col-span-4">
                     <label className="block mb-1">{t('characters.notes')}</label>
-                    <textarea value={es.notes as any || ''} onChange={e=>updateField(ch.id,'notes',e.target.value)} className="w-full border rounded px-2 py-1 h-20" />
+                    <textarea value={es.notes ?? ''} onChange={e=>updateField(ch.id,'notes',e.target.value)} className="w-full border rounded px-2 py-1 h-20" />
                   </div>
                 </div>
               )}
