@@ -1,15 +1,16 @@
 import { en } from './en';
 
 // Simple i18n utility (single locale for now)
-const dict = en;
+const dict: Record<string, string> = en as Record<string, string>; // widen to allow dynamic key lookup
 
-export function t(key: string, params?: Record<string, string | number>) {
-  let template = (dict as any)[key] || key;
+type Params = Record<string, string | number>;
+
+export function t(key: string, params?: Params): string {
+  let template = dict[key] ?? key;
   if (params) {
-    Object.entries(params).forEach(([k,v]) => {
+    for (const [k, v] of Object.entries(params)) {
       template = template.replace(new RegExp(`{${k}}`, 'g'), String(v));
-    });
+    }
   }
-  return template as string;
+  return template;
 }
-
