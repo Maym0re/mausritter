@@ -202,7 +202,7 @@ export function HexGridCanvas({
 			size: initialDemoMap.size || 5,
 			centerX: initialDemoMap.centerX || 0,
 			centerY: initialDemoMap.centerY || 0,
-			cells: initialDemoMap.cells as any,
+			cells: initialDemoMap.cells,
 			images: initialDemoMap.images || [],
 			markers: initialDemoMap.markers || []
 		};
@@ -827,8 +827,8 @@ export function HexGridCanvas({
 							{/* Markers layer */}
 							{markers.map(m => (
 								<Group key={m.id}
-								       ref={node => {
-									       if (node) markerGroupRefs.current[m.id] = node as any; else delete markerGroupRefs.current[m.id];
+								       ref={(node: Konva.Group | null) => { // explicit type, no any cast
+									       if (node) markerGroupRefs.current[m.id] = node; else delete markerGroupRefs.current[m.id];
 								       }}
 								       x={m.x}
 								       y={m.y}
