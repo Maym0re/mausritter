@@ -4,6 +4,8 @@ import { HexGridCanvas } from '@/app/(pages)/campaign/components/HexGridCanvas';
 import { HEX_TYPES } from '@/types/map';
 import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
 import { DemoDiceLogWindow, DemoDiceLogEntry } from '@/components/DemoDiceLogWindow';
+import { Tooltip } from "@/components/ui/Tooltip";
+import { t } from "@/i18n";
 
 // Helper to fetch hex type object
 function hx(id: string) {
@@ -272,6 +274,16 @@ export default function DemoCampaignPage() {
 				        className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showMarkersPanel ? 'bg-emerald-600 text-white' : 'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{showMarkersPanel ? 'Hide markers' : 'Markers'}</button>
 				<button onClick={() => setShowLog(true)}
 			        className="text-xs px-3 py-1.5 rounded-full font-medium bg-stone-700 text-stone-200 hover:bg-stone-600">Log</button>
+				{/* Disabled (in development) items now placed before plus menu */}
+				<div className="flex items-center gap-2">
+					{['characters','time'].map(key => (
+						<Tooltip key={key} side="top" content={t('menu.inProgress')}>
+							<button disabled className="text-xs px-3 py-1.5 rounded-full font-medium bg-stone-800 text-stone-500 opacity-70 select-none">
+								{t(`menu.${key}`)}
+							</button>
+						</Tooltip>
+					))}
+				</div>
 				<div className="text-[10px] text-stone-400">No data is saved</div>
 			</div>
 		</div>
