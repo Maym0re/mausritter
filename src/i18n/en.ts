@@ -166,6 +166,7 @@ export const en = {
   'menu.addHex': 'Add Hex',
   'menu.finishAdd': 'Finish Add',
   'menu.pickPlace': 'Pick a place on the map…',
+  'menu.inProgress': 'In development',
   // Dice
   'dice.toggle.open': 'Dice ▼',
   'dice.toggle.closed': 'Dice ▲',

@@ -22,6 +22,7 @@ export default function CampaignPage() {
   const [isAddHexMode, setIsAddHexMode] = useState(false);
   const [showMarkersPanel, setShowMarkersPanel] = useState(false);
   const [extraMenuOpen, setExtraMenuOpen] = useState(false); // bottom plus menu
+  const [hoverTooltip, setHoverTooltip] = useState<string | null>(null); // id of hovered disabled button
   const toast = useToast();
 
   const fetchCampaigns = useCallback(async () => {
@@ -156,11 +157,28 @@ export default function CampaignPage() {
 
       {/* Bottom menu */}
       <div id="campaign-bottom-menu" className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1100] border border-stone-700">
-        <button onClick={()=>setShowCharacters(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showCharacters? 'bg-purple-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.characters')}</button>
-        <button onClick={()=>setShowTime(s=>!s)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showTime? 'bg-blue-500 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.time')}</button>
+        {/* Active (working) controls first */}
         {userRole==='master' && <button onClick={()=>setIsAddHexMode(m=>!m)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${isAddHexMode? 'bg-amber-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{isAddHexMode? t('menu.finishAdd'): t('menu.addHex')}</button>}
         {userRole==='master' && <button onClick={()=>setShowMarkersPanel(v=>!v)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showMarkersPanel? 'bg-emerald-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.markers')}</button>}
+        {/* Disabled (in development) items now placed before plus menu */}
+        <div className="flex items-center gap-2">
+          {['characters','time'].map(key => (
+            <div key={key} className="relative"
+                 onMouseEnter={()=>setHoverTooltip(key)}
+                 onMouseLeave={()=>setHoverTooltip(p=>p===key?null:p)}>
+              <button disabled className="text-xs px-3 py-1.5 rounded-full font-medium bg-stone-800 text-stone-500 opacity-70 select-none">
+                {t(`menu.${key}`)}
+              </button>
+              {hoverTooltip===key && (
+                <div className="pointer-events-none absolute -top-2 translate-y-[-100%] left-1/2 -translate-x-1/2 bg-stone-800 text-stone-200 text-[10px] px-2 py-1 rounded shadow border border-stone-600 whitespace-nowrap z-10">
+                  {t('menu.inProgress')}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
         <div className="w-px h-6 bg-stone-700" />
+        {/* Extra menu */}
         {userRole==='master' ? (
           <div className="relative">
             <button onClick={()=>setExtraMenuOpen(o=>!o)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${extraMenuOpen? 'bg-stone-700 text-white':'bg-stone-800 text-stone-300 hover:bg-stone-700'}`}>+</button>
