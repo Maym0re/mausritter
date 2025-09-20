@@ -176,6 +176,7 @@ export const en = {
   'dice.colors.sapphire': 'Sapphire',
   'dice.colors.amethyst': 'Amethyst',
   'dice.colors.crimson': 'Crimson',
+  'dice.colors.black': 'Black',
   'dice.autoclear': 'Auto clear',
   'dice.manualClear': 'manual clear',
   'dice.notation': 'Notation',
