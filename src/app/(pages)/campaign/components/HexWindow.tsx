@@ -68,7 +68,7 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
 
   const landmarks = getLandmarksForType(form.hexTypeId);
 
-  const handleChange = (field: keyof FormState, value: any) => {
+  const handleChange = (field: keyof FormState, value: unknown) => {
     setForm(f => ({ ...f, [field]: value }));
   };
 
@@ -154,7 +154,7 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
               </div>
               <div>
                 <label className="block mb-1 font-medium">{t('hex.settlementSize')}</label>
-                <select value={form.settlementSize} onChange={e=>handleChange('settlementSize', e.target.value as any)} className="w-full border rounded px-2 py-1 disabled:bg-gray-100" disabled={!isGM}>
+                <select value={form.settlementSize} onChange={e=>handleChange('settlementSize', e.target.value)} className="w-full border rounded px-2 py-1 disabled:bg-gray-100" disabled={!isGM}>
                   <option value="farm">Farm</option>
                   <option value="crossroads">Crossroads</option>
                   <option value="hamlet">Hamlet</option>
