@@ -193,22 +193,6 @@ export default function FullscreenDiceLayer() {
 		}
 	}, [notation, autoClear]);
 
-	// Hotkeys: D => d20, Escape toggle panel
-	useEffect(() => {
-		const handler = (e: KeyboardEvent) => {
-			if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
-			if (e.key === 'd' || e.key === 'D') {
-				e.preventDefault();
-				setNotation('d20');
-				roll('d20');
-			} else if (e.key === 'Escape') {
-				setOpen(o => !o);
-			}
-		};
-		window.addEventListener('keydown', handler);
-		return () => window.removeEventListener('keydown', handler);
-	}, [roll]);
-
 	return (
 		<>
 			{/* Canvas container */}
@@ -310,7 +294,6 @@ export default function FullscreenDiceLayer() {
 						</div>
 						{loading && <div className="text-xs text-stone-500">{t('dice.initializing')}</div>}
 						{error && <div className="text-xs text-red-600 break-all">{error}</div>}
-						<div className="text-[10px] text-stone-400 pt-1">{t('dice.hotkeysHint')}</div>
 					</div>
 				)}
 			</div>

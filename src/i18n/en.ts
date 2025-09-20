@@ -183,7 +183,6 @@ export const en = {
   'dice.roll': 'Roll',
   'dice.clear': 'Clear',
   'dice.initializing': 'Initializing...',
-  'dice.hotkeysHint': 'D d20 • Esc toggle • Shift+preset click = roll',
   // Home
   'home.loading': 'Loading...',
   'home.myCampaigns': 'My Campaigns',
