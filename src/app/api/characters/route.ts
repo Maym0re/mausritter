@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { InventoryItem } from "@prisma/client";
 
 // Get characters of a campaign
 export async function GET(request: NextRequest) {
@@ -125,10 +126,6 @@ export async function POST(request: NextRequest) {
       ...characterDataForCreate
     } = characterData;
 
-    console.log('Session user ID:', session.user.id);
-    console.log('Character data before filtering:', characterData);
-    console.log('Character data for create:', characterDataForCreate);
-
     // Create or reuse background
     const backgroundRecord = await prisma.background.upsert({
       where: { name: background.name },
@@ -192,7 +189,7 @@ export async function POST(request: NextRequest) {
     // Bulk create inventory items
     if (inventory && inventory.length > 0) {
       await prisma.inventoryItem.createMany({
-        data: inventory.map((item: any) => ({
+        data: inventory.map((item: InventoryItem) => ({
           characterId: character.id,
           name: item.name,
           type: item.type,
