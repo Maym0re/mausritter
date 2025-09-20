@@ -29,6 +29,7 @@ export default function FullscreenDiceLayer() {
 	const [autoClear, setAutoClear] = useState(true);
 	const clearTimeoutRef = useRef<number | null>(null);
 	const [mounted, setMounted] = useState(false); // prevent hydration mismatch
+	const createdByThisRef = useRef(false); // whether this instance created the DOM container
 
 	useEffect(() => {
 		setMounted(true);
@@ -117,6 +118,7 @@ export default function FullscreenDiceLayer() {
 					container.className = 'fixed top-0 left-0 w-screen h-screen z-[400]';
 					container.style.background = 'transparent';
 					document.body.appendChild(container);
+					createdByThisRef.current = true; // mark ownership
 				}
 				applySize();
 				const {default: DiceBoxLib} = await import('@3d-dice/dice-box');
@@ -157,11 +159,19 @@ export default function FullscreenDiceLayer() {
 		return () => {
 			cancelled = true;
 			if (resizeHandler) window.removeEventListener('resize', resizeHandler);
-			try {
-				boxRef.current?.destroy();
-			} catch { /* ignore */
+			// Clear pending autoclear timeout
+			if (clearTimeoutRef.current) {
+				window.clearTimeout(clearTimeoutRef.current);
+				clearTimeoutRef.current = null;
 			}
+			try { boxRef.current?.destroy(); } catch { /* ignore */ }
 			boxRef.current = null;
+			// Remove container only if we created it
+			if (createdByThisRef.current) {
+				const el = document.getElementById(containerId);
+				if (el?.parentNode) el.parentNode.removeChild(el);
+				createdByThisRef.current = false;
+			}
 		};
 	}, [mounted]);
 
