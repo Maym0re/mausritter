@@ -9,6 +9,7 @@ import { TimeTracker } from '@/components/TimeTracker';
 import { t } from '@/i18n';
 import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
 import { useToast } from '@/components/ui/ToastProvider';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 interface CampaignListItem { id: string; name: string; gmId: string }
 
@@ -22,7 +23,6 @@ export default function CampaignPage() {
   const [isAddHexMode, setIsAddHexMode] = useState(false);
   const [showMarkersPanel, setShowMarkersPanel] = useState(false);
   const [extraMenuOpen, setExtraMenuOpen] = useState(false); // bottom plus menu
-  const [hoverTooltip, setHoverTooltip] = useState<string | null>(null); // id of hovered disabled button
   const toast = useToast();
 
   const fetchCampaigns = useCallback(async () => {
@@ -163,18 +163,11 @@ export default function CampaignPage() {
         {/* Disabled (in development) items now placed before plus menu */}
         <div className="flex items-center gap-2">
           {['characters','time'].map(key => (
-            <div key={key} className="relative"
-                 onMouseEnter={()=>setHoverTooltip(key)}
-                 onMouseLeave={()=>setHoverTooltip(p=>p===key?null:p)}>
+            <Tooltip key={key} side="top" content={t('menu.inProgress')}>
               <button disabled className="text-xs px-3 py-1.5 rounded-full font-medium bg-stone-800 text-stone-500 opacity-70 select-none">
                 {t(`menu.${key}`)}
               </button>
-              {hoverTooltip===key && (
-                <div className="pointer-events-none absolute -top-2 translate-y-[-100%] left-1/2 -translate-x-1/2 bg-stone-800 text-stone-200 text-[10px] px-2 py-1 rounded shadow border border-stone-600 whitespace-nowrap z-10">
-                  {t('menu.inProgress')}
-                </div>
-              )}
-            </div>
+            </Tooltip>
           ))}
         </div>
         <div className="w-px h-6 bg-stone-700" />
