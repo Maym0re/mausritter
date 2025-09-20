@@ -272,6 +272,16 @@ export default function FullscreenDiceLayer({campaignId, onLoggedAction}: {campa
 						window.dispatchEvent(new CustomEvent('diceRollLogged', { detail: created }));
 					}
 				} catch { /* ignore network/log errors */ }
+			} else if (!campaignId && onLoggedAction) {
+				const localLog = {
+					id: `demo-${Date.now()}`,
+					notation: expr,
+					total: normalized.total,
+					entries: normalized.dice.map((d, idx) => ({ id: `e-${idx}`, order: idx, type: d.type, value: d.value, sides: d.sides ?? null })),
+					createdAt: new Date().toISOString()
+				};
+				onLoggedAction(localLog);
+				window.dispatchEvent(new CustomEvent('diceRollLogged', { detail: localLog }));
 			}
 		} catch (e: unknown) {
 			setError(e instanceof Error ? e.message : String(e));

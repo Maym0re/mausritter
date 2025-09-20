@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { HexGridCanvas } from '@/app/(pages)/campaign/components/HexGridCanvas';
 import { HEX_TYPES } from '@/types/map';
 import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
+import { DemoDiceLogWindow, DemoDiceLogEntry } from '@/components/DemoDiceLogWindow';
 
 // Helper to fetch hex type object
 function hx(id: string) {
@@ -211,6 +212,8 @@ export default function DemoCampaignPage() {
 	const [isAddHexMode, setIsAddHexMode] = useState(false);
 	const [showMarkersPanel, setShowMarkersPanel] = useState(false);
 	const [showInfo, setShowInfo] = useState(true); // info banner visibility
+	const [demoLogs, setDemoLogs] = useState<DemoDiceLogEntry[]>([]);
+	const [showLog, setShowLog] = useState(false);
 
 	return (
 		<div className="h-[calc(100vh-56px)] w-screen overflow-hidden relative">
@@ -246,13 +249,29 @@ export default function DemoCampaignPage() {
 					]
 				}}
 			/>
-			<FullscreenDiceLayer />
+			<FullscreenDiceLayer onLoggedAction={(log)=>{
+				if (log && typeof log === 'object') {
+					const anyLog = log as any;
+					if (Array.isArray(anyLog.entries)) {
+						setDemoLogs(prev => [anyLog as DemoDiceLogEntry, ...prev].slice(0,100));
+					}
+				}
+			}} />
+			{showLog && (
+				<DemoDiceLogWindow
+					logs={demoLogs}
+					onClose={()=>setShowLog(false)}
+					onClear={()=>setDemoLogs([])}
+				/>
+			)}
 			<div
 				className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1300] border border-stone-700">
 				<button onClick={() => setIsAddHexMode(m => !m)}
 				        className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${isAddHexMode ? 'bg-amber-600 text-white' : 'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{isAddHexMode ? 'Finish' : 'Add hexes'}</button>
 				<button onClick={() => setShowMarkersPanel(v => !v)}
 				        className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showMarkersPanel ? 'bg-emerald-600 text-white' : 'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{showMarkersPanel ? 'Hide markers' : 'Markers'}</button>
+				<button onClick={() => setShowLog(true)}
+			        className="text-xs px-3 py-1.5 rounded-full font-medium bg-stone-700 text-stone-200 hover:bg-stone-600">Log</button>
 				<div className="text-[10px] text-stone-400">No data is saved</div>
 			</div>
 		</div>
