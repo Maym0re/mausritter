@@ -29,6 +29,7 @@ export default function FullscreenDiceLayer() {
 	const [autoClear, setAutoClear] = useState(true);
 	const clearTimeoutRef = useRef<number | null>(null);
 	const [mounted, setMounted] = useState(false); // prevent hydration mismatch
+	const [prefsLoaded, setPrefsLoaded] = useState(false); // ensure we restore settings (color) before init
 	const createdByThisRef = useRef(false); // whether this instance created the DOM container
 
 	useEffect(() => {
@@ -53,8 +54,8 @@ export default function FullscreenDiceLayer() {
 				if (typeof parsed.autoClear === 'boolean') setAutoClear(parsed.autoClear);
 				if (typeof parsed.open === 'boolean') setOpen(parsed.open);
 			}
-		} catch { /* ignore */
-		}
+		} catch { /* ignore */ }
+		finally { setPrefsLoaded(true); }
 	}, [mounted]);
 	useEffect(() => {
 		if (!mounted) return;
@@ -68,7 +69,7 @@ export default function FullscreenDiceLayer() {
 
 	// Init DiceBox once
 	useEffect(() => {
-		if (!mounted) return;
+		if (!mounted || !prefsLoaded) return; // wait for settings load
 		let cancelled = false;
 		let resizeHandler: (() => void) | null = null;
 		const applySize = () => {
@@ -135,45 +136,31 @@ export default function FullscreenDiceLayer() {
 					offscreen: false
 				});
 				await instance.init();
-				if (cancelled) {
-					instance.destroy();
-					return;
-				}
+				if (cancelled) { instance.destroy(); return; }
 				boxRef.current = instance;
 				applySize();
 				adjustResolution();
-				applyColor();
-				resizeHandler = () => {
-					applySize();
-					adjustResolution();
-				};
+				applyColor(); // apply with restored diceColor
+				resizeHandler = () => { applySize(); adjustResolution(); };
 				window.addEventListener('resize', resizeHandler);
 				setLoading(false);
 			} catch (e: unknown) {
-				if (!cancelled) {
-					setError(e instanceof Error ? e.message : String(e));
-					setLoading(false);
-				}
+				if (!cancelled) { setError(e instanceof Error ? e.message : String(e)); setLoading(false); }
 			}
 		})();
 		return () => {
 			cancelled = true;
 			if (resizeHandler) window.removeEventListener('resize', resizeHandler);
-			// Clear pending autoclear timeout
-			if (clearTimeoutRef.current) {
-				window.clearTimeout(clearTimeoutRef.current);
-				clearTimeoutRef.current = null;
-			}
+			if (clearTimeoutRef.current) { window.clearTimeout(clearTimeoutRef.current); clearTimeoutRef.current = null; }
 			try { boxRef.current?.destroy(); } catch { /* ignore */ }
 			boxRef.current = null;
-			// Remove container only if we created it
 			if (createdByThisRef.current) {
 				const el = document.getElementById(containerId);
 				if (el?.parentNode) el.parentNode.removeChild(el);
 				createdByThisRef.current = false;
 			}
 		};
-	}, [mounted]);
+	}, [mounted, prefsLoaded]);
 
 	// Re-apply color when changed
 	useEffect(() => {
