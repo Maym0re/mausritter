@@ -31,6 +31,8 @@ export default function FullscreenDiceLayer() {
 	const [mounted, setMounted] = useState(false); // prevent hydration mismatch
 	const [prefsLoaded, setPrefsLoaded] = useState(false); // ensure we restore settings (color) before init
 	const createdByThisRef = useRef(false); // whether this instance created the DOM container
+	const lastAppliedColorRef = useRef<string>('default'); // last color actually applied to canvas
+	const [hasActiveDice, setHasActiveDice] = useState(false); // whether dice currently displayed
 
 	useEffect(() => {
 		setMounted(true);
@@ -50,12 +52,17 @@ export default function FullscreenDiceLayer() {
 					open: boolean;
 				}>;
 				if (parsed.notation) setNotation(parsed.notation);
-				if (parsed.diceColor) setDiceColor(parsed.diceColor);
+				if (parsed.diceColor) {
+					setDiceColor(parsed.diceColor);
+					lastAppliedColorRef.current = parsed.diceColor; // apply saved color as baseline (no active dice yet)
+				}
 				if (typeof parsed.autoClear === 'boolean') setAutoClear(parsed.autoClear);
 				if (typeof parsed.open === 'boolean') setOpen(parsed.open);
 			}
-		} catch { /* ignore */ }
-		finally { setPrefsLoaded(true); }
+		} catch { /* ignore */
+		} finally {
+			setPrefsLoaded(true);
+		}
 	}, [mounted]);
 	useEffect(() => {
 		if (!mounted) return;
@@ -105,7 +112,7 @@ export default function FullscreenDiceLayer() {
 		const applyColor = () => {
 			const canvas = document.querySelector(`#${containerId} canvas`) as HTMLCanvasElement | null;
 			if (!canvas) return;
-			const opt = colorOptions.find(o => o.id === diceColor);
+			const opt = colorOptions.find(o => o.id === lastAppliedColorRef.current);
 			canvas.style.filter = opt ? opt.filter : 'none';
 		};
 		(async () => {
@@ -136,23 +143,38 @@ export default function FullscreenDiceLayer() {
 					offscreen: false
 				});
 				await instance.init();
-				if (cancelled) { instance.destroy(); return; }
+				if (cancelled) {
+					instance.destroy();
+					return;
+				}
 				boxRef.current = instance;
 				applySize();
 				adjustResolution();
 				applyColor(); // apply with restored diceColor
-				resizeHandler = () => { applySize(); adjustResolution(); };
+				resizeHandler = () => {
+					applySize();
+					adjustResolution();
+				};
 				window.addEventListener('resize', resizeHandler);
 				setLoading(false);
 			} catch (e: unknown) {
-				if (!cancelled) { setError(e instanceof Error ? e.message : String(e)); setLoading(false); }
+				if (!cancelled) {
+					setError(e instanceof Error ? e.message : String(e));
+					setLoading(false);
+				}
 			}
 		})();
 		return () => {
 			cancelled = true;
 			if (resizeHandler) window.removeEventListener('resize', resizeHandler);
-			if (clearTimeoutRef.current) { window.clearTimeout(clearTimeoutRef.current); clearTimeoutRef.current = null; }
-			try { boxRef.current?.destroy(); } catch { /* ignore */ }
+			if (clearTimeoutRef.current) {
+				window.clearTimeout(clearTimeoutRef.current);
+				clearTimeoutRef.current = null;
+			}
+			try {
+				boxRef.current?.destroy();
+			} catch { /* ignore */
+			}
 			boxRef.current = null;
 			if (createdByThisRef.current) {
 				const el = document.getElementById(containerId);
@@ -165,20 +187,46 @@ export default function FullscreenDiceLayer() {
 	// Re-apply color when changed
 	useEffect(() => {
 		if (!mounted) return;
-		const canvas = document.querySelector(`#${containerId} canvas`) as HTMLCanvasElement | null;
-		if (!canvas) return;
-		const opt = colorOptions.find(o => o.id === diceColor);
-		canvas.style.filter = opt ? opt.filter : 'none';
-	}, [diceColor, mounted]);
+	}, [diceColor]);
 
 	const roll = useCallback(async (n?: string) => {
 		const expr = normalizeNotation((n || notation).trim());
 		if (!expr || !boxRef.current) return;
+		// If there are active dice and color changed, auto-clear old dice first (they keep old color visually until cleared)
+		if (hasActiveDice && lastAppliedColorRef.current !== diceColor) {
+			try {
+				boxRef.current.clear();
+			} catch { /* ignore */
+			}
+			setHasActiveDice(false);
+			// Apply new color to canvas now (only future dice)
+			const canvas = document.querySelector(`#${containerId} canvas`) as HTMLCanvasElement | null;
+			if (canvas) {
+				const opt = colorOptions.find(o => o.id === diceColor);
+				canvas.style.filter = opt ? opt.filter : 'none';
+				lastAppliedColorRef.current = diceColor;
+			}
+			// Cancel any pending auto-clear from previous roll
+			if (clearTimeoutRef.current) {
+				window.clearTimeout(clearTimeoutRef.current);
+				clearTimeoutRef.current = null;
+			}
+		}
+		// If no active dice (either none before or just auto-cleared) and color changed, apply immediately
+		if (!hasActiveDice && lastAppliedColorRef.current !== diceColor) {
+			const canvas = document.querySelector(`#${containerId} canvas`) as HTMLCanvasElement | null;
+			if (canvas) {
+				const opt = colorOptions.find(o => o.id === diceColor);
+				canvas.style.filter = opt ? opt.filter : 'none';
+				lastAppliedColorRef.current = diceColor;
+			}
+		}
 		setRolling(true);
 		setError(null);
 		try {
 			const res: DiceRollResult = await boxRef.current.roll(expr);
 			if (res.error) setError(res.error);
+			setHasActiveDice(true);
 			if (autoClear) {
 				if (clearTimeoutRef.current) window.clearTimeout(clearTimeoutRef.current);
 				clearTimeoutRef.current = window.setTimeout(() => {
@@ -186,7 +234,7 @@ export default function FullscreenDiceLayer() {
 						boxRef.current?.clear();
 					} catch { /* ignore */
 					}
-					;
+					setHasActiveDice(false);
 				}, 8000);
 			}
 		} catch (e: unknown) {
@@ -194,7 +242,7 @@ export default function FullscreenDiceLayer() {
 		} finally {
 			setRolling(false);
 		}
-	}, [notation, autoClear]);
+	}, [notation, autoClear, diceColor, hasActiveDice]);
 
 	if (!mounted) return null; // render nothing server-side & until mounted
 
@@ -209,19 +257,23 @@ export default function FullscreenDiceLayer() {
 							<button key={p} type="button" onClick={e => {
 								setNotation(p);
 								if (e.shiftKey) roll(p);
-							}} className="px-2 py-1 text-xs rounded bg-stone-200 hover:bg-stone-300 relative group"
-							        title={t('dice.hotkeysHint')}>{p}</button>
+							}} className="px-2 py-1 text-xs rounded bg-stone-200 hover:bg-stone-300 relative group">{p}</button>
 						))}
 					</div>
 					<div className="space-y-1">
 						<div className="text-xs font-medium text-stone-600 flex items-center justify-between">
-							<span>{t('dice.colors.title')}</span></div>
+							<span>{t('dice.colors.title')}</span>
+						</div>
 						<div className="flex flex-wrap gap-2">
 							{colorOptions.map(opt => (
-								<button key={opt.id} type="button" aria-label={t(`dice.colors.${opt.id}`)}
-								        title={t(`dice.colors.${opt.id}`)} onClick={() => setDiceColor(opt.id)}
-								        className={`w-6 h-6 rounded-full border flex items-center justify-center relative transition ring-offset-1 ${diceColor === opt.id ? 'ring-2 ring-stone-600 border-stone-700' : 'border-stone-300 hover:border-stone-500'}`}
-								        style={{background: opt.preview}}>
+								<button
+									key={opt.id}
+									type="button"
+									aria-label={t(`dice.colors.${opt.id}`)}
+									onClick={() => setDiceColor(opt.id)}
+									className={`w-6 h-6 rounded-full border flex items-center justify-center relative transition ring-offset-1 ${diceColor === opt.id ? 'ring-2 ring-stone-600 border-stone-700' : 'border-stone-300 hover:border-stone-500'}`}
+									style={{background: opt.preview}}
+								>
 									{diceColor === opt.id && <span className="w-2 h-2 bg-white rounded-full"/>}
 								</button>
 							))}
@@ -245,18 +297,31 @@ export default function FullscreenDiceLayer() {
 					<div className="flex gap-2">
 						<button disabled={loading || rolling} onClick={() => roll()}
 						        className="flex-1 px-3 py-1 rounded bg-stone-600 text-white text-sm disabled:opacity-50">{rolling ? '...' : t('dice.roll')}</button>
-						<button disabled={loading} onClick={() => {
-							try {
-								boxRef.current?.clear();
-							} catch { /* ignore */
-							}
-							if (clearTimeoutRef.current) {
-								window.clearTimeout(clearTimeoutRef.current);
-								clearTimeoutRef.current = null;
-							}
-							setRolling(false);
-						}}
-						        className="px-3 py-1 rounded bg-stone-200 text-stone-800 text-sm disabled:opacity-50">{t('dice.clear')}</button>
+						<button
+							disabled={loading}
+							onClick={() => {
+								try {
+									boxRef.current?.clear();
+								} catch { /* ignore */
+								}
+								if (clearTimeoutRef.current) {
+									window.clearTimeout(clearTimeoutRef.current);
+									clearTimeoutRef.current = null;
+								}
+								setRolling(false);
+								setHasActiveDice(false);
+								// Apply pending color immediately after manual clear if user changed it while dice were active
+								if (lastAppliedColorRef.current !== diceColor) {
+									const canvas = document.querySelector(`#${containerId} canvas`) as HTMLCanvasElement | null;
+									if (canvas) {
+										const opt = colorOptions.find(o => o.id === diceColor);
+										canvas.style.filter = opt ? opt.filter : 'none';
+										lastAppliedColorRef.current = diceColor;
+									}
+								}
+							}}
+							className="px-3 py-1 rounded bg-stone-200 text-stone-800 text-sm disabled:opacity-50"
+						>{t('dice.clear')}</button>
 					</div>
 					{loading && <div className="text-xs text-stone-500">{t('dice.initializing')}</div>}
 					{error && <div className="text-xs text-red-600 break-all">{error}</div>}

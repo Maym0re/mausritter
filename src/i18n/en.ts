@@ -183,6 +183,8 @@ export const en = {
   'dice.roll': 'Roll',
   'dice.clear': 'Clear',
   'dice.initializing': 'Initializing...',
+  'dice.hotkeysHint': 'Shift+Click to roll instantly',
+  'dice.colorPending': 'New color will apply on next roll (after clear)',
   // Home
   'home.loading': 'Loading...',
   'home.myCampaigns': 'My Campaigns',
