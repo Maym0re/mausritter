@@ -71,7 +71,7 @@ export async function POST(
         include: { user: { select: { id: true, name: true, email: true } }, entries: true }
       });
       if (rolls.length) {
-        const data = rolls.slice(0, 100).map((r: any, idx: number) => {
+        const data = rolls.slice(0, 100).map((r, idx: number) => {
           const t = String(r.type || '').slice(0, 16) || (r.sides ? `d${r.sides}` : 'd?');
           let sides: number | null = null;
           if (typeof r.sides === 'number') sides = r.sides;
