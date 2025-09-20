@@ -253,7 +253,7 @@ export default function DemoCampaignPage() {
 			/>
 			<FullscreenDiceLayer onLoggedAction={(log)=>{
 				if (log && typeof log === 'object') {
-					const anyLog = log as any;
+					const anyLog = log as DemoDiceLogEntry;
 					if (Array.isArray(anyLog.entries)) {
 						setDemoLogs(prev => [anyLog as DemoDiceLogEntry, ...prev].slice(0,100));
 					}
