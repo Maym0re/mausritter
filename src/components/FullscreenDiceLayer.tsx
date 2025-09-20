@@ -4,6 +4,36 @@ import type DiceBox from '@3d-dice/dice-box';
 import { t } from '@/i18n';
 import { useSession } from 'next-auth/react';
 
+// Helpers outside component to avoid changing references each render
+interface NormalizedDie { type: string; value: number; sides?: number }
+const isDieArray = (v: unknown): v is { value: number; type?: string; dieType?: string; sides?: number }[] => Array.isArray(v);
+const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
+const extractArray = (arr: { value: number; type?: string; dieType?: string; sides?: number }[]): NormalizedDie[] => arr
+  .filter(d => typeof d?.value === 'number')
+  .map(d => ({ type: d.type || d.dieType || (d.sides ? `d${d.sides}` : 'd?'), value: d.value, sides: d.sides }));
+const normalizeResult = (raw: unknown): { dice: NormalizedDie[]; total: number; error?: string } => {
+  if (isDieArray(raw)) {
+    const dice = extractArray(raw);
+    const total = dice.reduce((s,d)=>s+d.value,0);
+    return { dice, total };
+  }
+  if (isRecord(raw)) {
+    let dice: NormalizedDie[] = [];
+    if (isDieArray((raw as Record<string, unknown>).rolls)) {
+      dice = extractArray((raw as Record<string, unknown>).rolls as { value: number; type?: string; dieType?: string; sides?: number }[]);
+    } else if (isDieArray((raw as Record<string, unknown>).results)) {
+      dice = extractArray((raw as Record<string, unknown>).results as { value: number; type?: string; dieType?: string; sides?: number }[]);
+    }
+    const total = typeof (raw as Record<string, unknown>).total === 'number'
+      ? (raw as Record<string, unknown>).total as number
+      : dice.reduce((s,d)=>s+d.value,0);
+    let error: string | undefined;
+    const maybeError = (raw as Record<string, unknown>).error;
+    if (typeof maybeError === 'string') error = maybeError;
+    return { dice, total, error };
+  }
+  return { dice: [], total: 0 };
+};
 
 const ASSET_PATH = '/dice-assets/';
 
@@ -17,7 +47,7 @@ const colorOptions: { id: string; filter: string; preview: string }[] = [
 	{id: 'crimson', filter: 'hue-rotate(235deg) saturate(2)', preview: '#dc2626'},
 ];
 
-export default function FullscreenDiceLayer({campaignId, onLogged}: {campaignId?: string; onLogged?: (log: any)=>void}) {
+export default function FullscreenDiceLayer({campaignId, onLoggedAction}: {campaignId?: string; onLoggedAction?: (log: unknown)=>void}) {
 	const containerId = 'dice-fullscreen-layer';
 	const boxRef = useRef<DiceBox | null>(null);
 	const [notation, setNotation] = useState('2d6');
@@ -184,11 +214,6 @@ export default function FullscreenDiceLayer({campaignId, onLogged}: {campaignId?
 		};
 	}, [mounted, prefsLoaded]);
 
-	// Re-apply color when changed
-	useEffect(() => {
-		if (!mounted) return;
-	}, [diceColor]);
-
 	const { data: session } = useSession();
 
 	const roll = useCallback(async (n?: string) => {
@@ -226,23 +251,9 @@ export default function FullscreenDiceLayer({campaignId, onLogged}: {campaignId?
 		setRolling(true);
 		setError(null);
 		try {
-			const raw: any = await boxRef.current.roll(expr);
-			console.log('[DiceDebug] raw result', raw);
-			// Универсальное извлечение массива результатов
-			let diceArray: any[] = [];
-			if (Array.isArray(raw)) {
-				diceArray = raw; // новая версия возвращает просто массив
-			} else if (raw && Array.isArray(raw.rolls)) {
-				diceArray = raw.rolls;
-			}
-			// Фильтрация валидных
-			const filtered = diceArray.filter(d => d && typeof d.value === 'number');
-			// Вычисление total: если есть raw.total и это число, иначе суммируем
-			const safeTotal = (raw && typeof raw.total === 'number' && !Number.isNaN(raw.total))
-				? raw.total
-				: filtered.reduce((s, d) => s + (typeof d.value === 'number' ? d.value : 0), 0);
-			// Проверка ошибки (в старой структуре)
-			if (raw && !Array.isArray(raw) && raw.error) setError(raw.error);
+			const raw = await boxRef.current.roll(expr);
+			const normalized = normalizeResult(raw);
+			if (normalized.error) setError(normalized.error);
 			setHasActiveDice(true);
 			if (autoClear) {
 				if (clearTimeoutRef.current) window.clearTimeout(clearTimeoutRef.current);
@@ -251,33 +262,23 @@ export default function FullscreenDiceLayer({campaignId, onLogged}: {campaignId?
 					setHasActiveDice(false);
 				}, 8000);
 			}
-			// Формирование нормализованных rolls для API
-			const normalizedRolls = filtered.map(r => ({
-				type: r.type || r.dieType || (r.sides ? `d${r.sides}` : 'd?'),
-				value: r.value
-			}));
-			if (!raw?.error && campaignId && session?.user?.id) {
+			if (!normalized.error && campaignId && session?.user?.id) {
 				try {
-					const payload = { notation: expr, total: safeTotal, rolls: normalizedRolls };
-					console.log('[DiceDebug] sending payload', payload);
+					const payload = { notation: expr, total: normalized.total, rolls: normalized.dice.map(d => ({ type: d.type, value: d.value, sides: d.sides })) };
 					const resp = await fetch(`/api/campaigns/${campaignId}/dice-rolls`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
 					if (resp.ok) {
 						const created = await resp.json();
-						onLogged?.(created);
+						onLoggedAction?.(created);
 						window.dispatchEvent(new CustomEvent('diceRollLogged', { detail: created }));
-					} else if (process.env.NODE_ENV !== 'production') {
-						console.warn('[DiceDebug] log save failed status', resp.status);
 					}
-				} catch (e) {
-					if (process.env.NODE_ENV !== 'production') console.warn('[DiceDebug] log save error', e);
-				}
+				} catch { /* ignore network/log errors */ }
 			}
 		} catch (e: unknown) {
 			setError(e instanceof Error ? e.message : String(e));
 		} finally {
 			setRolling(false);
 		}
-	}, [notation, autoClear, diceColor, hasActiveDice, campaignId, session?.user?.id]);
+	}, [notation, autoClear, diceColor, hasActiveDice, campaignId, session?.user?.id, onLoggedAction]);
 
 	if (!mounted) return null; // render nothing server-side & until mounted
 
