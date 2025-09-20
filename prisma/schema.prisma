@@ -71,6 +71,8 @@ model User {
   characters     Character[]
   playerIn       CampaignPlayer[]
 
+  diceRollLogs   DiceRollLog[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -101,6 +103,8 @@ model Campaign {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   todaysEvent String?
+
+  diceRolls DiceRollLog[]
 }
 
 model CampaignPlayer {
@@ -397,4 +401,32 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model DiceRollLog {
+  id         String   @id @default(cuid())
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notation   String
+  total      Int
+  createdAt  DateTime @default(now())
+  entries    DiceRollEntry[]
+
+  @@index([campaignId, createdAt])
+  @@index([userId, createdAt])
+}
+
+model DiceRollEntry {
+  id        String       @id @default(cuid())
+  logId     String
+  log       DiceRollLog  @relation(fields: [logId], references: [id], onDelete: Cascade)
+  order     Int
+  type      String
+  value     Int
+  sides     Int?
+  createdAt DateTime     @default(now())
+
+  @@index([logId])
 }

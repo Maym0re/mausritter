@@ -167,6 +167,7 @@ export const en = {
   'menu.finishAdd': 'Finish Add',
   'menu.pickPlace': 'Pick a place on the map…',
   'menu.inProgress': 'In development',
+  'menu.log': 'Log',
   // Dice
   'dice.toggle.open': 'Dice ▼',
   'dice.toggle.closed': 'Dice ▲',
@@ -186,6 +187,15 @@ export const en = {
   'dice.initializing': 'Initializing...',
   'dice.hotkeysHint': 'Shift+Click to roll instantly',
   'dice.colorPending': 'New color will apply on next roll (after clear)',
+  // Dice Log
+  'dice.log.title': 'Dice Log',
+  'dice.log.empty': 'No rolls yet.',
+  'dice.log.player': 'Player',
+  'dice.log.notation': 'Notation',
+  'dice.log.total': 'Total',
+  'dice.log.time': 'Time',
+  'dice.log.close': 'Close',
+  'dice.log.loadError': 'Failed to load log',
   // Home
   'home.loading': 'Loading...',
   'home.myCampaigns': 'My Campaigns',
