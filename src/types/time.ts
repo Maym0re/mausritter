@@ -184,3 +184,5 @@ export const ENCOUNTER_FREQUENCIES: Record<string, EncounterCheck> = {
 		frequency: 2
 	}
 }
+
+export type TimeIncrementUnit = 'rounds' | 'turns' | 'watches';

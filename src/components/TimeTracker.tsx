@@ -8,16 +8,22 @@ import {
 	performRest,
 	applyRestResults
 } from '@/lib/timeUtils';
-import { GameTime, GameTimeCore, RestType, WeatherEntryLight } from "@/types/time";
+import {
+  GameTimeCore,
+  RestType,
+  WeatherEntryLight,
+  SeasonName,
+  TimeIncrementUnit
+} from "@/types/time";
 import { FullCharacter } from "@/types/character";
 import { t } from '@/i18n';
 
 interface TimeTrackerProps {
 	characters?: FullCharacter[];
 	onCharacterUpdate?: (characterId: string, character: FullCharacter) => void;
-	onTimeUpdate?: (newTime: GameTimeCore, season: string, weather?: WeatherEntryLight | null, event?: string | null) => void;
-	initialTime?: GameTime | null;
-	initialSeason?: string;
+	onTimeUpdate?: (newTime: GameTimeCore, season: SeasonName, weather?: WeatherEntryLight | null, event?: string | null) => void;
+	initialTime?: GameTimeCore | null;
+	initialSeason?: SeasonName;
 	initialWeather?: WeatherEntryLight | null;
 	initialEvent?: string | null;
 }
@@ -63,7 +69,7 @@ export function TimeTracker({
 		}
 	}, [currentTime.days, timeManager, currentWeather]);
 
-	const addTime = (type: 'rounds' | 'turns' | 'watches', amount: number) => {
+	const addTime = (type: TimeIncrementUnit, amount: number) => {
 		switch (type) {
 			case 'rounds':
 				timeManager.addRounds(amount);
