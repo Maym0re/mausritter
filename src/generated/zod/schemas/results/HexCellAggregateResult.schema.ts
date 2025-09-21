@@ -1,0 +1,65 @@
+import { z } from 'zod';
+export const HexCellAggregateResultSchema = z.object({  _count: z.object({
+    id: z.number(),
+    hexMapId: z.number(),
+    hexMap: z.number(),
+    q: z.number(),
+    r: z.number(),
+    s: z.number(),
+    hexTypeId: z.number(),
+    hexType: z.number(),
+    landmarkId: z.number(),
+    landmark: z.number(),
+    landmarkDetailId: z.number(),
+    landmarkDetail: z.number(),
+    settlementId: z.number(),
+    settlement: z.number(),
+    isRevealed: z.number(),
+    notes: z.number(),
+    customName: z.number(),
+    masterNotes: z.number(),
+    createdAt: z.number(),
+    updatedAt: z.number()
+  }).optional(),
+  _sum: z.object({
+    q: z.number().nullable(),
+    r: z.number().nullable(),
+    s: z.number().nullable()
+  }).nullable().optional(),
+  _avg: z.object({
+    q: z.number().nullable(),
+    r: z.number().nullable(),
+    s: z.number().nullable()
+  }).nullable().optional(),
+  _min: z.object({
+    id: z.string().nullable(),
+    hexMapId: z.string().nullable(),
+    q: z.number().int().nullable(),
+    r: z.number().int().nullable(),
+    s: z.number().int().nullable(),
+    hexTypeId: z.string().nullable(),
+    landmarkId: z.string().nullable(),
+    landmarkDetailId: z.string().nullable(),
+    settlementId: z.string().nullable(),
+    notes: z.string().nullable(),
+    customName: z.string().nullable(),
+    masterNotes: z.string().nullable(),
+    createdAt: z.date().nullable(),
+    updatedAt: z.date().nullable()
+  }).nullable().optional(),
+  _max: z.object({
+    id: z.string().nullable(),
+    hexMapId: z.string().nullable(),
+    q: z.number().int().nullable(),
+    r: z.number().int().nullable(),
+    s: z.number().int().nullable(),
+    hexTypeId: z.string().nullable(),
+    landmarkId: z.string().nullable(),
+    landmarkDetailId: z.string().nullable(),
+    settlementId: z.string().nullable(),
+    notes: z.string().nullable(),
+    customName: z.string().nullable(),
+    masterNotes: z.string().nullable(),
+    createdAt: z.date().nullable(),
+    updatedAt: z.date().nullable()
+  }).nullable().optional()});

@@ -11,7 +11,8 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@3d-dice/dice-box": "^1.0.0",
@@ -48,8 +49,10 @@
     "eslint-config-next": "15.4.1",
     "postcss": "^8",
     "prisma": "^6.13.0",
+    "prisma-zod-generator": "^1.21.2",
     "tailwindcss": "^4",
     "tsx": "^4.7.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "zod": "^4.1.11"
   }
 }
