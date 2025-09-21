@@ -51,13 +51,6 @@ export async function POST(
         }
       })
     } catch (prismaError) {
-      // Unique constraint violation handling
-      if (prismaError.code === 'P2002') {
-        return NextResponse.json(
-          { error: "Already participating in this campaign" },
-          { status: 400 }
-        )
-      }
       throw prismaError
     }
 

@@ -4,11 +4,14 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 // PUT /api/maps/images/:id  body: { x?, y?, width?, height? }
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
+export async function PUT(
+	req: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    const { id } = context.params;
+    const { id } = await params;
     const body = await req.json().catch(() => ({}));
     const { x, y, width, height } = body || {};
 
@@ -39,11 +42,14 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
 }
 
 // DELETE /api/maps/images/:id
-export async function DELETE(_req: NextRequest, context: { params: { id: string } }) {
+export async function DELETE(
+	_req: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    const { id } = context.params;
+    const { id } = await params;
     const existing = await prisma.mapImage.findUnique({
       where: { id },
       include: { hexMap: { include: { campaign: true } } }

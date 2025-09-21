@@ -114,6 +114,19 @@ export interface FullCharacter {
   updatedAt: Date;
 }
 
+export interface FullCampaign {
+  id: string;
+  name: string;
+  description?: string | null;
+  gm?: { id: string; name?: string | null; email?: string | null } | null;
+  players?: { user: { id: string; name?: string | null; email?: string | null } }[];
+  characters?: { id: string; name: string; isActive: boolean }[];
+  _count?: { players: number; characters: number };
+  season?: string | null;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 // Constants
 export const BACKGROUND_TABLE: BackgroundInitial[] = [
 	{hp: 1, pips: 1, name: "Test subject", itemA: "Spell: Magic missile", itemB: "Lead coat (Heavy armour)"},

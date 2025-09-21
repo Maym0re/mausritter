@@ -102,7 +102,7 @@ export function CharacterManagerWindow({ campaignId, currentUserId, onClose }: C
                   <span className="font-medium text-sm">{ch.name}</span>
                   <span className="text-xs text-stone-500">Lvl {ch.level}</span>
                   <span className="text-xs text-stone-500">{ch.hp}/{ch.maxHp} HP</span>
-                  <span className="text-xs text-stone-500">{ch.player?.name || ch.player?.email}</span>
+                  <span className="text-xs text-stone-500">{ch.player?.name}</span>
                 </div>
                 {isExpanded && <button disabled={saving[ch.id]} onClick={() => saveCharacter(ch.id)} className="text-xs bg-purple-600 text-white px-2 py-1 rounded hover:bg-purple-700 disabled:bg-stone-400">{saving[ch.id] ? '...' : t('characters.save')}</button>}
               </div>

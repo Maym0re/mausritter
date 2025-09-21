@@ -4,11 +4,14 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 // PUT /api/maps/markers/[id]  { x?, y?, z? }
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+	req: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    const id = params.id;
+    const { id } = await params;
     const body = await req.json();
     const { x, y, z } = body || {};
 
@@ -29,11 +32,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // DELETE /api/maps/markers/[id]
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+	_req: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    const id = params.id;
+    const { id } = await params;
     const marker = await prisma.mapMarker.findUnique({ include: { hexMap: { include: { campaign: true } } }, where: { id } });
     if (!marker) return NextResponse.json({ error: 'Not found' }, { status: 404 });
     if (marker.hexMap.campaign.gmId !== session.user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
