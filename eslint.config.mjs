@@ -11,6 +11,8 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  // Ignore generated Zod schemas
+  { ignores: ["src/generated/zod/**/*"] },
 ];
 
 export default eslintConfig;
