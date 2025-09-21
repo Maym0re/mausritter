@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import { HexGridCanvas } from '@/app/(pages)/campaign/components/HexGridCanvas';
+import NextDynamic from 'next/dynamic';
+const HexGridCanvas = NextDynamic(() => import('@/app/(pages)/campaign/components/HexGridCanvas').then(m => m.HexGridCanvas), { ssr: false });
 import { CharacterManagerWindow } from '@/app/(pages)/campaign/components/CharacterManagerWindow';
 import { DraggableResizableWindow } from '@/components/ui/DraggableResizableWindow';
 import { TimeTracker } from '@/components/TimeTracker';

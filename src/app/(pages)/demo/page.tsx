@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import { HexGridCanvas } from '@/app/(pages)/campaign/components/HexGridCanvas';
+import NextDynamic from 'next/dynamic';
+const HexGridCanvas = NextDynamic(() => import('@/app/(pages)/campaign/components/HexGridCanvas').then(m => m.HexGridCanvas), { ssr: false });
 import { HEX_TYPES } from '@/types/map';
 import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
 import { DemoDiceLogWindow, DemoDiceLogEntry } from '@/components/DemoDiceLogWindow';
