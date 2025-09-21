@@ -8,7 +8,6 @@ import {
 	WEAPONS,
 	FullCharacter, BackgroundInitial, InventoryItemLite
 } from '@/types/character';
-import { InventoryItem } from "@prisma/client";
 
 // Roll 3d6 and keep the best 2
 export function roll3d6KeepBest2(): number {
@@ -120,8 +119,8 @@ export function generateRandomCharacter(): FullCharacter {
 }
 
 // Create starting inventory
-function createStartingInventory(backgroundEntry: BackgroundInitial, bonusItems: string[]): InventoryItem[] {
-  const items: InventoryItem[] = [];
+function createStartingInventory(backgroundEntry: BackgroundInitial, bonusItems: string[]): InventoryItemLite[] {
+  const items: InventoryItemLite[] = [];
 
   // Basic equipment
   items.push(...BASIC_EQUIPMENT.map(item => ({
@@ -160,8 +159,8 @@ function createStartingInventory(backgroundEntry: BackgroundInitial, bonusItems:
 }
 
 // Create item from description
-function createItemFromDescription(description: string): InventoryItem {
-  const item: InventoryItem = {
+function createItemFromDescription(description: string): InventoryItemLite {
+  const item: InventoryItemLite = {
     id: generateId(),
     name: description,
     type: 'equipment',
@@ -215,13 +214,13 @@ function generateMouseName(): string {
 }
 
 // Get item from inventory by id
-export function getItemFromInventory(character: FullCharacter, itemId: string): InventoryItem | null {
+export function getItemFromInventory(character: FullCharacter, itemId: string): InventoryItemLite | null {
   return character.inventory.find(item => item?.id === itemId) || null;
 }
 
 // Assign items to slots
-function assignItemsToSlots(items: InventoryItem[]): InventoryItem[] {
-  const result: InventoryItem[] = [];
+function assignItemsToSlots(items: InventoryItemLite[]): InventoryItemLite[] {
+  const result: InventoryItemLite[] = [];
 
   // Slot capacities
   const slotCapacity = {
@@ -324,7 +323,7 @@ export function addItemToInventory(inventory: InventoryItemLite[], item: Invento
 }
 
 // Remove item from inventory
-export function removeItemFromInventory(inventory: InventoryItem[], itemName: string): { success: boolean; inventory: InventoryItem[] } {
+export function removeItemFromInventory(inventory: InventoryItemLite[], itemName: string): { success: boolean; inventory: InventoryItemLite[] } {
   const itemIndex = inventory.findIndex(item => item.name === itemName);
 
   if (itemIndex === -1) {
@@ -336,12 +335,12 @@ export function removeItemFromInventory(inventory: InventoryItem[], itemName: st
 }
 
 // Get items by slot type
-export function getItemsBySlotType(inventory: InventoryItem[], slotType: 'PAWS' | 'BODY' | 'PACK'): InventoryItem[] {
+export function getItemsBySlotType(inventory: InventoryItemLite[], slotType: 'PAWS' | 'BODY' | 'PACK'): InventoryItemLite[] {
   return inventory.filter(item => item.slotType === slotType).sort((a, b) => a.slotIndex - b.slotIndex);
 }
 
 // Structured inventory representation (for UI)
-export function getInventorySlots(inventory: InventoryItem[]) {
+export function getInventorySlots(inventory: InventoryItemLite[]) {
   return {
     paws: getItemsBySlotType(inventory, 'PAWS'),
     body: getItemsBySlotType(inventory, 'BODY'),
@@ -351,11 +350,11 @@ export function getInventorySlots(inventory: InventoryItem[]) {
 
 // Move item to another slot
 export function moveItemToSlot(
-  inventory: InventoryItem[],
+  inventory: InventoryItemLite[],
   itemName: string,
   newSlotType: 'PAWS' | 'BODY' | 'PACK',
   newSlotIndex: number
-): { success: boolean; inventory: InventoryItem[]; error?: string } {
+): { success: boolean; inventory: InventoryItemLite[]; error?: string } {
   const itemIndex = inventory.findIndex(item => item.name === itemName);
 
   if (itemIndex === -1) {
