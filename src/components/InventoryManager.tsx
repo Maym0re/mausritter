@@ -10,8 +10,7 @@ import {
   isEncumbered
 } from '@/lib/characterUtils';
 import { createItemCopy, ITEM_CATALOG } from '@/lib/itemCatalog';
-import { Condition, InventoryItem } from "@prisma/client";
-import { FullCharacter, InventoryItemLite } from "@/types/character";
+import { FullCharacter, InventoryItemLite, ConditionLite } from "@/types/character";
 
 interface InventoryManagerProps {
   characters: FullCharacter[];
@@ -142,7 +141,7 @@ export function InventoryManager({ characters, onCharacterUpdate }: InventoryMan
     }
   }, [characters, onCharacterUpdate]);
 
-  const addCondition = useCallback((characterId: string, condition: Condition) => {
+  const addCondition = useCallback((characterId: string, condition: ConditionLite) => {
     const character = characters.find(c => c.id === characterId);
     if (!character) return;
 
@@ -273,7 +272,7 @@ function CharacterInfo({
   onRemoveCondition
 }: {
   character: FullCharacter;
-  onAddCondition?: (condition: Condition) => void;
+  onAddCondition?: (condition: ConditionLite) => void;
   onRemoveCondition: (conditionId: string) => void;
 }) {
   const usedSlots = getTotalUsedSlots(character);
@@ -449,20 +448,20 @@ function InventorySection({
   onEditItem
 }: {
   title: string;
-  items: InventoryItem[];
+  items: InventoryItemLite[];
   slotType: 'PAWS' | 'BODY' | 'PACK';
   characterId: string;
   backgroundColor: string;
   maxSlots: number;
   gridCols?: string;
-  onDragStart: (item: InventoryItem, characterId: string) => void;
+  onDragStart: (item: InventoryItemLite, characterId: string) => void;
   onDragEnd: () => void;
   onDrop: (characterId: string, slotType: 'PAWS' | 'BODY' | 'PACK', slotIndex: number) => void;
-  onMarkUsage: (characterId: string, item: InventoryItem) => void;
-  onRepairItem: (characterId: string, item: InventoryItem) => void;
-  onEditItem: (item: InventoryItem) => void;
+  onMarkUsage: (characterId: string, item: InventoryItemLite) => void;
+  onRepairItem: (characterId: string, item: InventoryItemLite) => void;
+  onEditItem: (item: InventoryItemLite) => void;
 }) {
-  const slots: (InventoryItem | null)[] = [];
+  const slots: (InventoryItemLite | null)[] = [];
   let currentSlotIndex = 0;
 
   for (const item of items) {
@@ -512,17 +511,17 @@ function InventorySlot({
   onRepairItem,
   onEditItem
 }: {
-  item: InventoryItem | null;
+  item: InventoryItemLite | null;
   slotIndex: number;
   slotType: string;
   characterId: string;
   backgroundColor: string;
-  onDragStart: (item: InventoryItem, characterId: string) => void;
+  onDragStart: (item: InventoryItemLite, characterId: string) => void;
   onDragEnd: () => void;
   onDrop: (characterId: string, slotType: 'PAWS' | 'BODY' | 'PACK', slotIndex: number) => void;
-  onMarkUsage: (characterId: string, item: InventoryItem) => void;
-  onRepairItem: (characterId: string, item: InventoryItem) => void;
-  onEditItem: (item: InventoryItem) => void;
+  onMarkUsage: (characterId: string, item: InventoryItemLite) => void;
+  onRepairItem: (characterId: string, item: InventoryItemLite) => void;
+  onEditItem: (item: InventoryItemLite) => void;
 }) {
   const [showContextMenu, setShowContextMenu] = useState(false);
 
@@ -655,7 +654,7 @@ function ItemEditModal({
             <label className="block text-sm font-medium mb-1">Type</label>
             <select
               value={editedItem.type}
-              onChange={(e) => setEditedItem({ ...editedItem, type: e.target.value as InventoryItem['type'] })}
+              onChange={(e) => setEditedItem({ ...editedItem, type: e.target.value as InventoryItemLite['type'] })}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             >
               <option value="weapon">Weapon</option>
