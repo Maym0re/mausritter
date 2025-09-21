@@ -6,7 +6,13 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
+if (!NEXTAUTH_SECRET) {
+  throw new Error('NEXTAUTH_SECRET not set in environment');
+}
+
 export const authOptions: NextAuthOptions = {
+	secret: NEXTAUTH_SECRET,
 	adapter: PrismaAdapter(prisma),
 	providers: [
 		GithubProvider({
