@@ -1,40 +1,86 @@
-import { Prisma, WeatherEntry } from "@prisma/client";
-import type { Character as PrismaCharacter, GameTime as PrismaGameTime } from "@prisma/client";
+import { z } from 'zod';
 
-export const gameTimeLight = Prisma.validator<Prisma.GameTimeInclude>()({
-  campaign: true,
-});
+// Enums
+export const SeasonNameSchema = z.enum(['spring', 'summer', 'autumn', 'winter']);
+export type SeasonName = z.infer<typeof SeasonNameSchema>;
 
-export type GameTime = Prisma.GameTimeGetPayload<{ include: typeof gameTimeLight }>;
+export const TimeScaleSchema = z.enum(['round', 'turn', 'watch']);
+export type TimeScale = z.infer<typeof TimeScaleSchema>;
 
-export type GameTimeCore = Pick<PrismaGameTime, 'rounds' | 'turns' | 'watches' | 'days'>;
+export const RestTypeSchema = z.enum(['short', 'long', 'full']);
+export type RestType = z.infer<typeof RestTypeSchema>;
 
-export type WeatherEntryLight = Pick<WeatherEntry, 'roll' | 'weather' | 'isPoorCondition'>;
+// Core schemas
+export const GameTimeCoreSchema = z.object({
+  rounds: z.number().int().min(0),
+  turns: z.number().int().min(0),
+  watches: z.number().int().min(0),
+  days: z.number().int().min(0)
+}).strict();
+export type GameTimeCore = z.infer<typeof GameTimeCoreSchema>;
 
-export type TimeScale = 'round' | 'turn' | 'watch';
+export const WeatherEntryLightSchema = z.object({
+  roll: z.number().int().min(2).max(12),
+  weather: z.string(),
+  isPoorCondition: z.boolean()
+}).strict();
+export type WeatherEntryLight = z.infer<typeof WeatherEntryLightSchema>;
 
+export const SeasonalEventSchema = z.object({
+  description: z.string(),
+  effect: z.string().optional()
+}).strict();
+export type SeasonalEvent = z.infer<typeof SeasonalEventSchema>;
 
-export interface Season {
-  name: 'spring' | 'summer' | 'autumn' | 'winter';
-  weatherTable: WeatherEntry[];
-  events: SeasonalEvent[];
-}
+export const SeasonSchema = z.object({
+  name: SeasonNameSchema,
+  weatherTable: z.array(WeatherEntryLightSchema),
+  events: z.array(SeasonalEventSchema)
+}).strict();
+export type Season = z.infer<typeof SeasonSchema>;
 
-export interface SeasonalEvent {
-  description: string;
-  effect?: string;
-}
+export const TravelStateSchema = z.object({
+  currentHex: z.string(),
+  destination: z.string().optional(),
+  watchesInCurrentHex: z.number().int().min(0),
+  hasRested: z.boolean(),
+  weatherToday: z.string(),
+  isPoorWeather: z.boolean()
+}).strict();
+export type TravelState = z.infer<typeof TravelStateSchema>;
 
-export interface TravelState {
-  currentHex: string;
-  destination?: string;
-  watchesInCurrentHex: number;
-  hasRested: boolean;
-  weatherToday: string;
-  isPoorWeather: boolean;
-}
+export const RestResultSchema = z.object({
+  type: RestTypeSchema,
+  hpHealed: z.number().int().min(0),
+  attributeHealed: z.object({
+    attribute: z.enum(['str', 'dex', 'wil']),
+    amount: z.number().int().min(0)
+  }).optional(),
+  conditionsCleared: z.array(z.string()),
+  timeTaken: z.string()
+}).strict();
+export type RestResult = z.infer<typeof RestResultSchema>;
 
-export const WEATHER_TABLES: Record<Season['name'], WeatherEntryLight[]> = {
+export const EncounterCheckSchema = z.object({
+  timeScale: TimeScaleSchema,
+  location: z.enum(['dungeon', 'wilderness']),
+  shouldRoll: z.boolean(),
+  frequency: z.number().int().min(1)
+}).strict();
+export type EncounterCheck = z.infer<typeof EncounterCheckSchema>;
+
+export const TravelHazardSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  saveType: z.enum(['str', 'dex', 'wil']),
+  difficulty: z.number().int().min(1),
+  consequence: z.string(),
+  isDifficultTerrain: z.boolean().optional()
+}).strict();
+export type TravelHazard = z.infer<typeof TravelHazardSchema>;
+
+// Data tables (constants remain plain JS, inferred via satisfies for type safety)
+export const WEATHER_TABLES: Record<SeasonName, WeatherEntryLight[]> = {
   spring: [
     { roll: 2, weather: 'Rain storm', isPoorCondition: true },
     { roll: 3, weather: 'Drizzle', isPoorCondition: false },
@@ -87,13 +133,13 @@ export const WEATHER_TABLES: Record<Season['name'], WeatherEntryLight[]> = {
     { roll: 11, weather: 'Overcast', isPoorCondition: false },
     { roll: 12, weather: 'Clear and crisp', isPoorCondition: false }
   ]
-};
+} as const;
 
-export const SEASONAL_EVENTS: Record<Season['name'], SeasonalEvent[]> = {
+export const SEASONAL_EVENTS: Record<SeasonName, SeasonalEvent[]> = {
   spring: [
     { description: 'Flooding washes away an important landmark' },
     { description: 'Mother bird, very protective of her eggs' },
-    { description: 'Merchant\'s cart sunken in a pool of mud' },
+    { description: "Merchant's cart sunken in a pool of mud" },
     { description: 'Migrating butterflies, hungry for nectar' },
     { description: 'Mice weaving wreathes of flowers to prepare for...' },
     { description: 'Wedding festival, a joyous procession' }
@@ -102,7 +148,7 @@ export const SEASONAL_EVENTS: Record<Season['name'], SeasonalEvent[]> = {
     { description: 'Heat wave makes travel exhausting for next week', effect: 'All travel requires STR save for a week' },
     { description: 'Baby bird, fallen from nest' },
     { description: 'Pleasant and refreshing sun shower' },
-    { description: 'Swarm of locusts destroy a settlement\'s crops' },
+    { description: "Swarm of locusts destroy a settlement's crops" },
     { description: 'Mice building elaborate costumes to prepare for...' },
     { description: 'Midsummer festival, a wild dance' }
   ],
@@ -122,51 +168,19 @@ export const SEASONAL_EVENTS: Record<Season['name'], SeasonalEvent[]> = {
     { description: 'Mice building an effigy of old Winter to prepare for...' },
     { description: 'Midwinter festival, a magnificent bonfire' }
   ]
-};
-
-export type RestType = 'short' | 'long' | 'full';
-
-export interface RestResult {
-  type: RestType;
-  hpHealed: number;
-  attributeHealed?: { attribute: 'str' | 'dex' | 'wil'; amount: number };
-  conditionsCleared: string[];
-  timeTaken: string;
-}
-
-export interface EncounterCheck {
-  timeScale: TimeScale;
-  location: 'dungeon' | 'wilderness';
-  shouldRoll: boolean;
-  frequency: number; //Every N turns
-}
+} as const;
 
 export const ENCOUNTER_FREQUENCIES: Record<string, EncounterCheck> = {
-  dungeonExploration: {
-    timeScale: 'turn',
-    location: 'dungeon',
-    shouldRoll: true,
-    frequency: 3 // every 3 turns
-  },
-  wildernessTravel: {
-    timeScale: 'watch',
-    location: 'wilderness',
-    shouldRoll: true,
-    frequency: 2 // Morning and evening
-  }
-};
-
-export interface FatigueState {
-  hasRestedToday: boolean;
-  consecutiveDaysWithoutRest: number;
-  isExhausted: boolean;
-}
-
-export interface TravelHazard {
-  name: string;
-  description: string;
-  saveType: 'str' | 'dex' | 'wil';
-  difficulty: number;
-  consequence: string;
-  isDifficultTerrain?: boolean;
+	dungeonExploration: {
+		timeScale: 'turn',
+		location: 'dungeon',
+		shouldRoll: true,
+		frequency: 3
+	},
+	wildernessTravel: {
+		timeScale: 'watch',
+		location: 'wilderness',
+		shouldRoll: true,
+		frequency: 2
+	}
 }

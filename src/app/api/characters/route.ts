@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { InventoryItem } from "@prisma/client";
+import { InventoryItemLite } from "@/types/character";
 
 // Get characters of a campaign
 export async function GET(request: NextRequest) {
@@ -189,7 +189,7 @@ export async function POST(request: NextRequest) {
     // Bulk create inventory items
     if (inventory && inventory.length > 0) {
       await prisma.inventoryItem.createMany({
-        data: inventory.map((item: InventoryItem) => ({
+        data: inventory.map((item: InventoryItemLite) => ({
           characterId: character.id,
           name: item.name,
           type: item.type,

@@ -58,7 +58,7 @@ export function CharacterEditor({ character, onSave, onCancel, isMaster = false 
                 {isMaster ? t('character.editor.masterTitle') : t('character.editor.playerTitle')}
               </h2>
               <p className="text-stone-600">
-                {t('character.editor.playerLabel')} {character.player?.name || character.player?.email}
+                {t('character.editor.playerLabel')} {character.player?.name}
               </p>
             </div>
             <button
