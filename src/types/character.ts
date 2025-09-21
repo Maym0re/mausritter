@@ -1,47 +1,120 @@
-import { Background, Birthsign, Condition, InventoryItem, Prisma, WeatherEntry } from '@prisma/client';
+import { z } from 'zod';
+import { CharacterModelSchema } from '@/generated/zod/schemas/variants/pure/Character.pure';
+import { BackgroundModelSchema } from '@/generated/zod/schemas/variants/pure/Background.pure';
+import { BirthsignModelSchema } from '@/generated/zod/schemas/variants/pure/Birthsign.pure';
 
-const campaignInclude = Prisma.validator<Prisma.CampaignInclude>()({
-	players: {include: {user: true}},
-	gameTime: true,
-	weatherEntry: true,
-	gm: true,
-});
+// Base models from Zod (relation placeholders replaced by local interfaces)
+export type CharacterBase = z.infer<typeof CharacterModelSchema>;
+export type BackgroundBase = z.infer<typeof BackgroundModelSchema>;
+export type BirthsignBase = z.infer<typeof BirthsignModelSchema>;
 
-export type FullCampaign =
-	Prisma.CampaignGetPayload<{ include: typeof campaignInclude }>;
-
-const conditionLite = Prisma.validator<Prisma.ConditionSelect>()({
-	id: true,
-	name: true,
-	description: true,
-	clearRequirement: true,
-	effects: true,
-})
-
-const characterInclude = Prisma.validator<Prisma.CharacterInclude>()({
-	player: true,
-	conditions: {select: conditionLite},
-	background: true,
-	birthsign: true,
-	coat: true,
-	inventory: true,
-	campaign: {include: campaignInclude},
-})
-
-export type FullCharacter =
-	Prisma.CharacterGetPayload<{ include: typeof characterInclude }>;
-
-export type BirthsignLite = Pick<Birthsign, 'sign' | 'disposition'>;
-export type BackgroundLite = Pick<Background, 'name' | 'itemA' | 'itemB'>;
-
-export type BackgroundInitial = BackgroundLite & {
-	hp: number;
-	pips: number;
+export interface ConditionLite {
+  id: string;
+  name: string;
+  description: string;
+  clearRequirement: string;
+  effects: string[];
 }
 
-export type InventoryItemLite = Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt' | 'characterId'>;
-export type ConditionLite = Omit<Condition, 'createdAt' | 'updatedAt'>;
+export interface CoatLite {
+  id: string;
+  color: string;
+  pattern: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
+export interface InventoryItemLite {
+  id?: string;
+  name: string;
+  type: 'equipment' | 'weapon' | 'armor' | 'spell' | string;
+  size: number;
+  usage: number;
+  maxUsage: number;
+  description: string;
+  value: number;
+  slotType: 'PAWS' | 'BODY' | 'PACK';
+  slotIndex: number;
+  characterId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface PlayerLite {
+  id: string;
+  userId: string;
+  name?: string | null;
+}
+
+export interface GameTimeLite {
+  rounds: number;
+  turns: number;
+  watches: number;
+  days: number;
+}
+
+export interface WeatherEntryLite {
+  id: string;
+  season: string;
+  roll: number;
+  weather: string;
+  isPoorCondition: boolean;
+}
+
+export interface CampaignLite {
+  id: string;
+  name?: string;
+  players?: PlayerLite[];
+  gameTime?: GameTimeLite | null;
+  weatherEntry?: WeatherEntryLite | null;
+  gmId?: string;
+}
+
+export interface BackgroundLite {
+  name: string;
+  itemA: string;
+  itemB: string;
+}
+
+export interface BirthsignLite {
+  sign: string;
+  disposition: string;
+}
+
+export type BackgroundInitial = BackgroundLite & { hp: number; pips: number };
+
+export interface FullCharacter {
+  id: string;
+  name: string;
+  notes?: string | null;
+  playerId?: string;
+  player?: PlayerLite | null;
+  campaignId?: string;
+  campaign?: CampaignLite | null;
+  str: number;
+  dex: number;
+  wil: number;
+  hp: number;
+  maxHp: number;
+  backgroundId?: string;
+  birthsignId?: string;
+  coatId?: string;
+  background: BackgroundBase | BackgroundLite & { id: string; createdAt: Date; updatedAt: Date };
+  birthsign: BirthsignBase | BirthsignLite & { id: string; createdAt: Date; updatedAt: Date };
+  coat: CoatLite;
+  physicalDetail?: string | null;
+  level: number;
+  xp: number;
+  grit: number;
+  pips: number;
+  inventory: InventoryItemLite[];
+  conditions: ConditionLite[];
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Constants
 export const BACKGROUND_TABLE: BackgroundInitial[] = [
 	{hp: 1, pips: 1, name: "Test subject", itemA: "Spell: Magic missile", itemB: "Lead coat (Heavy armour)"},
 	{hp: 1, pips: 2, name: "Kitchen forager", itemA: "Shield & jerkin (Light armour)", itemB: "Cookpots"},
