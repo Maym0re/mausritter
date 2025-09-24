@@ -13,6 +13,7 @@ import type Konva from "konva";
 export interface CanvasImagesLayerHandle {
 	deleteSelected: () => void;
 	clearSelection: () => void;
+	pasteFromClipboard: (x?: number, y?: number) => Promise<void>;
 }
 
 interface CanvasImagesLayerProps {
@@ -76,8 +77,28 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 					transformerRef.current.getLayer()?.batchDraw();
 				}
 			}
+		},
+		pasteFromClipboard: async (xOverride?: number, yOverride?: number) => {
+			if (!editable) return;
+			try {
+				if (!navigator.clipboard || typeof navigator.clipboard.read !== 'function') return;
+				const items = await navigator.clipboard.read();
+				if (!items.length) return;
+				for (const item of items) {
+					const imageType = item.types.find(t => t.startsWith('image/'));
+					if (!imageType) continue;
+					const blob = await item.getType(imageType);
+					const file = new File([blob], `clipboard.${imageType.split('/')[1] || 'png'}`, { type: imageType });
+					const {x, y} = xOverride !== undefined && yOverride !== undefined ? {x: xOverride, y: yOverride} : getStageCoords();
+					const dataUrl = await compressFile(file);
+					addImage(dataUrl, x, y);
+					break; // insert first image only
+				}
+			} catch (e) {
+				console.error('Clipboard read failed', e);
+			}
 		}
-	}), [selectedId]);
+	}), [selectedId, editable]);
 
 	useEffect(() => {
 		onSelectionChange?.(selectedId);

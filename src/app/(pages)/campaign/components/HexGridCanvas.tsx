@@ -17,6 +17,7 @@ import { CanvasImagesLayer, CanvasImagesLayerHandle } from './CanvasImagesLayer'
 import { useToast } from '@/components/ui/ToastProvider';
 import Konva from 'konva';
 import { t } from '@/i18n';
+import { useContextMenu } from '@/components/ui/ContextMenu';
 
 interface HexGridCanvasProps {
 	mode: 'master' | 'player';
@@ -502,6 +503,8 @@ export function HexGridCanvas({
 		return cleanup;
 	}, [dragPreview, addMarker]);
 
+	const contextMenu = useContextMenu();
+
 	if (loading) {
 		return (
 			<div className="flex items-center justify-center h-full">
@@ -657,7 +660,36 @@ export function HexGridCanvas({
 	};
 
 	return (
-		<div className="flex flex-col h-full" ref={containerRef}>
+		<div className="flex flex-col h-full" ref={containerRef} onContextMenu={(e) => {
+			if (mode !== 'master') return;
+			if (!imagesLayerRef.current) return;
+			// Capture coordinates before synthetic event pooling
+			const clickClientX = e.clientX;
+			const clickClientY = e.clientY;
+			// Determine if clipboard likely has image
+			type ClipboardWithRead = Clipboard & { read?: () => Promise<ClipboardItem[]> };
+			const canRead = typeof navigator !== 'undefined' && !!navigator.clipboard && typeof (navigator.clipboard as ClipboardWithRead).read === 'function';
+			const items: { id: string; label: string; onClick: () => void; disabled?: boolean }[] = [];
+			items.push({
+				id: 'paste-image',
+				label: t('context.pasteImage'),
+				onClick: () => {
+					const stage = stageRef.current;
+					const containerEl = containerRef.current;
+					if (!stage || !containerEl) return;
+					const rect = containerEl.getBoundingClientRect();
+					const scale = stage.scaleX();
+					const x = (clickClientX - rect.left - stage.x()) / scale;
+					const y = (clickClientY - rect.top - stage.y()) / scale;
+					imagesLayerRef.current?.pasteFromClipboard(x, y);
+				},
+				disabled: !canRead
+			});
+			if (items.length) {
+				e.preventDefault();
+				contextMenu.open(clickClientX, clickClientY, items);
+			}
+		}}>
 			<div className="flex flex-1">
 				<div className="flex-1 bg-gray-50">
 					<Stage ref={stageRef} width={canvasSize.width} height={canvasSize.height} draggable scaleX={scale}
@@ -893,7 +925,7 @@ export function HexGridCanvas({
 								<button key={fn}
 								        className={`relative border rounded p-1 hover:border-amber-400 select-none ${isActive ? 'border-emerald-500 bg-stone-700' : 'border-stone-600'}`}
 								        disabled={disabled}
-								        onClick={(e) => {
+								        onClick={() => {
 									        if (disabled || dragPreview) return;
 									        setSelectedPointer(p => p === fn ? null : fn);
 									        markersAddingRef.current = true;
@@ -923,4 +955,3 @@ export function HexGridCanvas({
 		</div>
 	);
 }
-

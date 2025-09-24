@@ -269,4 +269,6 @@ export const en = {
   'campaign.join.joining': 'Joining...',
   'campaign.join.alreadyPlayer': 'You are already a participant of this campaign.',
   'campaign.join.loginRequired': 'Please sign in to join this campaign.',
+  // Context menu
+  'context.pasteImage': 'Paste Image',
 };

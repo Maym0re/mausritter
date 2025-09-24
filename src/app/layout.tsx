@@ -4,6 +4,7 @@ import "./../../styles/globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import { AppHeader } from '@/components/ui/AppHeader';
 import { ToastProvider } from '@/components/ui/ToastProvider';
+import { ContextMenuProvider } from '@/components/ui/ContextMenu';
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -33,12 +34,14 @@ export default function RootLayout({children}: Readonly<{
 		<html lang="en" className="h-full">
 			<body className={`${geistSans.variable} ${geistMono.variable} ${pirataOne.variable} antialiased h-full m-0 p-0 overflow-auto`}>
 			<ToastProvider>
+			<ContextMenuProvider>
 			<AuthProvider>
 				<AppHeader />
 				<div className="pt-14 h-full">
 					{children}
 				</div>
 			</AuthProvider>
+			</ContextMenuProvider>
 			</ToastProvider>
 			</body>
 		</html>
