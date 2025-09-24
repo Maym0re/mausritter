@@ -26,6 +26,7 @@ interface CanvasImagesLayerProps {
 	hexMapId?: string;
 	initialImages?: { id: string; data: string; x: number; y: number; width: number; height: number }[];
 	demo?: boolean;
+	maxDisplaySide?: number;
 }
 
 interface CanvasImage {
@@ -46,7 +47,7 @@ const MAX_IMG_H = 1024;
 const JPEG_QUALITY = 0.85;
 
 export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImagesLayerProps>(function CanvasImagesLayer(
-	{stageRef, containerRef, editable, onSelectionChange, maxTotalMB, onStorageLimit, hexMapId, initialImages, demo = false},
+	{stageRef, containerRef, editable, onSelectionChange, maxTotalMB, onStorageLimit, hexMapId, initialImages, demo = false, maxDisplaySide = 512},
 	ref
 ) {
 	const [images, setImages] = useState<CanvasImage[]>([]);
@@ -147,12 +148,27 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 			const img = new window.Image();
 			img.onload = () => {
 				const ratio = img.width / img.height || 1;
-				setImages(p2 => p2.map(im => im.id === tempId ? {...im, ratio, width: img.width, height: img.height, x: x - img.width/2, y: y - img.height/2 } : im));
+				// Scale down if exceeds max display side while preserving aspect ratio
+				let displayW = img.width;
+				let displayH = img.height;
+				if (displayW > maxDisplaySide || displayH > maxDisplaySide) {
+					const scale = Math.min(maxDisplaySide / displayW, maxDisplaySide / displayH);
+					displayW = Math.max(1, Math.round(displayW * scale));
+					displayH = Math.max(1, Math.round(displayH * scale));
+				}
+				setImages(p2 => p2.map(im => im.id === tempId ? {
+					...im,
+					ratio,
+					width: displayW,
+					height: displayH,
+					x: x - displayW / 2,
+					y: y - displayH / 2
+				} : im));
 				if (hexMapId && editable && !isDemo) {
 					fetch('/api/maps/images', {
 						method: 'POST',
 						headers: {'Content-Type': 'application/json'},
-						body: JSON.stringify({ hexMapId, data: dataUrl, x: x - img.width/2, y: y - img.height/2, width: img.width, height: img.height })
+						body: JSON.stringify({ hexMapId, data: dataUrl, x: x - displayW/2, y: y - displayH/2, width: displayW, height: displayH })
 					}).then(r => r.ok ? r.json(): Promise.reject(r)).then(created => {
 						setImages(p3 => p3.map(im => im.id === tempId ? {...im, id: created.id, _pending: false } : im));
 					}).catch(err => {
@@ -177,7 +193,7 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 				_pending: true
 			}];
 		});
-	}, [getTotalBytes, resolvedMaxBytes, onStorageLimit, hexMapId, editable, isDemo]);
+	}, [getTotalBytes, resolvedMaxBytes, onStorageLimit, hexMapId, editable, isDemo, maxDisplaySide]);
 
 	const fileToDataUrl = (blob: Blob) => new Promise<string>((res) => {
 		const r = new FileReader();
@@ -465,3 +481,4 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 		</Layer>
 	);
 });
+
