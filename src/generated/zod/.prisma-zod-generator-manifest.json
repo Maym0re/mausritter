@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "generatorVersion": "0.1.0",
-  "generatedAt": "2025-09-21T11:05:29.836Z",
+  "generatedAt": "2025-09-24T16:18:37.185Z",
   "outputPath": "/Users/vladislavkazantsev/IdeaProjects/mausritter/src/generated/zod",
   "files": [
     "schemas/enums/TransactionIsolationLevel.schema.ts",
