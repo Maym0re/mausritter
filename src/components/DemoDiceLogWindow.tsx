@@ -42,10 +42,11 @@ export function DemoDiceLogWindow({ logs, onClose, onClear }: Props) {
         {logs.map(log => (
           <div key={log.id} className="border border-stone-200 rounded p-2 bg-white/80 shadow-sm">
             <div className="flex justify-between items-baseline">
-              <span className="font-medium text-stone-700">{log.notation}</span>
+              <span className="font-medium text-stone-700">GM</span>
               <span className="text-[10px] text-stone-400 ml-2">{new Date(log.createdAt).toLocaleTimeString()}</span>
             </div>
             <div className="mt-1 flex flex-wrap gap-2 items-center">
+	            <span className="px-1.5 py-0.5 rounded bg-stone-800 text-white text-[10px]">{log.notation}</span>
               <span className="text-stone-600">= <b>{log.total}</b></span>
               <span className="text-stone-400">[{log.entries.map(e => e.value).join(', ')}]</span>
             </div>
