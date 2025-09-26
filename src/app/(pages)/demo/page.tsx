@@ -7,6 +7,7 @@ import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
 import { DemoDiceLogWindow, DemoDiceLogEntry } from '@/components/DemoDiceLogWindow';
 import { Tooltip } from "@/components/ui/Tooltip";
 import { t } from "@/i18n";
+import { createPortal } from 'react-dom';
 
 // Helper to fetch hex type object
 function hx(id: string) {
@@ -219,6 +220,10 @@ export default function DemoCampaignPage() {
 
 	return (
 		<div className="h-full w-screen overflow-hidden relative">
+			{typeof document !== 'undefined' && document.getElementById('app-header-portal') && createPortal(
+				<h2 className="text-stone-800 text-2xl">&nbsp;—&nbsp;{t('campaign.demoTitle')}</h2>,
+				document.getElementById('app-header-portal') as HTMLElement
+			)}
 			<HexGridCanvas
 				mode="master"
 				campaignId="demo"
@@ -230,7 +235,7 @@ export default function DemoCampaignPage() {
 				initialDemoMap={{
 					id: 'demo', cells: initialCells, size: 7, centerX: 0, centerY: 0, images: [
 						{id: 'image', data: '/images/demo/image.png', x: -737, y: -283, width: 305, height: 510},
-						{id: 'world', data: '/images/demo/world.png', x: -368, y: -380, width: 737, height: 177},
+						{id: 'world', data: '/images/demo/world.png', x: -368, y: -400, width: 737, height: 177},
 						{id: 'dice', data: '/images/demo/dice.png', x: 433, y: -283, width: 305, height: 510},
 					], markers: [
 						{id: 'demo-marker-1', image: 'pin-house.webp', x: -9, y: -48, z: 0},

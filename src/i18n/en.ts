@@ -276,4 +276,6 @@ export const en = {
   'responsive.blocked.message': 'This application is currently optimized for tablets and desktops. Please use a wider screen. You can still continue, but the interface may break.',
   'responsive.blocked.continue': 'Continue anyway',
   'responsive.blocked.beta': 'beta',
+  // Campaign dynamic title
+  'campaign.demoTitle': 'Demo campaign',
 };

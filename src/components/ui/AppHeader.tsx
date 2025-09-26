@@ -11,6 +11,7 @@ export function AppHeader() {
       <Link href="/" className="text-2xl font-pirata-one text-stone-800 hover:text-amber-600 transition-colors">
         Mausritter
       </Link>
+      <div id="app-header-portal" className="flex items-center text-base font-medium text-stone-600 truncate max-w-[40%]" />
       <div className="ml-auto flex items-center gap-3">
         {session ? (
           <>

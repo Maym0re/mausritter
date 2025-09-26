@@ -12,6 +12,7 @@ import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
 import { useToast } from '@/components/ui/ToastProvider';
 import { Tooltip } from '@/components/ui/Tooltip';
 import DiceLogModal from '@/components/DiceLogModal';
+import { createPortal } from 'react-dom';
 
 interface CampaignListItem { id: string; name: string; gmId: string }
 
@@ -86,6 +87,8 @@ export default function CampaignPage() {
     return () => window.removeEventListener('mousedown', handler);
   }, [extraMenuOpen]);
 
+  const activeCampaignName = campaigns.find(c=>c.id===selectedCampaign)?.name;
+
   if (!session) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -110,6 +113,10 @@ export default function CampaignPage() {
 
   return (
     <div className="h-full w-screen overflow-hidden relative">
+      {activeCampaignName && typeof document !== 'undefined' && document.getElementById('app-header-portal') && createPortal(
+        <h2 className="text-stone-800 text-2xl">&nbsp;—&nbsp;{activeCampaignName}</h2>,
+        document.getElementById('app-header-portal') as HTMLElement
+      )}
 
       {/* Map */}
       {selectedCampaign && userRole && (
