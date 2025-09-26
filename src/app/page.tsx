@@ -154,7 +154,14 @@ export default function HomePage() {
 	}
 
 	if (!session) {
-		return <LandingInfo />;
+		return (
+			<div
+				id="scrollContainer"
+				className="h-screen overflow-y-auto overflow-x-hidden bg-stone-50 scroll-smooth"
+			>
+				<LandingInfo />
+			</div>
+		);
 	}
 
 	return (

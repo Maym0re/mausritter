@@ -1,43 +1,106 @@
+'use client';
+
 import Link from 'next/link';
+import Image from 'next/image';
+import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
 import { t } from '@/i18n';
+import { useEffect, useRef, useState } from 'react';
 
 export function LandingInfo() {
+	const [scrollEl, setScrollElement] = useState<HTMLDivElement>();
+	const ref = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		setScrollElement(ref.current!);
+	});
+
 	return (
-		<div className="bg-stone-50 flex items-center">
-			<div className="w-full max-w-2xl mx-auto px-5 py-16">
-				<h1 className="text-4xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6 text-center">
-					{t('home.landing.title')}
-				</h1>
-				<p className="text-stone-600 text-lg leading-relaxed mb-10 text-center">
-					{t('home.landing.subtitle')}
-				</p>
-				<div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-					<Link href="/login" className="flex-1 sm:flex-none sm:min-w-[200px] text-center px-6 py-3 rounded-lg bg-stone-900 text-white font-medium shadow hover:bg-black transition">
-						{t('home.landing.ctaPrimary')}
-					</Link>
-					<Link href="/demo" className="flex-1 sm:flex-none sm:min-w-[200px] text-center px-6 py-3 rounded-lg bg-white text-stone-800 font-medium border border-stone-300 shadow-sm hover:bg-stone-100 transition">
-						{t('home.landing.demo')}
-					</Link>
+		<ParallaxProvider>
+			<div className="bg-stone-50">
+				<div className="w-full max-w-3xl mx-auto px-5 pt-16 pb-10">
+					<h1 className="text-4xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6 text-center">
+						{t('home.landing.title')}
+					</h1>
+					<p className="text-stone-600 text-lg leading-relaxed mb-10 text-center">
+						{t('home.landing.subtitle')}
+					</p>
+					<div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
+						<Link href="/login" className="flex-1 sm:flex-none sm:min-w-[200px] text-center px-6 py-3 rounded-lg bg-stone-900 text-white font-medium shadow hover:bg-black transition">
+							{t('home.landing.ctaPrimary')}
+						</Link>
+						<Link href="/demo" className="flex-1 sm:flex-none sm:min-w-[200px] text-center px-6 py-3 rounded-lg bg-white text-stone-800 font-medium border border-stone-300 shadow-sm hover:bg-stone-100 transition">
+							{t('home.landing.demo')}
+						</Link>
+					</div>
 				</div>
-				<div className="space-y-4 mb-10">
-					<div className="p-4 rounded-xl bg-white border border-stone-200 shadow-sm">
-						<h3 className="font-semibold text-stone-800 mb-1">{t('home.landing.feature1.title')}</h3>
-						<p className="text-stone-600 text-sm leading-snug">{t('home.landing.feature1.desc')}</p>
+
+				{/* Parallax illustration block */}
+				<div className="relative w-full h-[55vh] min-h-[380px] max-h-[640px] overflow-hidden select-none pointer-events-none">
+					{/* Container for layers. The first layer stays static, others move subtly for depth. */}
+					<div className="absolute inset-0">
+						{/* Farthest background layer (static) */}
+						<div className="absolute inset-0">
+							<Image
+								priority
+								src="/images/parallax/Mouse1.png"
+								alt={t('home.landing.parallax.alt')}
+								fill
+								className="object-cover object-center"
+							/>
+						</div>
+						{/* Mid layers with gradually increasing motion */}
+						<Parallax speed={-5} className="absolute inset-0">
+							<Image
+								src="/images/parallax/Mouse2.png"
+								alt=""
+								fill
+								className="object-cover object-center"
+							/>
+						</Parallax>
+						<Parallax speed={-10} className="absolute inset-0">
+							<Image
+								src="/images/parallax/Mouse3.png"
+								alt=""
+								fill
+								className="object-cover object-center"
+							/>
+						</Parallax>
+						<Parallax speed={-18} className="absolute inset-0">
+							<Image
+								src="/images/parallax/Mouse4.png"
+								alt=""
+								fill
+								className="object-cover object-center"
+							/>
+						</Parallax>
+						<Parallax speed={-26} className="absolute inset-0">
+							<Image
+								src="/images/parallax/Mouse5.png"
+								alt=""
+								fill
+								className="object-cover object-center"
+							/>
+						</Parallax>
 					</div>
-					<div className="p-4 rounded-xl bg-white border border-stone-200 shadow-sm">
-						<h3 className="font-semibold text-stone-800 mb-1">{t('home.landing.feature2.title')}</h3>
-						<p className="text-stone-600 text-sm leading-snug">{t('home.landing.feature2.desc')}</p>
-					</div>
-					<div className="p-4 rounded-xl bg-white border border-stone-200 shadow-sm">
-						<h3 className="font-semibold text-stone-800 mb-1">{t('home.landing.feature3.title')}</h3>
-						<p className="text-stone-600 text-sm leading-snug">{t('home.landing.feature3.desc')}</p>
-					</div>
-					<div className="p-4 rounded-xl bg-white border border-stone-200 shadow-sm">
-						<h3 className="font-semibold text-stone-800 mb-1">{t('home.landing.feature4.title')}</h3>
-						<p className="text-stone-600 text-sm leading-snug">{t('home.landing.feature4.desc')}</p>
+				</div>
+
+				{/* Feature sections */}
+				<div className="w-full max-w-5xl mx-auto px-5 py-20 space-y-12">
+					<div className="grid md:grid-cols-3 gap-8">
+						<div className="bg-white rounded-xl border border-stone-200 shadow-sm p-6 flex flex-col">
+							<h3 className="text-lg font-semibold text-stone-800 mb-2">{t('home.landing.world.title')}</h3>
+							<p className="text-stone-600 text-sm leading-relaxed">{t('home.landing.world.desc')}</p>
+						</div>
+						<div className="bg-white rounded-xl border border-stone-200 shadow-sm p-6 flex flex-col">
+							<h3 className="text-lg font-semibold text-stone-800 mb-2">{t('home.landing.characters.title')}</h3>
+							<p className="text-stone-600 text-sm leading-relaxed">{t('home.landing.characters.desc')}</p>
+						</div>
+						<div className="bg-white rounded-xl border border-stone-200 shadow-sm p-6 flex flex-col">
+							<h3 className="text-lg font-semibold text-stone-800 mb-2">{t('home.landing.demoAccess.title')}</h3>
+							<p className="text-stone-600 text-sm leading-relaxed">{t('home.landing.demoAccess.desc')}</p>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</ParallaxProvider>
 	);
 }
