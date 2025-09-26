@@ -278,4 +278,12 @@ export const en = {
   'responsive.blocked.beta': 'beta',
   // Campaign dynamic title
   'campaign.demoTitle': 'Demo campaign',
+  // Landing parallax & revised feature sections
+  'home.landing.parallax.alt': 'Decorative layered illustration',
+  'home.landing.world.title': 'Create Your World',
+  'home.landing.world.desc': 'Build a living hex map, place landmarks, settlements, images and markers to shape your campaign setting.',
+  'home.landing.characters.title': 'Manage Characters',
+  'home.landing.characters.desc': 'Track player characters, stats and notes directly—no spreadsheets needed.',
+  'home.landing.demoAccess.title': 'Instant Demo Access',
+  'home.landing.demoAccess.desc': 'Open the demo map immediately to explore tools before registering.',
 };
