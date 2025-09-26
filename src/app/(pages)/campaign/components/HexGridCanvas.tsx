@@ -840,7 +840,7 @@ export function HexGridCanvas({
 						</Layer>
 						<CanvasImagesLayer
 							ref={imagesLayerRef}
-							maxTotalMB={1}
+							maxTotalMB={10}
 							stageRef={stageRef}
 							containerRef={containerRef}
 							editable={mode === 'master'}
