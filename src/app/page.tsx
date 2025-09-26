@@ -154,7 +154,7 @@ export default function HomePage() {
 
 	if (!session) {
 		return (
-			<div className="h-full bg-stone-50 flex items-center">
+			<div className="bg-stone-50 flex items-center">
 				<div className="w-full max-w-2xl mx-auto px-5 py-16">
 					<h1 className="text-4xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6 text-center">
 						{t('home.landing.title')}

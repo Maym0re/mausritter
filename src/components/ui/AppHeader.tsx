@@ -7,7 +7,7 @@ import { t } from '@/i18n';
 export function AppHeader() {
   const { data: session } = useSession();
   return (
-    <header className="fixed top-0 left-0 right-0 h-14 z-[1200] flex items-center border-b border-stone-300 bg-white/90 backdrop-blur lg:px-8 px-4 sm:px-6 text-2xl">
+    <header className="w-full top-0 left-0 right-0 h-14 z-[1200] flex items-center border-b border-stone-300 bg-white/90 backdrop-blur lg:px-8 px-4 sm:px-6 text-2xl">
       <Link href="/" className="text-2xl font-pirata-one text-stone-800 hover:text-amber-600 transition-colors">
         Mausritter
       </Link>

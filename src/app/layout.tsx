@@ -33,20 +33,25 @@ export default function RootLayout({children}: Readonly<{
 }>) {
 	return (
 		<html lang="en" className="h-full">
-			<body className={`${geistSans.variable} ${geistMono.variable} ${pirataOne.variable} antialiased h-full m-0 p-0 overflow-auto`}>
-			<ToastProvider>
+		<body
+			className={`${geistSans.variable} ${geistMono.variable} ${pirataOne.variable} antialiased h-full m-0 p-0 overflow-auto`}>
+		<ToastProvider>
 			<ContextMenuProvider>
-			<AuthProvider>
-				<AppHeader />
-				<div className="pt-14 h-full">
-					<ResponsiveGate>
-						{children}
-					</ResponsiveGate>
-				</div>
-			</AuthProvider>
+				<AuthProvider>
+					<div className="flex flex-col h-full">
+						<div className="flex flex-shrink-0">
+							<AppHeader/>
+						</div>
+						<div className="flex-1 overflow-auto bg-stone-50">
+							<ResponsiveGate>
+								{children}
+							</ResponsiveGate>
+						</div>
+					</div>
+				</AuthProvider>
 			</ContextMenuProvider>
-			</ToastProvider>
-			</body>
+		</ToastProvider>
+		</body>
 		</html>
 	);
 }

@@ -109,7 +109,7 @@ export default function CampaignPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-56px)] w-screen overflow-hidden relative">{/* was h-[calc(100vh-56px)] to avoid layout shift; using full viewport to keep bottom bar in view */}
+    <div className="w-screen overflow-hidden relative">
 
       {/* Map */}
       {selectedCampaign && userRole && (
@@ -152,7 +152,6 @@ export default function CampaignPage() {
 
       {/* Bottom menu */}
       <div id="campaign-bottom-menu" className="fixed left-1/2 -translate-x-1/2 bottom-4 bg-stone-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg flex items-center gap-3 z-[1100] border border-stone-700">
-        {/* Active (working) controls first */}
         {userRole==='master' && <button onClick={()=>setIsAddHexMode(m=>!m)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${isAddHexMode? 'bg-amber-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{isAddHexMode? t('menu.finishAdd'): t('menu.addHex')}</button>}
         {selectedCampaign && <button onClick={()=>setShowDiceLog(true)} className="text-xs px-3 py-1.5 rounded-full font-medium bg-stone-700 text-stone-200 hover:bg-stone-600">{t('menu.log')}</button>}
         {userRole==='master' && <button onClick={()=>setShowMarkersPanel(v=>!v)} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showMarkersPanel? 'bg-emerald-600 text-white':'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{t('menu.markers')}</button>}

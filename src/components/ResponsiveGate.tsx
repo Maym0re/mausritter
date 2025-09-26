@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { t } from '@/i18n';
 
-// Simple gate component that blocks small screens (mobile) until user opts in.
 export const ResponsiveGate: React.FC<{ children: React.ReactNode; minWidth?: number }> = ({children, minWidth = 900}) => {
 	const [ready, setReady] = useState(false);
 	const [allowMobile, setAllowMobile] = useState(false);

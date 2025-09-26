@@ -236,7 +236,7 @@ export function HexGridCanvas({
 		const upd = () => {
 			const w = window.innerWidth;
 			const h = window.innerHeight;
-			const header = 74;
+			const header = 56;
 			const avail = h - header;
 			setCanvasSize({width: w, height: Math.max(avail, 400)});
 			setPos({x: w / 2, y: Math.max(avail, 400) / 2});
