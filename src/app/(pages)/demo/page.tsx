@@ -214,26 +214,11 @@ const initialCells = [
 export default function DemoCampaignPage() {
 	const [isAddHexMode, setIsAddHexMode] = useState(false);
 	const [showMarkersPanel, setShowMarkersPanel] = useState(false);
-	const [showInfo, setShowInfo] = useState(true); // info banner visibility
 	const [demoLogs, setDemoLogs] = useState<DemoDiceLogEntry[]>([]);
 	const [showLog, setShowLog] = useState(false);
 
 	return (
-		<div className="h-[calc(100vh-56px)] w-screen overflow-hidden relative">
-			{showInfo && (
-				<div
-					className="absolute top-2 left-1/2 -translate-x-1/2 z-[1200] bg-stone-900/80 border border-stone-700 rounded px-4 py-2 pr-8 text-xs text-stone-200 max-w-[90%] leading-relaxed">
-					<button
-						aria-label="Close demo notice"
-						onClick={() => setShowInfo(false)}
-						className="absolute top-1 right-1 text-stone-400 hover:text-white text-sm px-1"
-					>✕
-					</button>
-					<p className="font-semibold mb-1">Demo campaign</p>
-					<p>This is a demo showcase map. You can add hexes, markers, drag & drop or paste images. Reload the page to
-						reset.</p>
-				</div>
-			)}
+		<div className="h-full w-screen overflow-hidden relative">
 			<HexGridCanvas
 				mode="master"
 				campaignId="demo"
@@ -244,8 +229,9 @@ export default function DemoCampaignPage() {
 				demo
 				initialDemoMap={{
 					id: 'demo', cells: initialCells, size: 7, centerX: 0, centerY: 0, images: [
-						{id: 'demo-img-bird', data: '/images/demo/bird.png', x: -658, y: -40, width: 264, height: 366},
-						{id: 'demo-img-burrow', data: '/images/demo/burrow.png', x: 380, y: -289, width: 244, height: 366},
+						{id: 'image', data: '/images/demo/image.png', x: -737, y: -283, width: 305, height: 510},
+						{id: 'world', data: '/images/demo/world.png', x: -368, y: -380, width: 737, height: 177},
+						{id: 'dice', data: '/images/demo/dice.png', x: 433, y: -283, width: 305, height: 510},
 					], markers: [
 						{id: 'demo-marker-1', image: 'pin-house.webp', x: -9, y: -48, z: 0},
 						{id: 'demo-marker-2', image: 'pin-skull.webp', x: 42, y: -138, z: 1},

@@ -109,7 +109,7 @@ export default function CampaignPage() {
   }
 
   return (
-    <div className="w-screen overflow-hidden relative">
+    <div className="h-full w-screen overflow-hidden relative">
 
       {/* Map */}
       {selectedCampaign && userRole && (

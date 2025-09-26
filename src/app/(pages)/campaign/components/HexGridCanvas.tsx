@@ -507,7 +507,7 @@ export function HexGridCanvas({
 
 	if (loading) {
 		return (
-			<div className="flex items-center justify-center h-full">
+			<div className="h-full flex items-center justify-center h-full">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-amber-900"></div>
 					<p className="mt-4 text-amber-900">{t('map.loading')}</p>

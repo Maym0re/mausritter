@@ -44,7 +44,7 @@ interface CanvasImage {
 
 const MAX_IMG_W = 1024;
 const MAX_IMG_H = 1024;
-const JPEG_QUALITY = 0.85;
+const JPEG_QUALITY = 1;
 
 export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImagesLayerProps>(function CanvasImagesLayer(
 	{stageRef, containerRef, editable, onSelectionChange, maxTotalMB, onStorageLimit, hexMapId, initialImages, demo = false, maxDisplaySide = 512},

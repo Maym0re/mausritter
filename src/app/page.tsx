@@ -256,7 +256,7 @@ export default function HomePage() {
 									<div className="text-sm text-stone-500 mb-4">
 										<div>{t('home.playersCount')} {campaign.players?.length || 0}</div>
 										<div>{t('home.charactersCount')} {campaign._count?.characters || 0}</div>
-										<div>{t('home.season')} {campaign.season}</div>
+										<div>{t('home.season')} <span className='lowercase'>{campaign.season}</span></div>
 									</div>
 
 									<div className="flex space-x-2 items-stretch relative">
