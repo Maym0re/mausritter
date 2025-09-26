@@ -66,11 +66,7 @@ export default function LoginPage() {
 	};
 
 	return (
-		<main className="relative h-full w-full overflow-hidden bg-gradient-to-br from-stone-50 via-stone-100 to-stone-200 text-stone-800">
-			<div aria-hidden className="pointer-events-none absolute inset-0">
-				<div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-stone-300/40 blur-3xl" />
-				<div className="absolute bottom-0 right-0 h-[360px] w-[360px] rounded-full bg-stone-400/30 blur-3xl" />
-			</div>
+		<main className="relative h-full w-full overflow-hidden bg-gray-50 text-stone-800">
 			<div className="relative flex items-center justify-center px-4 py-12 pt-20">
 				<div className="w-full max-w-md">
 					<div className="mb-10 flex flex-col items-center text-center select-none">
@@ -79,7 +75,7 @@ export default function LoginPage() {
 					</div>
 
 					<div className="relative rounded-2xl border border-stone-300 bg-white/95 backdrop-blur-sm shadow-xl">
-						<div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/60 to-white/10" />
+						<div className="absolute inset-0 rounded-2xl bg-gray-50" />
 						<div className="relative p-8">
 							<div className="mb-6 flex items-center justify-between gap-2 text-sm font-medium">
 								<button type="button" onClick={()=>{setIsRegistering(false); setError('');}} className={`flex-1 rounded-lg px-4 py-2 transition ${!isRegistering ? 'bg-stone-900 text-white shadow-md shadow-stone-900/40' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}>{t('auth.login.tab.signIn')}</button>

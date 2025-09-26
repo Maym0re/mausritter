@@ -35,6 +35,7 @@ export default function HomePage() {
 
 	const fetchCampaigns = async () => {
 		try {
+			setIsLoading(true);
 			const response = await fetch('/api/campaigns');
 			if (response.ok) {
 				const data = await response.json();
@@ -141,11 +142,10 @@ export default function HomePage() {
 		return () => document.removeEventListener('mousedown', handleDocClick);
 	}, [openMenuId]);
 
-	if (status === 'loading') {
+	if (isLoading) {
 		return (
 			<div className="min-h-screen bg-stone-50 flex items-center justify-center">
 				<div className="text-center">
-					<div className="text-4xl mb-4">🐭</div>
 					<div className="text-lg text-stone-600">{t('home.loading')}</div>
 				</div>
 			</div>
@@ -204,7 +204,7 @@ export default function HomePage() {
 						<h2 className="text-3xl font-bold text-stone-900">{t('home.myCampaigns')}</h2>
 						<div className="flex gap-3">
 							<Link href="/demo"
-							      className="px-4 py-2 rounded-md bg-white border border-stone-300 text-stone-700 hover:bg-stone-100 text-sm font-medium">{t('home.landing.demo')}</Link>
+							      className="px-4 py-2 rounded-md bg-white border border-stone-300 text-stone-700 hover:bg-stone-100 font-medium">{t('home.landing.demo')}</Link>
 							<button
 								onClick={() => setShowCreateModal(true)}
 								className="bg-stone-900 hover:bg-black text-white px-4 py-2 rounded-md font-medium"
@@ -216,7 +216,6 @@ export default function HomePage() {
 
 					{campaigns.length === 0 ? (
 						<div className="text-center py-12">
-							<div className="text-6xl mb-4">🏰</div>
 							<h3 className="text-xl font-medium text-stone-900 mb-2">
 								{t('home.noCampaignsTitle')}
 							</h3>

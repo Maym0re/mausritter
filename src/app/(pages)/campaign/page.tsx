@@ -63,17 +63,6 @@ export default function CampaignPage() {
     }
   }, [campaigns, session?.user?.id]);
 
-  const handleCampaignSelect = (campaignId: string) => {
-    setSelectedCampaign(campaignId);
-    const campaign = campaigns.find(c => c.id === campaignId);
-    if (campaign) {
-      setUserRole(campaign.gmId === session?.user?.id ? 'master' : 'player');
-      const url = new URL(window.location.href);
-      url.searchParams.set('campaign', campaignId);
-      window.history.replaceState({}, '', url.toString());
-    }
-  };
-
   const copyInviteLink = useCallback(() => {
     if (!selectedCampaign) return;
     try {
