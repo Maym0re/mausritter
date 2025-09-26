@@ -271,4 +271,9 @@ export const en = {
   'campaign.join.loginRequired': 'Please sign in to join this campaign.',
   // Context menu
   'context.pasteImage': 'Paste Image',
+  // Responsive Gate
+  'responsive.blocked.title': 'Mobile version not yet supported',
+  'responsive.blocked.message': 'This application is currently optimized for tablets and desktops. Please use a wider screen. You can still continue, but the interface may break.',
+  'responsive.blocked.continue': 'Continue anyway',
+  'responsive.blocked.beta': 'beta',
 };

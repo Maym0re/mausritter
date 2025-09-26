@@ -5,6 +5,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { AppHeader } from '@/components/ui/AppHeader';
 import { ToastProvider } from '@/components/ui/ToastProvider';
 import { ContextMenuProvider } from '@/components/ui/ContextMenu';
+import { ResponsiveGate } from '@/components/ResponsiveGate';
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -38,7 +39,9 @@ export default function RootLayout({children}: Readonly<{
 			<AuthProvider>
 				<AppHeader />
 				<div className="pt-14 h-full">
-					{children}
+					<ResponsiveGate>
+						{children}
+					</ResponsiveGate>
 				</div>
 			</AuthProvider>
 			</ContextMenuProvider>
