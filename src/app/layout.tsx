@@ -42,7 +42,7 @@ export default function RootLayout({children}: Readonly<{
 						<div className="flex flex-shrink-0">
 							<AppHeader/>
 						</div>
-						<div id="scrollContainer" className="flex-1 overflow-hidden bg-stone-50">
+						<div id="scrollContainer" className="flex-1 overflow-auto bg-stone-50">
 							<ResponsiveGate>
 								{children}
 							</ResponsiveGate>
