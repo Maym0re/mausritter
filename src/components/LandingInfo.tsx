@@ -2,19 +2,20 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
+import { Parallax, ParallaxProvider } from 'react-scroll-parallax';
 import { t } from '@/i18n';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function LandingInfo() {
 	const [scrollEl, setScrollElement] = useState<HTMLDivElement>();
-	const ref = useRef<HTMLDivElement>(null);
+
 	useEffect(() => {
-		setScrollElement(ref.current!);
+		const el = document.getElementById('scrollContainer') as HTMLDivElement | null;
+		setScrollElement(el);
 	});
 
 	return (
-		<ParallaxProvider>
+		<ParallaxProvider scrollContainer={scrollEl}>
 			<div className="bg-stone-50">
 				<div className="w-full max-w-3xl mx-auto px-5 pt-16 pb-10">
 					<h1 className="text-4xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6 text-center">
@@ -47,7 +48,7 @@ export function LandingInfo() {
 								className="object-cover object-center"
 							/>
 						</div>
-						{/* Mid layers with gradually increasing motion */}
+						{/* Mid-layers with gradually increasing motion */}
 						<Parallax speed={-5} className="absolute inset-0">
 							<Image
 								src="/images/parallax/Mouse2.png"
