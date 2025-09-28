@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { t } from '@/i18n';
 import { useEffect, useRef, useState } from "react";
+import Image from 'next/image';
 
 export function LandingInfo() {
 	return (
@@ -67,12 +68,12 @@ export function LandingInfo() {
 function SimpleParallaxStack() {
 	// Layer configuration: farther layers have smaller maxShift
 	const layers = useRef([
-		{ src: '/images/parallax/Mouse1.png', maxShift: 0, inset: '-0 0', backgroundPosition: 'center top' },
-		{ src: '/images/parallax/Mouse2.png', maxShift: 50, inset: '-0 0', backgroundPosition: 'center top' },
-		{ src: '/images/parallax/Mouse3.png', maxShift: 100, inset: '0 0', backgroundPosition: 'center top' },
-		{ src: '/images/parallax/Mouse4.png', maxShift: 150, inset: '0 0', backgroundPosition: 'center top' },
-		{ src: '/images/parallax/Mouse5.png', maxShift: 200, inset: '0 0', backgroundPosition: 'center top' },
-		{ src: '/images/parallax/Mouse6.png', maxShift: 230, inset: 0, backgroundPosition: 'center top' },
+		{ src: '/images/parallax/Mouse1.png', maxShift: 20 },
+		{ src: '/images/parallax/Mouse2.png', maxShift: 60 },
+		{ src: '/images/parallax/Mouse3.png', maxShift: 110, top: '-90px' },
+		{ src: '/images/parallax/Mouse4.png', maxShift: 160, top: '-90px' },
+		{ src: '/images/parallax/Mouse5.png', maxShift: 210, top: '-90px' },
+		{ src: '/images/parallax/Mouse6.png', maxShift: 200 },
 	]);
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const [progress, setProgress] = useState(0); // 0..1
@@ -110,27 +111,31 @@ function SimpleParallaxStack() {
 	}, []);
 
 	return (
-		<div className="relative h-[650px] w-full overflow-hidden select-none pointer-events-none bg-stone-100 border-t border-b border-stone-200">
-			<div ref={containerRef} className="">
+		<div className="relative h-[40vw] w-full overflow-hidden select-none pointer-events-none">
+			<div ref={containerRef} className="absolute inset-0">
 				{layers.current.map((layer, i) => {
 					const shift = -progress * layer.maxShift; // negative => moves up
 					return (
 						<div
 							key={layer.src}
-							className="absolute inset-0"
+							className="absolute top-0 left-0 w-full"
 							style={{
 								transform: `translateY(${shift}px)`,
 								willChange: 'transform',
-								// Higher zIndex for nearer layers (later ones)
 								zIndex: 10 + i,
-								backgroundImage: `url(${layer.src})`,
-								backgroundPosition: layer.backgroundPosition,
-								backgroundSize: 'contain',
-								height: '1000px',
-								inset: layer.inset,
-								backgroundRepeat: 'no-repeat',
+								top: layer.top || '0px',
 							}}
-						/>
+						>
+							<Image
+								width={1920}
+								height={1080}
+								src={layer.src}
+								alt="Decorative parallax layer"
+								priority={i === 0}
+								className="w-full h-auto"
+								draggable={false}
+							/>
+						</div>
 					);
 				})}
 			</div>
