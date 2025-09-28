@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 export function LandingInfo() {
 	return (
 		<div className="bg-stone-50">
-			<div className="w-full max-w-3xl mx-auto px-5 pt-16 pb-10">
+			<div className="w-full max-w-3xl mx-auto px-5 pt-16 pb-10 h-[600px]">
 				<h1 className="text-4xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6 text-center">
 					{t('home.landing.title')}
 				</h1>
@@ -41,7 +41,7 @@ export function LandingInfo() {
 
 			<SimpleParallaxStack />
 
-			<div className="w-full max-w-5xl mx-auto px-5 py-20 space-y-12">
+			<div className="w-full max-w-5xl mx-auto px-5 py-20 space-y-12 h-[1000px]">
 				<div className="grid md:grid-cols-3 gap-8">
 					<div className="bg-white rounded-xl border border-stone-200 shadow-sm p-6 flex flex-col">
 						<h3 className="text-lg font-semibold text-stone-800 mb-2">{t('home.landing.world.title')}</h3>
@@ -67,12 +67,12 @@ export function LandingInfo() {
 function SimpleParallaxStack() {
 	// Layer configuration: farther layers have smaller maxShift
 	const layers = useRef([
-		{ src: '/images/parallax/Mouse1.png', maxShift: 0 },
-		{ src: '/images/parallax/Mouse2.png', maxShift: 50 },
-		{ src: '/images/parallax/Mouse3.png', maxShift: 100 },
-		{ src: '/images/parallax/Mouse4.png', maxShift: 150 },
-		{ src: '/images/parallax/Mouse5.png', maxShift: 200 },
-		{ src: '/images/parallax/Mouse6.png', maxShift: 550 },
+		{ src: '/images/parallax/Mouse1.png', maxShift: 0, inset: '-0 0', backgroundPosition: 'center top' },
+		{ src: '/images/parallax/Mouse2.png', maxShift: 50, inset: '-0 0', backgroundPosition: 'center top' },
+		{ src: '/images/parallax/Mouse3.png', maxShift: 100, inset: '0 0', backgroundPosition: 'center top' },
+		{ src: '/images/parallax/Mouse4.png', maxShift: 150, inset: '0 0', backgroundPosition: 'center top' },
+		{ src: '/images/parallax/Mouse5.png', maxShift: 200, inset: '0 0', backgroundPosition: 'center top' },
+		{ src: '/images/parallax/Mouse6.png', maxShift: 230, inset: 0, backgroundPosition: 'center top' },
 	]);
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const [progress, setProgress] = useState(0); // 0..1
@@ -110,7 +110,7 @@ function SimpleParallaxStack() {
 	}, []);
 
 	return (
-		<div className="relative h-[600px] w-full overflow-hidden select-none pointer-events-none bg-stone-100 border-t border-b border-stone-200">
+		<div className="relative h-[650px] w-full overflow-hidden select-none pointer-events-none bg-stone-100 border-t border-b border-stone-200">
 			<div ref={containerRef} className="">
 				{layers.current.map((layer, i) => {
 					const shift = -progress * layer.maxShift; // negative => moves up
@@ -124,9 +124,10 @@ function SimpleParallaxStack() {
 								// Higher zIndex for nearer layers (later ones)
 								zIndex: 10 + i,
 								backgroundImage: `url(${layer.src})`,
-								backgroundPosition: 'center center',
-								backgroundSize: 'cover',
+								backgroundPosition: layer.backgroundPosition,
+								backgroundSize: 'contain',
 								height: '1000px',
+								inset: layer.inset,
 								backgroundRepeat: 'no-repeat',
 							}}
 						/>
