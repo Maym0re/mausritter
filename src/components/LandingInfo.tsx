@@ -16,10 +16,12 @@ export function LandingInfo() {
 					{t('home.landing.subtitle')}
 				</p>
 				<div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-					<Link href="/login" className="flex-1 sm:flex-none sm:min-w-[200px] text-center px-6 py-3 rounded-lg bg-stone-900 text-white font-medium shadow hover:bg-black transition">
+					<Link href="/login"
+					      className="flex-1 sm:flex-none sm:min-w-[200px] text-center px-6 py-3 rounded-lg bg-stone-900 text-white font-medium shadow hover:bg-black transition">
 						{t('home.landing.ctaPrimary')}
 					</Link>
-					<Link href="/demo" className="flex-1 sm:flex-none sm:min-w-[200px] text-center px-6 py-3 rounded-lg bg-white text-stone-800 font-medium border border-stone-300 shadow-sm hover:bg-stone-100 transition">
+					<Link href="/demo"
+					      className="flex-1 sm:flex-none sm:min-w-[200px] text-center px-6 py-3 rounded-lg bg-white text-stone-800 font-medium border border-stone-300 shadow-sm hover:bg-stone-100 transition">
 						{t('home.landing.demo')}
 					</Link>
 				</div>
@@ -40,7 +42,7 @@ export function LandingInfo() {
 			{/*	/>*/}
 			{/*</ParallaxProvider>*/}
 
-			<SimpleParallaxStack />
+			<SimpleParallaxStack/>
 
 			<div className="w-full max-w-5xl mx-auto px-5 py-20 space-y-12 h-[1000px]">
 				<div className="grid md:grid-cols-3 gap-8">
@@ -66,17 +68,18 @@ export function LandingInfo() {
 
 // Simple manual parallax stack using scroll + translateY
 function SimpleParallaxStack() {
-	// Layer configuration: farther layers have smaller maxShift
-	const layers = useRef([
-		{ src: '/images/parallax/Mouse1.png', maxShift: 20 },
-		{ src: '/images/parallax/Mouse2.png', maxShift: 60 },
-		{ src: '/images/parallax/Mouse3.png', maxShift: 110, top: '-90px' },
-		{ src: '/images/parallax/Mouse4.png', maxShift: 160, top: '-90px' },
-		{ src: '/images/parallax/Mouse5.png', maxShift: 210, top: '-90px' },
-		{ src: '/images/parallax/Mouse6.png', maxShift: 200 },
+	// Layer configuration: farther layers have smaller maxShiftPct (percentage of container height)
+	type ParallaxLayer = { src: string; maxShiftPct: number; top?: string };
+	const layers = useRef<ParallaxLayer[]>([
+		{src: '/images/parallax/Mouse1.png', maxShiftPct: 3},
+		{src: '/images/parallax/Mouse2.png', maxShiftPct: 10},
+		{src: '/images/parallax/Mouse3.png', maxShiftPct: 18, top: '-90px'},
+		{src: '/images/parallax/Mouse4.png', maxShiftPct: 26, top: '-90px'},
+		{src: '/images/parallax/Mouse5.png', maxShiftPct: 34, top: '-90px'},
+		{src: '/images/parallax/Mouse6.png', maxShiftPct: 32}, // foreground a bit less to avoid overshoot
 	]);
 	const containerRef = useRef<HTMLDivElement | null>(null);
-	const [progress, setProgress] = useState(0); // 0..1
+	const [progress, setProgress] = useState(0); // 0..1 scroll progress through section
 
 	useEffect(() => {
 		const scrollTarget = document.getElementById('scrollContainer') || window;
@@ -86,10 +89,10 @@ function SimpleParallaxStack() {
 			if (!containerRef.current) return;
 			const rect = containerRef.current.getBoundingClientRect();
 			const vh = window.innerHeight;
-			// Start animating when container enters viewport, finish when it is fully passed by + viewport height
-			const visible = vh - rect.top; // how far from entering (0 at bottom edge touch)
-			const total = vh + rect.height; // span over which we interpolate
-			let p = visible / total; // can be negative / >1
+			// progress: 0 when section bottom touches viewport bottom; 1 when it fully passed + extra viewport
+			const visible = vh - rect.top;
+			const total = vh + rect.height;
+			let p = visible / total;
 			p = Math.max(0, Math.min(1, p));
 			setProgress(p);
 			ticking = false;
@@ -101,44 +104,46 @@ function SimpleParallaxStack() {
 				ticking = true;
 			}
 		}
+
 		update();
-		(scrollTarget).addEventListener('scroll', onScroll, { passive: true });
-		window.addEventListener('resize', update, { passive: true });
+		scrollTarget.addEventListener('scroll', onScroll, {passive: true});
+		window.addEventListener('resize', update, {passive: true});
 		return () => {
-			(scrollTarget).removeEventListener('scroll', onScroll);
+			scrollTarget.removeEventListener('scroll', onScroll);
 			window.removeEventListener('resize', update);
 		};
 	}, []);
 
 	return (
-		<div className="relative h-[40vw] w-full overflow-hidden select-none pointer-events-none">
-			<div ref={containerRef} className="absolute inset-0">
-				{layers.current.map((layer, i) => {
-					const shift = -progress * layer.maxShift; // negative => moves up
-					return (
-						<div
-							key={layer.src}
-							className="absolute top-0 left-0 w-full"
-							style={{
-								transform: `translateY(${shift}px)`,
-								willChange: 'transform',
-								zIndex: 10 + i,
-								top: layer.top || '0px',
-							}}
-						>
-							<Image
-								width={1920}
-								height={1080}
-								src={layer.src}
-								alt="Decorative parallax layer"
-								priority={i === 0}
-								className="w-full h-auto"
-								draggable={false}
-							/>
-						</div>
-					);
-				})}
-			</div>
+		<div ref={containerRef} className="relative h-[40vw] w-full overflow-hidden select-none pointer-events-none">
+			{layers.current.map((layer, i) => {
+				// Convert percentage to pixel shift based on container height
+				const containerHeight = containerRef.current?.offsetHeight || 0;
+				const maxShiftPx = (layer.maxShiftPct / 100) * containerHeight;
+				const shiftPx = -progress * maxShiftPx; // negative moves up
+				return (
+					<div
+						key={layer.src}
+						className="absolute left-0 w-full"
+						style={{
+							transform: `translateY(${shiftPx}px)`,
+							willChange: 'transform',
+							zIndex: 10 + i,
+							top: layer.top || '0px',
+						}}
+					>
+						<Image
+							width={1920}
+							height={1080}
+							src={layer.src}
+							alt="Decorative parallax layer"
+							priority={i === 0}
+							className="w-full h-auto"
+							draggable={false}
+						/>
+					</div>
+				);
+			})}
 		</div>
 	);
 }
