@@ -111,7 +111,7 @@ export function HexWindow({ mode, hex, onSave, onDelete, onClose }: HexWindowPro
       initialHeight={620}
       onClose={onClose}
       footer={<div className="flex gap-2 justify-end">
-        {onDelete && <button onClick={() => { if (confirm(t('hex.deleteConfirm'))) onDelete(); }} className="px-3 py-1.5 text-xs bg-red-600 text-white rounded hover:bg-red-700">{t('hex.delete')}</button>}
+        {onDelete && <button onClick={() => { if (confirm(t('hex.deleteConfirm'))) onDelete(); }} className="px-3 py-1.5 text-xs bg-black text-white rounded hover:bg-gray-700">{t('hex.delete')}</button>}
         <button onClick={handleSave} className="px-3 py-1.5 text-xs bg-amber-600 text-white rounded hover:bg-amber-700">{t('hex.save')}</button>
       </div>}
     >

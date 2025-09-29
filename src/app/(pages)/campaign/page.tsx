@@ -6,7 +6,6 @@ import NextDynamic from 'next/dynamic';
 const HexGridCanvas = NextDynamic(() => import('@/app/(pages)/campaign/components/HexGridCanvas').then(m => m.HexGridCanvas), { ssr: false });
 import { CharacterManagerWindow } from '@/app/(pages)/campaign/components/CharacterManagerWindow';
 import { DraggableResizableWindow } from '@/components/ui/DraggableResizableWindow';
-import { TimeTracker } from '@/components/TimeTracker';
 import { t } from '@/i18n';
 import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
 import { useToast } from '@/components/ui/ToastProvider';
@@ -148,7 +147,7 @@ export default function CampaignPage() {
           initialHeight={620}
           onClose={() => setShowTime(false)}
         >
-          <TimeTracker />
+          Work in progress...
         </DraggableResizableWindow>
       )}
 

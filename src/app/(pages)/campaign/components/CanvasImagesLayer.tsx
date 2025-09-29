@@ -439,7 +439,6 @@ export const CanvasImagesLayer = forwardRef<CanvasImagesLayerHandle, CanvasImage
 					anchorSize={10}
 					borderDash={[4, 4]}
 					boundBoxFunc={(oldBox, newBox) => {
-						// Block flipping (negative width/height) and enforce minimum size
 						if (newBox.width < 10 || newBox.height < 10) return oldBox;
 						if (newBox.width < 0 || newBox.height < 0) return oldBox;
 						return newBox;

@@ -1,7 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 import NextDynamic from 'next/dynamic';
-const HexGridCanvas = NextDynamic(() => import('@/app/(pages)/campaign/components/HexGridCanvas').then(m => m.HexGridCanvas), { ssr: false });
+
+const HexGridCanvas = NextDynamic(() => import('@/app/(pages)/campaign/components/HexGridCanvas').then(m => m.HexGridCanvas), {ssr: false});
 import { HEX_TYPES } from '@/types/map';
 import FullscreenDiceLayer from '@/components/FullscreenDiceLayer';
 import { DemoDiceLogWindow, DemoDiceLogEntry } from '@/components/DemoDiceLogWindow';
@@ -9,12 +10,10 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import { t } from "@/i18n";
 import { createPortal } from 'react-dom';
 
-// Helper to fetch hex type object
 function hx(id: string) {
 	return HEX_TYPES.find(h => h.id === id)!;
 }
 
-// Helper to create a pseudo-settlement (for demo only; governance etc are flavor placeholders)
 function makeSettlement(name: string, size: 'farm' | 'crossroads' | 'hamlet' | 'village' | 'town' | 'city', population: number, feature: string) {
 	return {
 		id: `settlement_${name.replace(/\s+/g, '_').toLowerCase()}`,
@@ -29,8 +28,6 @@ function makeSettlement(name: string, size: 'farm' | 'crossroads' | 'hamlet' | '
 	};
 }
 
-// Axial layout: ring0 center (#15), ring1 (#1-#6), ring2 (#7-#14 & #16-#19)
-// Coordinates chosen so center (0,0) is #15 (Stumps)
 const initialCells = [
 	// Ring1
 	{
@@ -243,19 +240,19 @@ export default function DemoCampaignPage() {
 					]
 				}}
 			/>
-			<FullscreenDiceLayer onLoggedAction={(log)=>{
+			<FullscreenDiceLayer onLoggedAction={(log) => {
 				if (log && typeof log === 'object') {
 					const anyLog = log as DemoDiceLogEntry;
 					if (Array.isArray(anyLog.entries)) {
-						setDemoLogs(prev => [anyLog as DemoDiceLogEntry, ...prev].slice(0,100));
+						setDemoLogs(prev => [anyLog as DemoDiceLogEntry, ...prev].slice(0, 100));
 					}
 				}
-			}} />
+			}}/>
 			{showLog && (
 				<DemoDiceLogWindow
 					logs={demoLogs}
-					onClose={()=>setShowLog(false)}
-					onClear={()=>setDemoLogs([])}
+					onClose={() => setShowLog(false)}
+					onClear={() => setDemoLogs([])}
 				/>
 			)}
 			<div
@@ -265,12 +262,14 @@ export default function DemoCampaignPage() {
 				<button onClick={() => setShowMarkersPanel(v => !v)}
 				        className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${showMarkersPanel ? 'bg-emerald-600 text-white' : 'bg-stone-700 text-stone-200 hover:bg-stone-600'}`}>{showMarkersPanel ? 'Hide markers' : 'Markers'}</button>
 				<button onClick={() => setShowLog(true)}
-			        className="text-xs px-3 py-1.5 rounded-full font-medium bg-stone-700 text-stone-200 hover:bg-stone-600">Log</button>
+				        className="text-xs px-3 py-1.5 rounded-full font-medium bg-stone-700 text-stone-200 hover:bg-stone-600">Log
+				</button>
 				{/* Disabled (in development) items now placed before plus menu */}
 				<div className="flex items-center gap-2">
-					{['characters','time'].map(key => (
+					{['characters', 'time'].map(key => (
 						<Tooltip key={key} side="top" content={t('menu.inProgress')}>
-							<button disabled className="text-xs px-3 py-1.5 rounded-full font-medium bg-stone-800 text-stone-500 opacity-70 select-none">
+							<button disabled
+							        className="text-xs px-3 py-1.5 rounded-full font-medium bg-stone-800 text-stone-500 opacity-70 select-none">
 								{t(`menu.${key}`)}
 							</button>
 						</Tooltip>

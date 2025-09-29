@@ -106,7 +106,3 @@ export function useToast() {
   if (!ctx) throw new Error('useToast must be used within ToastProvider');
   return ctx;
 }
-
-// Simple fade-in animation via tailwind plugin-less approach
-// Add minimal CSS if not present already.
-
