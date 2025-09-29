@@ -286,4 +286,6 @@ export const en = {
   'home.landing.characters.desc': 'Track player characters, stats and notes directly—no spreadsheets needed.',
   'home.landing.demoAccess.title': 'Instant Demo Access',
   'home.landing.demoAccess.desc': 'Open the demo map immediately to explore tools before registering.',
+	'home.landing.freeNote': 'This toolkit is free and fan-made for the Mausritter role-playing game.',
+	'home.landing.officialSite': 'Mausritter',
 };

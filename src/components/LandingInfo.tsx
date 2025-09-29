@@ -44,9 +44,21 @@ export function LandingInfo() {
 						<p className="text-stone-600 text-sm leading-relaxed">{t('home.landing.demoAccess.desc')}</p>
 					</div>
 				</div>
+				{/* Free notice & official site link */}
+				<div className="mt-12 text-center text-sm text-stone-600 space-y-3">
+					<p>{t('home.landing.freeNote')}</p>
+					<p>
+						<a
+							href="https://mausritter.com/"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-stone-800 underline underline-offset-2 hover:text-black font-medium"
+						>
+							{t('home.landing.officialSite')}
+						</a>
+					</p>
+				</div>
 			</div>
-
-			{/* Custom simple parallax (manual implementation) */}
 		</div>
 	);
 }
@@ -71,7 +83,6 @@ function SimpleParallaxStack() {
 
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const [progress, setProgress] = useState(0); // global 0..1 scroll progress
-	const DEBUG = false; // toggle overlay for tuning
 
 	useEffect(() => {
 		const scrollTarget = document.getElementById('scrollContainer') || window;
