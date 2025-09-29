@@ -53,32 +53,40 @@ export function LandingInfo() {
 
 // Simple manual parallax stack using scroll + translateY
 function SimpleParallaxStack() {
-	type ParallaxLayer = { src: string; maxShiftPct: number; top?: string, scale?: string };
+	// Layer configuration with depth: farther = smaller maxShiftPct, later start, smaller scaleDelta
+	type ParallaxLayer = {
+		src: string;
+		maxShiftPct: number;
+		startOffset: number;
+		top?: string;
+	};
 	const layers = useRef<ParallaxLayer[]>([
-		{src: '/images/parallax/Mouse1.png', maxShiftPct: 3},
-		{src: '/images/parallax/Mouse2.png', maxShiftPct: 10},
-		{src: '/images/parallax/Mouse3.png', maxShiftPct: 15, top: '-10%'},
-		{src: '/images/parallax/Mouse4.png', maxShiftPct: 17, top: '-10%'},
-		{src: '/images/parallax/Mouse5.png', maxShiftPct: 20, top: '-8%'},
-		{src: '/images/parallax/Mouse6.png', maxShiftPct: 25, top: '-3%'} ,
+		{src: '/images/parallax/Mouse1.png', maxShiftPct: 2, startOffset: 0.18},
+		{src: '/images/parallax/Mouse2.png', maxShiftPct: 9, startOffset: 0.14},
+		{src: '/images/parallax/Mouse3.png', maxShiftPct: 16, startOffset: 0.10, top: '-8%'},
+		{src: '/images/parallax/Mouse4.png', maxShiftPct: 24, startOffset: 0.07, top: '-8%'},
+		{src: '/images/parallax/Mouse5.png', maxShiftPct: 34, startOffset: 0.05, top: '-4%'},
+		{src: '/images/parallax/Mouse6.png', maxShiftPct: 46, startOffset: 0.00, top: '8%'},
 	]);
+
 	const containerRef = useRef<HTMLDivElement | null>(null);
-	const [progress, setProgress] = useState(0); // 0..1 scroll progress through section
+	const [progress, setProgress] = useState(0); // global 0..1 scroll progress
+	const DEBUG = false; // toggle overlay for tuning
 
 	useEffect(() => {
 		const scrollTarget = document.getElementById('scrollContainer') || window;
 		let ticking = false;
 
+		const clamp = (v: number, min = 0, max = 1) => v < min ? min : v > max ? max : v;
+
 		function update() {
 			if (!containerRef.current) return;
 			const rect = containerRef.current.getBoundingClientRect();
 			const vh = window.innerHeight;
-			// progress: 0 when section bottom touches viewport bottom; 1 when it fully passed + extra viewport
+			// progress spans from when bottom hits viewport bottom (0) until fully scrolled past (1)
 			const visible = vh - rect.top;
 			const total = vh + rect.height;
-			let p = visible / total;
-			p = Math.max(0, Math.min(1, p));
-			setProgress(p);
+			setProgress(clamp(visible / total));
 			ticking = false;
 		}
 
@@ -98,20 +106,26 @@ function SimpleParallaxStack() {
 		};
 	}, []);
 
+	const clamp = (v: number, min = 0, max = 1) => v < min ? min : v > max ? max : v;
+
 	return (
 		<div ref={containerRef} className="relative h-[40vw] w-full overflow-hidden select-none pointer-events-none">
 			{layers.current.map((layer, i) => {
-				// Percentage shift relative to element height (0..maxShiftPct)
-				const shiftPct = -progress * layer.maxShiftPct; // negative moves up
+				// Per-layer local progress with delayed start
+				let local = (progress - layer.startOffset) / (1 - layer.startOffset);
+				local = clamp(local);
+				// Easing to emphasize mid portion
+				const eased = Math.pow(local, 1.22);
+				const shiftPct = -eased * layer.maxShiftPct; // translate up
 				return (
 					<div
 						key={layer.src}
-						className="absolute left-0 w-full"
+						className="absolute left-0 w-full will-change-transform"
 						style={{
-							transform: `translateY(${shiftPct}%)`,
+							transform: `translate3d(0, ${shiftPct}%, 0)`,
 							willChange: 'transform',
 							zIndex: 10 + i,
-							top: layer.top ?? 'initial',
+							top: layer.top || '0px',
 						}}
 					>
 						<Image
@@ -120,7 +134,9 @@ function SimpleParallaxStack() {
 							src={layer.src}
 							alt="Decorative parallax layer"
 							priority={i === 0}
-							className="w-full h-auto"
+							loading={i === 0 ? 'eager' : 'lazy'}
+							decoding={i === 0 ? 'sync' : 'async'}
+							className="w-full h-auto select-none pointer-events-none"
 							draggable={false}
 						/>
 					</div>
