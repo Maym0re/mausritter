@@ -8,7 +8,7 @@ import Image from 'next/image';
 export function LandingInfo() {
 	return (
 		<div className="bg-stone-50">
-			<div className="w-full max-w-3xl mx-auto px-5 pt-16 pb-10 h-[600px]">
+			<div className="w-full max-w-3xl mx-auto px-5 pt-16 pb-10">
 				<h1 className="text-4xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6 text-center">
 					{t('home.landing.title')}
 				</h1>
@@ -27,24 +27,9 @@ export function LandingInfo() {
 				</div>
 			</div>
 
-			{/*<ParallaxProvider scrollContainer={scrollEl}>*/}
-			{/*	<ParallaxBanner*/}
-			{/*		aria-label={t('home.landing.parallax.alt')}*/}
-			{/*		layers={[*/}
-			{/*			{ image: '/images/parallax/Mouse1.png', speed: 0, className: 'w-full', expanded: false },*/}
-			{/*			{ image: '/images/parallax/Mouse2.png', speed: 5, className: 'w-full', expanded: false },*/}
-			{/*			{ image: '/images/parallax/Mouse3.png', speed: 10, className: 'w-full', expanded: false },*/}
-			{/*			{ image: '/images/parallax/Mouse4.png', speed: 13, className: 'w-full', expanded: false },*/}
-			{/*			{ image: '/images/parallax/Mouse5.png', speed: 15, className: 'w-full', expanded: false },*/}
-			{/*			{ image: '/images/parallax/Mouse6.png', speed: 17, className: 'w-full', expanded: true, },*/}
-			{/*		]}*/}
-			{/*		className="w-full overflow-hidden h-[650px]"*/}
-			{/*	/>*/}
-			{/*</ParallaxProvider>*/}
-
 			<SimpleParallaxStack/>
 
-			<div className="w-full max-w-5xl mx-auto px-5 py-20 space-y-12 h-[1000px]">
+			<div className="w-full max-w-5xl mx-auto px-5 py-20 space-y-12">
 				<div className="grid md:grid-cols-3 gap-8">
 					<div className="bg-white rounded-xl border border-stone-200 shadow-sm p-6 flex flex-col">
 						<h3 className="text-lg font-semibold text-stone-800 mb-2">{t('home.landing.world.title')}</h3>
@@ -68,14 +53,13 @@ export function LandingInfo() {
 
 // Simple manual parallax stack using scroll + translateY
 function SimpleParallaxStack() {
-	// Layer configuration: farther layers have smaller maxShiftPct (percentage of container height)
 	type ParallaxLayer = { src: string; maxShiftPct: number; top?: string, scale?: string };
 	const layers = useRef<ParallaxLayer[]>([
-		{src: '/images/parallax/Mouse1.png', maxShiftPct: 0},
-		{src: '/images/parallax/Mouse2.png', maxShiftPct: 5},
-		{src: '/images/parallax/Mouse3.png', maxShiftPct: 13, top: '-10%'},
-		{src: '/images/parallax/Mouse4.png', maxShiftPct: 15, top: '-10%'},
-		{src: '/images/parallax/Mouse5.png', maxShiftPct: 17, top: '-8%'},
+		{src: '/images/parallax/Mouse1.png', maxShiftPct: 3},
+		{src: '/images/parallax/Mouse2.png', maxShiftPct: 10},
+		{src: '/images/parallax/Mouse3.png', maxShiftPct: 15, top: '-10%'},
+		{src: '/images/parallax/Mouse4.png', maxShiftPct: 17, top: '-10%'},
+		{src: '/images/parallax/Mouse5.png', maxShiftPct: 20, top: '-8%'},
 		{src: '/images/parallax/Mouse6.png', maxShiftPct: 25, top: '-3%'} ,
 	]);
 	const containerRef = useRef<HTMLDivElement | null>(null);
@@ -124,7 +108,7 @@ function SimpleParallaxStack() {
 						key={layer.src}
 						className="absolute left-0 w-full"
 						style={{
-							transform: `translateY(${shiftPct}%) scale(${layer.scale ?? 1})`,
+							transform: `translateY(${shiftPct}%)`,
 							willChange: 'transform',
 							zIndex: 10 + i,
 							top: layer.top ?? 'initial',
