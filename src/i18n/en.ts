@@ -241,7 +241,7 @@ export const en = {
 	'campaign.joinSuccess': 'Joined campaign',
 	'campaign.joinError': 'Failed to join campaign',
   'home.landing.title': 'Mausritter Campaign Toolkit',
-  'home.landing.subtitle': 'Create a world, manage characters, track time and events for your adventures.',
+  'home.landing.subtitle': 'Your free campaign manager for Mausritter: maps, mice, and adventures.',
   'home.landing.ctaPrimary': 'Sign in to create a campaign',
   'home.landing.demo': 'Open Demo',
   'home.landing.licenseHint': 'Image uses placeholder asset / CC0 suggestion',

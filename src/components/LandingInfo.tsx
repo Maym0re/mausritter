@@ -76,8 +76,8 @@ function SimpleParallaxStack() {
 		{src: '/images/parallax/Mouse1.png', maxShiftPct: 2, startOffset: 0.18},
 		{src: '/images/parallax/Mouse2.png', maxShiftPct: 10, startOffset: 0.14},
 		{src: '/images/parallax/Mouse3.png', maxShiftPct: 16, startOffset: 0.10, top: '-8%'},
-		{src: '/images/parallax/Mouse4.png', maxShiftPct: 20, startOffset: 0.07, top: '-8%'},
-		{src: '/images/parallax/Mouse5.png', maxShiftPct: 22, startOffset: 0.05, top: '-4%'},
+		{src: '/images/parallax/Mouse4.png', maxShiftPct: 20, startOffset: 0.07, top: '-9%'},
+		{src: '/images/parallax/Mouse5.png', maxShiftPct: 22, startOffset: 0.05, top: '-5%'},
 		{src: '/images/parallax/Mouse6.png', maxShiftPct: 24, startOffset: -0.5, top: '0'},
 	]);
 
