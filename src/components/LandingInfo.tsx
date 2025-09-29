@@ -69,14 +69,14 @@ export function LandingInfo() {
 // Simple manual parallax stack using scroll + translateY
 function SimpleParallaxStack() {
 	// Layer configuration: farther layers have smaller maxShiftPct (percentage of container height)
-	type ParallaxLayer = { src: string; maxShiftPct: number; top?: string };
+	type ParallaxLayer = { src: string; maxShiftPct: number; top?: string, scale?: string };
 	const layers = useRef<ParallaxLayer[]>([
-		{src: '/images/parallax/Mouse1.png', maxShiftPct: 3},
-		{src: '/images/parallax/Mouse2.png', maxShiftPct: 10},
-		{src: '/images/parallax/Mouse3.png', maxShiftPct: 18, top: '-90px'},
-		{src: '/images/parallax/Mouse4.png', maxShiftPct: 26, top: '-90px'},
-		{src: '/images/parallax/Mouse5.png', maxShiftPct: 34, top: '-90px'},
-		{src: '/images/parallax/Mouse6.png', maxShiftPct: 32}, // foreground a bit less to avoid overshoot
+		{src: '/images/parallax/Mouse1.png', maxShiftPct: 0},
+		{src: '/images/parallax/Mouse2.png', maxShiftPct: 5},
+		{src: '/images/parallax/Mouse3.png', maxShiftPct: 13, top: '-10%'},
+		{src: '/images/parallax/Mouse4.png', maxShiftPct: 15, top: '-10%'},
+		{src: '/images/parallax/Mouse5.png', maxShiftPct: 17, top: '-8%'},
+		{src: '/images/parallax/Mouse6.png', maxShiftPct: 25, top: '-3%'} ,
 	]);
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const [progress, setProgress] = useState(0); // 0..1 scroll progress through section
@@ -117,19 +117,17 @@ function SimpleParallaxStack() {
 	return (
 		<div ref={containerRef} className="relative h-[40vw] w-full overflow-hidden select-none pointer-events-none">
 			{layers.current.map((layer, i) => {
-				// Convert percentage to pixel shift based on container height
-				const containerHeight = containerRef.current?.offsetHeight || 0;
-				const maxShiftPx = (layer.maxShiftPct / 100) * containerHeight;
-				const shiftPx = -progress * maxShiftPx; // negative moves up
+				// Percentage shift relative to element height (0..maxShiftPct)
+				const shiftPct = -progress * layer.maxShiftPct; // negative moves up
 				return (
 					<div
 						key={layer.src}
 						className="absolute left-0 w-full"
 						style={{
-							transform: `translateY(${shiftPx}px)`,
+							transform: `translateY(${shiftPct}%) scale(${layer.scale ?? 1})`,
 							willChange: 'transform',
 							zIndex: 10 + i,
-							top: layer.top || '0px',
+							top: layer.top ?? 'initial',
 						}}
 					>
 						<Image
