@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mausritter Campaign Toolkit
+
+Interactive web toolkit for running Mausritter campaigns: hex map builder, character management, time & travel tracker, markers, images overlay and demo access without registration.
+
+Live demo / production: https://mausritter.vercel.app/
+
+## Contents
+- Overview
+- Key Features
+- Tech Stack
+- Getting Started
+- Environment Variables
+- Available Scripts
+- i18n
+- Deployment
+- License
+
+## Overview
+This application helps GMs and players manage a Mausritter campaign in the browser. It focuses on fast map interaction, lightweight persistence and an accessible demo mode. The UI is optimized for desktop / tablet (mobile WIP).
+
+## Key Features
+- Hex Map Builder (add, edit, label, reveal, random generation helpers)
+- Drag & drop / paste images onto the map (clipboard image pasting supported)
+- Markers system with pointer icons and z-order
+- Character manager & character generator (rules-inspired random generation)
+- Time & Travel tracker (round / turn / watch, weather events)
+- Context menu for quick actions (e.g., paste image)
+- Demo campaign (no auth) for instant trial
+- Dice roller with log & multiple color themes
+- GM / Player role separation (visibility & editing constraints)
+- Persistent notes (player + GM master notes)
+- Clipboard image storage size limits and marker count limits with toasts
+
+## Tech Stack
+- Framework: Next.js (App Router)
+- Language: TypeScript
+- UI: React + Tailwind CSS + custom components
+- Canvas / Rendering: Konva (react-konva)
+- Hex math: honeycomb-grid
+- Auth: NextAuth (GitHub / Google + credentials)
+- ORM / DB: Prisma + (likely PostgreSQL/SQLite depending on deployment)
+- i18n: simple key-based module (src/i18n)
+- Build / Deploy: Vercel
+- Package manager: pnpm
 
 ## Getting Started
-
-First, run the development server:
-
+Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+```
+Run development server:
+```bash
 pnpm dev
-# or
-bun dev
+```
+Open http://localhost:3000
+
+Generate Prisma client (after editing schema):
+```bash
+pnpm prisma generate
+```
+Run initial seed (optional demo data):
+```bash
+pnpm ts-node prisma/seed.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Available Scripts
+- pnpm dev – start dev server
+- pnpm build – production build
+- pnpm start – run built app
+- pnpm lint – lint sources
+- pnpm prisma generate – regenerate Prisma client
+- pnpm prisma migrate dev – create/apply migrations
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## i18n
+Currently English keys; structure allows extension. To add another language create a file similar to en.ts and update i18n/index.ts export logic.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Refer to prisma/schema.prisma for authoritative definitions.
 
-## Learn More
+## Deployment
+Deployed via Vercel (build: next build). Ensure DATABASE_URL and NEXTAUTH secrets configured in project settings. For production OAuth, set provider callback URLs to your Vercel domain.
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
+Insert chosen license (e.g., MIT) here. If using Mausritter IP, respect original game licensing; this toolkit is fan-made and unaffiliated.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+Feel free to open issues for bugs, feature suggestions or performance regressions.
