@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CoatWhereInputObjectSchema } from './CoatWhereInput.schema'
+import { CoatWhereInputObjectSchema as CoatWhereInputObjectSchema } from './CoatWhereInput.schema'
 
 const makeSchema = () => z.object({
   is: z.lazy(() => CoatWhereInputObjectSchema).optional(),

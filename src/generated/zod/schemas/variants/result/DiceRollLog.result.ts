@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const DiceRollLogResultSchema = z.object({
     id: z.string(),
@@ -10,7 +9,7 @@ export const DiceRollLogResultSchema = z.object({
     notation: z.string(),
     total: z.number().int(),
     createdAt: z.date(),
-    entries: z.array(z.unknown()).array()
+    entries: z.array(z.unknown())
 }).strict();
 
 export type DiceRollLogResultType = z.infer<typeof DiceRollLogResultSchema>;

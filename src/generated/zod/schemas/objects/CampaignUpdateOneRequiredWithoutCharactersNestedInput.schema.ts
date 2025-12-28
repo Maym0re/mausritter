@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignCreateWithoutCharactersInputObjectSchema } from './CampaignCreateWithoutCharactersInput.schema';
-import { CampaignUncheckedCreateWithoutCharactersInputObjectSchema } from './CampaignUncheckedCreateWithoutCharactersInput.schema';
-import { CampaignCreateOrConnectWithoutCharactersInputObjectSchema } from './CampaignCreateOrConnectWithoutCharactersInput.schema';
-import { CampaignUpsertWithoutCharactersInputObjectSchema } from './CampaignUpsertWithoutCharactersInput.schema';
-import { CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema';
-import { CampaignUpdateToOneWithWhereWithoutCharactersInputObjectSchema } from './CampaignUpdateToOneWithWhereWithoutCharactersInput.schema';
-import { CampaignUpdateWithoutCharactersInputObjectSchema } from './CampaignUpdateWithoutCharactersInput.schema';
-import { CampaignUncheckedUpdateWithoutCharactersInputObjectSchema } from './CampaignUncheckedUpdateWithoutCharactersInput.schema'
+import { CampaignCreateWithoutCharactersInputObjectSchema as CampaignCreateWithoutCharactersInputObjectSchema } from './CampaignCreateWithoutCharactersInput.schema';
+import { CampaignUncheckedCreateWithoutCharactersInputObjectSchema as CampaignUncheckedCreateWithoutCharactersInputObjectSchema } from './CampaignUncheckedCreateWithoutCharactersInput.schema';
+import { CampaignCreateOrConnectWithoutCharactersInputObjectSchema as CampaignCreateOrConnectWithoutCharactersInputObjectSchema } from './CampaignCreateOrConnectWithoutCharactersInput.schema';
+import { CampaignUpsertWithoutCharactersInputObjectSchema as CampaignUpsertWithoutCharactersInputObjectSchema } from './CampaignUpsertWithoutCharactersInput.schema';
+import { CampaignWhereUniqueInputObjectSchema as CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema';
+import { CampaignUpdateToOneWithWhereWithoutCharactersInputObjectSchema as CampaignUpdateToOneWithWhereWithoutCharactersInputObjectSchema } from './CampaignUpdateToOneWithWhereWithoutCharactersInput.schema';
+import { CampaignUpdateWithoutCharactersInputObjectSchema as CampaignUpdateWithoutCharactersInputObjectSchema } from './CampaignUpdateWithoutCharactersInput.schema';
+import { CampaignUncheckedUpdateWithoutCharactersInputObjectSchema as CampaignUncheckedUpdateWithoutCharactersInputObjectSchema } from './CampaignUncheckedUpdateWithoutCharactersInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => CampaignCreateWithoutCharactersInputObjectSchema), z.lazy(() => CampaignUncheckedCreateWithoutCharactersInputObjectSchema)]).optional(),

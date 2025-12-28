@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { MapMarkerScalarWhereInputObjectSchema } from './MapMarkerScalarWhereInput.schema';
-import { MapMarkerUpdateManyMutationInputObjectSchema } from './MapMarkerUpdateManyMutationInput.schema';
-import { MapMarkerUncheckedUpdateManyWithoutHexMapInputObjectSchema } from './MapMarkerUncheckedUpdateManyWithoutHexMapInput.schema'
+import { MapMarkerScalarWhereInputObjectSchema as MapMarkerScalarWhereInputObjectSchema } from './MapMarkerScalarWhereInput.schema';
+import { MapMarkerUpdateManyMutationInputObjectSchema as MapMarkerUpdateManyMutationInputObjectSchema } from './MapMarkerUpdateManyMutationInput.schema';
+import { MapMarkerUncheckedUpdateManyWithoutHexMapInputObjectSchema as MapMarkerUncheckedUpdateManyWithoutHexMapInputObjectSchema } from './MapMarkerUncheckedUpdateManyWithoutHexMapInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => MapMarkerScalarWhereInputObjectSchema),

@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { InventoryItemSelectObjectSchema } from './InventoryItemSelect.schema';
-import { InventoryItemIncludeObjectSchema } from './InventoryItemInclude.schema'
+import { InventoryItemSelectObjectSchema as InventoryItemSelectObjectSchema } from './InventoryItemSelect.schema';
+import { InventoryItemIncludeObjectSchema as InventoryItemIncludeObjectSchema } from './InventoryItemInclude.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => InventoryItemSelectObjectSchema).optional(),

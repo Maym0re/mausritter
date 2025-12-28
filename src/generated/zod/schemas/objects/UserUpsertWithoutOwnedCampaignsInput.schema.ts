@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { UserUpdateWithoutOwnedCampaignsInputObjectSchema } from './UserUpdateWithoutOwnedCampaignsInput.schema';
-import { UserUncheckedUpdateWithoutOwnedCampaignsInputObjectSchema } from './UserUncheckedUpdateWithoutOwnedCampaignsInput.schema';
-import { UserCreateWithoutOwnedCampaignsInputObjectSchema } from './UserCreateWithoutOwnedCampaignsInput.schema';
-import { UserUncheckedCreateWithoutOwnedCampaignsInputObjectSchema } from './UserUncheckedCreateWithoutOwnedCampaignsInput.schema';
-import { UserWhereInputObjectSchema } from './UserWhereInput.schema'
+import { UserUpdateWithoutOwnedCampaignsInputObjectSchema as UserUpdateWithoutOwnedCampaignsInputObjectSchema } from './UserUpdateWithoutOwnedCampaignsInput.schema';
+import { UserUncheckedUpdateWithoutOwnedCampaignsInputObjectSchema as UserUncheckedUpdateWithoutOwnedCampaignsInputObjectSchema } from './UserUncheckedUpdateWithoutOwnedCampaignsInput.schema';
+import { UserCreateWithoutOwnedCampaignsInputObjectSchema as UserCreateWithoutOwnedCampaignsInputObjectSchema } from './UserCreateWithoutOwnedCampaignsInput.schema';
+import { UserUncheckedCreateWithoutOwnedCampaignsInputObjectSchema as UserUncheckedCreateWithoutOwnedCampaignsInputObjectSchema } from './UserUncheckedCreateWithoutOwnedCampaignsInput.schema';
+import { UserWhereInputObjectSchema as UserWhereInputObjectSchema } from './UserWhereInput.schema'
 
 const makeSchema = () => z.object({
   update: z.union([z.lazy(() => UserUpdateWithoutOwnedCampaignsInputObjectSchema), z.lazy(() => UserUncheckedUpdateWithoutOwnedCampaignsInputObjectSchema)]),

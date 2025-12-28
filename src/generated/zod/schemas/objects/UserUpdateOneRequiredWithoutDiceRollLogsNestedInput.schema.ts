@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { UserCreateWithoutDiceRollLogsInputObjectSchema } from './UserCreateWithoutDiceRollLogsInput.schema';
-import { UserUncheckedCreateWithoutDiceRollLogsInputObjectSchema } from './UserUncheckedCreateWithoutDiceRollLogsInput.schema';
-import { UserCreateOrConnectWithoutDiceRollLogsInputObjectSchema } from './UserCreateOrConnectWithoutDiceRollLogsInput.schema';
-import { UserUpsertWithoutDiceRollLogsInputObjectSchema } from './UserUpsertWithoutDiceRollLogsInput.schema';
-import { UserWhereUniqueInputObjectSchema } from './UserWhereUniqueInput.schema';
-import { UserUpdateToOneWithWhereWithoutDiceRollLogsInputObjectSchema } from './UserUpdateToOneWithWhereWithoutDiceRollLogsInput.schema';
-import { UserUpdateWithoutDiceRollLogsInputObjectSchema } from './UserUpdateWithoutDiceRollLogsInput.schema';
-import { UserUncheckedUpdateWithoutDiceRollLogsInputObjectSchema } from './UserUncheckedUpdateWithoutDiceRollLogsInput.schema'
+import { UserCreateWithoutDiceRollLogsInputObjectSchema as UserCreateWithoutDiceRollLogsInputObjectSchema } from './UserCreateWithoutDiceRollLogsInput.schema';
+import { UserUncheckedCreateWithoutDiceRollLogsInputObjectSchema as UserUncheckedCreateWithoutDiceRollLogsInputObjectSchema } from './UserUncheckedCreateWithoutDiceRollLogsInput.schema';
+import { UserCreateOrConnectWithoutDiceRollLogsInputObjectSchema as UserCreateOrConnectWithoutDiceRollLogsInputObjectSchema } from './UserCreateOrConnectWithoutDiceRollLogsInput.schema';
+import { UserUpsertWithoutDiceRollLogsInputObjectSchema as UserUpsertWithoutDiceRollLogsInputObjectSchema } from './UserUpsertWithoutDiceRollLogsInput.schema';
+import { UserWhereUniqueInputObjectSchema as UserWhereUniqueInputObjectSchema } from './UserWhereUniqueInput.schema';
+import { UserUpdateToOneWithWhereWithoutDiceRollLogsInputObjectSchema as UserUpdateToOneWithWhereWithoutDiceRollLogsInputObjectSchema } from './UserUpdateToOneWithWhereWithoutDiceRollLogsInput.schema';
+import { UserUpdateWithoutDiceRollLogsInputObjectSchema as UserUpdateWithoutDiceRollLogsInputObjectSchema } from './UserUpdateWithoutDiceRollLogsInput.schema';
+import { UserUncheckedUpdateWithoutDiceRollLogsInputObjectSchema as UserUncheckedUpdateWithoutDiceRollLogsInputObjectSchema } from './UserUncheckedUpdateWithoutDiceRollLogsInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => UserCreateWithoutDiceRollLogsInputObjectSchema), z.lazy(() => UserUncheckedCreateWithoutDiceRollLogsInputObjectSchema)]).optional(),

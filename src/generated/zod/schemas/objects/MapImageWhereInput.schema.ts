@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { FloatFilterObjectSchema } from './FloatFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { HexMapScalarRelationFilterObjectSchema } from './HexMapScalarRelationFilter.schema';
-import { HexMapWhereInputObjectSchema } from './HexMapWhereInput.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { FloatFilterObjectSchema as FloatFilterObjectSchema } from './FloatFilter.schema';
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { HexMapScalarRelationFilterObjectSchema as HexMapScalarRelationFilterObjectSchema } from './HexMapScalarRelationFilter.schema';
+import { HexMapWhereInputObjectSchema as HexMapWhereInputObjectSchema } from './HexMapWhereInput.schema'
 
 const mapimagewhereinputSchema = z.object({
   AND: z.union([z.lazy(() => MapImageWhereInputObjectSchema), z.lazy(() => MapImageWhereInputObjectSchema).array()]).optional(),

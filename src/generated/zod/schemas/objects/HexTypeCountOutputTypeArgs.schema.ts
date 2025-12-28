@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexTypeCountOutputTypeSelectObjectSchema } from './HexTypeCountOutputTypeSelect.schema'
+import { HexTypeCountOutputTypeSelectObjectSchema as HexTypeCountOutputTypeSelectObjectSchema } from './HexTypeCountOutputTypeSelect.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => HexTypeCountOutputTypeSelectObjectSchema).optional()

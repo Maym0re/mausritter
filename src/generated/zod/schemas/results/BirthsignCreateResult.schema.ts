@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const BirthsignCreateResultSchema = z.object({
   id: z.string(),
   sign: z.string(),

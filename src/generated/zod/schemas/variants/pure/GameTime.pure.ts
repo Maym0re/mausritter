@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const GameTimeModelSchema = z.object({
     id: z.string(),
@@ -13,4 +12,4 @@ export const GameTimeModelSchema = z.object({
     updatedAt: z.date()
 }).strict();
 
-export type GameTimeModelType = z.infer<typeof GameTimeModelSchema>;
+export type GameTimePureType = z.infer<typeof GameTimeModelSchema>;

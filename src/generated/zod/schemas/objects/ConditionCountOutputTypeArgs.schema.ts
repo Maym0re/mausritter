@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { ConditionCountOutputTypeSelectObjectSchema } from './ConditionCountOutputTypeSelect.schema'
+import { ConditionCountOutputTypeSelectObjectSchema as ConditionCountOutputTypeSelectObjectSchema } from './ConditionCountOutputTypeSelect.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => ConditionCountOutputTypeSelectObjectSchema).optional()

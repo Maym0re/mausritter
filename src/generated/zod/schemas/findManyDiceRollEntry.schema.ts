@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { DiceRollEntryIncludeObjectSchema } from './objects/DiceRollEntryInclude.schema';
-import { DiceRollEntryOrderByWithRelationInputObjectSchema } from './objects/DiceRollEntryOrderByWithRelationInput.schema';
-import { DiceRollEntryWhereInputObjectSchema } from './objects/DiceRollEntryWhereInput.schema';
-import { DiceRollEntryWhereUniqueInputObjectSchema } from './objects/DiceRollEntryWhereUniqueInput.schema';
+import * as z from 'zod';
+import { DiceRollEntryIncludeObjectSchema as DiceRollEntryIncludeObjectSchema } from './objects/DiceRollEntryInclude.schema';
+import { DiceRollEntryOrderByWithRelationInputObjectSchema as DiceRollEntryOrderByWithRelationInputObjectSchema } from './objects/DiceRollEntryOrderByWithRelationInput.schema';
+import { DiceRollEntryWhereInputObjectSchema as DiceRollEntryWhereInputObjectSchema } from './objects/DiceRollEntryWhereInput.schema';
+import { DiceRollEntryWhereUniqueInputObjectSchema as DiceRollEntryWhereUniqueInputObjectSchema } from './objects/DiceRollEntryWhereUniqueInput.schema';
 import { DiceRollEntryScalarFieldEnumSchema } from './enums/DiceRollEntryScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

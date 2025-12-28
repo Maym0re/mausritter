@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { MapMarkerIncludeObjectSchema } from './objects/MapMarkerInclude.schema';
-import { MapMarkerOrderByWithRelationInputObjectSchema } from './objects/MapMarkerOrderByWithRelationInput.schema';
-import { MapMarkerWhereInputObjectSchema } from './objects/MapMarkerWhereInput.schema';
-import { MapMarkerWhereUniqueInputObjectSchema } from './objects/MapMarkerWhereUniqueInput.schema';
+import * as z from 'zod';
+import { MapMarkerIncludeObjectSchema as MapMarkerIncludeObjectSchema } from './objects/MapMarkerInclude.schema';
+import { MapMarkerOrderByWithRelationInputObjectSchema as MapMarkerOrderByWithRelationInputObjectSchema } from './objects/MapMarkerOrderByWithRelationInput.schema';
+import { MapMarkerWhereInputObjectSchema as MapMarkerWhereInputObjectSchema } from './objects/MapMarkerWhereInput.schema';
+import { MapMarkerWhereUniqueInputObjectSchema as MapMarkerWhereUniqueInputObjectSchema } from './objects/MapMarkerWhereUniqueInput.schema';
 import { MapMarkerScalarFieldEnumSchema } from './enums/MapMarkerScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

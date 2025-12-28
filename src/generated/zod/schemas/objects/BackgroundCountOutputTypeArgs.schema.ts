@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { BackgroundCountOutputTypeSelectObjectSchema } from './BackgroundCountOutputTypeSelect.schema'
+import { BackgroundCountOutputTypeSelectObjectSchema as BackgroundCountOutputTypeSelectObjectSchema } from './BackgroundCountOutputTypeSelect.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => BackgroundCountOutputTypeSelectObjectSchema).optional()

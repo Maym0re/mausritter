@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkCountOutputTypeSelectObjectSchema } from './LandmarkCountOutputTypeSelect.schema'
+import { LandmarkCountOutputTypeSelectObjectSchema as LandmarkCountOutputTypeSelectObjectSchema } from './LandmarkCountOutputTypeSelect.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => LandmarkCountOutputTypeSelectObjectSchema).optional()

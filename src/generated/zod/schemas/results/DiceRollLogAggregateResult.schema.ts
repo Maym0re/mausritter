@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const DiceRollLogAggregateResultSchema = z.object({  _count: z.object({
     id: z.number(),
     campaignId: z.number(),

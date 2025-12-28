@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { WeatherEntryIncludeObjectSchema } from './objects/WeatherEntryInclude.schema';
-import { WeatherEntryOrderByWithRelationInputObjectSchema } from './objects/WeatherEntryOrderByWithRelationInput.schema';
-import { WeatherEntryWhereInputObjectSchema } from './objects/WeatherEntryWhereInput.schema';
-import { WeatherEntryWhereUniqueInputObjectSchema } from './objects/WeatherEntryWhereUniqueInput.schema';
+import * as z from 'zod';
+import { WeatherEntryIncludeObjectSchema as WeatherEntryIncludeObjectSchema } from './objects/WeatherEntryInclude.schema';
+import { WeatherEntryOrderByWithRelationInputObjectSchema as WeatherEntryOrderByWithRelationInputObjectSchema } from './objects/WeatherEntryOrderByWithRelationInput.schema';
+import { WeatherEntryWhereInputObjectSchema as WeatherEntryWhereInputObjectSchema } from './objects/WeatherEntryWhereInput.schema';
+import { WeatherEntryWhereUniqueInputObjectSchema as WeatherEntryWhereUniqueInputObjectSchema } from './objects/WeatherEntryWhereUniqueInput.schema';
 import { WeatherEntryScalarFieldEnumSchema } from './enums/WeatherEntryScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

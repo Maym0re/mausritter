@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignCreateWithoutGameTimeInputObjectSchema } from './CampaignCreateWithoutGameTimeInput.schema';
-import { CampaignUncheckedCreateWithoutGameTimeInputObjectSchema } from './CampaignUncheckedCreateWithoutGameTimeInput.schema';
-import { CampaignCreateOrConnectWithoutGameTimeInputObjectSchema } from './CampaignCreateOrConnectWithoutGameTimeInput.schema';
-import { CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema'
+import { CampaignCreateWithoutGameTimeInputObjectSchema as CampaignCreateWithoutGameTimeInputObjectSchema } from './CampaignCreateWithoutGameTimeInput.schema';
+import { CampaignUncheckedCreateWithoutGameTimeInputObjectSchema as CampaignUncheckedCreateWithoutGameTimeInputObjectSchema } from './CampaignUncheckedCreateWithoutGameTimeInput.schema';
+import { CampaignCreateOrConnectWithoutGameTimeInputObjectSchema as CampaignCreateOrConnectWithoutGameTimeInputObjectSchema } from './CampaignCreateOrConnectWithoutGameTimeInput.schema';
+import { CampaignWhereUniqueInputObjectSchema as CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => CampaignCreateWithoutGameTimeInputObjectSchema), z.lazy(() => CampaignUncheckedCreateWithoutGameTimeInputObjectSchema)]).optional(),

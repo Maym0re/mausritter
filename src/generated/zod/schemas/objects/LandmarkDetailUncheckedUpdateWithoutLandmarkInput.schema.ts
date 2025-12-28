@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
-import { NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
-import { HexCellUncheckedUpdateManyWithoutLandmarkDetailNestedInputObjectSchema } from './HexCellUncheckedUpdateManyWithoutLandmarkDetailNestedInput.schema'
+import { StringFieldUpdateOperationsInputObjectSchema as StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
+import { NullableStringFieldUpdateOperationsInputObjectSchema as NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
+import { HexCellUncheckedUpdateManyWithoutLandmarkDetailNestedInputObjectSchema as HexCellUncheckedUpdateManyWithoutLandmarkDetailNestedInputObjectSchema } from './HexCellUncheckedUpdateManyWithoutLandmarkDetailNestedInput.schema'
 
 const makeSchema = () => z.object({
   id: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),

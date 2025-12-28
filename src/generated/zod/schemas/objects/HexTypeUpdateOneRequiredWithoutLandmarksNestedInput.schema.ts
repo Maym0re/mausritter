@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexTypeCreateWithoutLandmarksInputObjectSchema } from './HexTypeCreateWithoutLandmarksInput.schema';
-import { HexTypeUncheckedCreateWithoutLandmarksInputObjectSchema } from './HexTypeUncheckedCreateWithoutLandmarksInput.schema';
-import { HexTypeCreateOrConnectWithoutLandmarksInputObjectSchema } from './HexTypeCreateOrConnectWithoutLandmarksInput.schema';
-import { HexTypeUpsertWithoutLandmarksInputObjectSchema } from './HexTypeUpsertWithoutLandmarksInput.schema';
-import { HexTypeWhereUniqueInputObjectSchema } from './HexTypeWhereUniqueInput.schema';
-import { HexTypeUpdateToOneWithWhereWithoutLandmarksInputObjectSchema } from './HexTypeUpdateToOneWithWhereWithoutLandmarksInput.schema';
-import { HexTypeUpdateWithoutLandmarksInputObjectSchema } from './HexTypeUpdateWithoutLandmarksInput.schema';
-import { HexTypeUncheckedUpdateWithoutLandmarksInputObjectSchema } from './HexTypeUncheckedUpdateWithoutLandmarksInput.schema'
+import { HexTypeCreateWithoutLandmarksInputObjectSchema as HexTypeCreateWithoutLandmarksInputObjectSchema } from './HexTypeCreateWithoutLandmarksInput.schema';
+import { HexTypeUncheckedCreateWithoutLandmarksInputObjectSchema as HexTypeUncheckedCreateWithoutLandmarksInputObjectSchema } from './HexTypeUncheckedCreateWithoutLandmarksInput.schema';
+import { HexTypeCreateOrConnectWithoutLandmarksInputObjectSchema as HexTypeCreateOrConnectWithoutLandmarksInputObjectSchema } from './HexTypeCreateOrConnectWithoutLandmarksInput.schema';
+import { HexTypeUpsertWithoutLandmarksInputObjectSchema as HexTypeUpsertWithoutLandmarksInputObjectSchema } from './HexTypeUpsertWithoutLandmarksInput.schema';
+import { HexTypeWhereUniqueInputObjectSchema as HexTypeWhereUniqueInputObjectSchema } from './HexTypeWhereUniqueInput.schema';
+import { HexTypeUpdateToOneWithWhereWithoutLandmarksInputObjectSchema as HexTypeUpdateToOneWithWhereWithoutLandmarksInputObjectSchema } from './HexTypeUpdateToOneWithWhereWithoutLandmarksInput.schema';
+import { HexTypeUpdateWithoutLandmarksInputObjectSchema as HexTypeUpdateWithoutLandmarksInputObjectSchema } from './HexTypeUpdateWithoutLandmarksInput.schema';
+import { HexTypeUncheckedUpdateWithoutLandmarksInputObjectSchema as HexTypeUncheckedUpdateWithoutLandmarksInputObjectSchema } from './HexTypeUncheckedUpdateWithoutLandmarksInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => HexTypeCreateWithoutLandmarksInputObjectSchema), z.lazy(() => HexTypeUncheckedCreateWithoutLandmarksInputObjectSchema)]).optional(),

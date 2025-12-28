@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { CoatIncludeObjectSchema } from './objects/CoatInclude.schema';
-import { CoatOrderByWithRelationInputObjectSchema } from './objects/CoatOrderByWithRelationInput.schema';
-import { CoatWhereInputObjectSchema } from './objects/CoatWhereInput.schema';
-import { CoatWhereUniqueInputObjectSchema } from './objects/CoatWhereUniqueInput.schema';
+import * as z from 'zod';
+import { CoatIncludeObjectSchema as CoatIncludeObjectSchema } from './objects/CoatInclude.schema';
+import { CoatOrderByWithRelationInputObjectSchema as CoatOrderByWithRelationInputObjectSchema } from './objects/CoatOrderByWithRelationInput.schema';
+import { CoatWhereInputObjectSchema as CoatWhereInputObjectSchema } from './objects/CoatWhereInput.schema';
+import { CoatWhereUniqueInputObjectSchema as CoatWhereUniqueInputObjectSchema } from './objects/CoatWhereUniqueInput.schema';
 import { CoatScalarFieldEnumSchema } from './enums/CoatScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

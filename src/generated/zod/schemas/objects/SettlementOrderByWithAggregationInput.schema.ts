@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { SettlementCountOrderByAggregateInputObjectSchema } from './SettlementCountOrderByAggregateInput.schema';
-import { SettlementAvgOrderByAggregateInputObjectSchema } from './SettlementAvgOrderByAggregateInput.schema';
-import { SettlementMaxOrderByAggregateInputObjectSchema } from './SettlementMaxOrderByAggregateInput.schema';
-import { SettlementMinOrderByAggregateInputObjectSchema } from './SettlementMinOrderByAggregateInput.schema';
-import { SettlementSumOrderByAggregateInputObjectSchema } from './SettlementSumOrderByAggregateInput.schema'
+import { SettlementCountOrderByAggregateInputObjectSchema as SettlementCountOrderByAggregateInputObjectSchema } from './SettlementCountOrderByAggregateInput.schema';
+import { SettlementAvgOrderByAggregateInputObjectSchema as SettlementAvgOrderByAggregateInputObjectSchema } from './SettlementAvgOrderByAggregateInput.schema';
+import { SettlementMaxOrderByAggregateInputObjectSchema as SettlementMaxOrderByAggregateInputObjectSchema } from './SettlementMaxOrderByAggregateInput.schema';
+import { SettlementMinOrderByAggregateInputObjectSchema as SettlementMinOrderByAggregateInputObjectSchema } from './SettlementMinOrderByAggregateInput.schema';
+import { SettlementSumOrderByAggregateInputObjectSchema as SettlementSumOrderByAggregateInputObjectSchema } from './SettlementSumOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

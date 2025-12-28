@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexTypeCreateWithoutHexCellInputObjectSchema } from './HexTypeCreateWithoutHexCellInput.schema';
-import { HexTypeUncheckedCreateWithoutHexCellInputObjectSchema } from './HexTypeUncheckedCreateWithoutHexCellInput.schema';
-import { HexTypeCreateOrConnectWithoutHexCellInputObjectSchema } from './HexTypeCreateOrConnectWithoutHexCellInput.schema';
-import { HexTypeUpsertWithoutHexCellInputObjectSchema } from './HexTypeUpsertWithoutHexCellInput.schema';
-import { HexTypeWhereUniqueInputObjectSchema } from './HexTypeWhereUniqueInput.schema';
-import { HexTypeUpdateToOneWithWhereWithoutHexCellInputObjectSchema } from './HexTypeUpdateToOneWithWhereWithoutHexCellInput.schema';
-import { HexTypeUpdateWithoutHexCellInputObjectSchema } from './HexTypeUpdateWithoutHexCellInput.schema';
-import { HexTypeUncheckedUpdateWithoutHexCellInputObjectSchema } from './HexTypeUncheckedUpdateWithoutHexCellInput.schema'
+import { HexTypeCreateWithoutHexCellInputObjectSchema as HexTypeCreateWithoutHexCellInputObjectSchema } from './HexTypeCreateWithoutHexCellInput.schema';
+import { HexTypeUncheckedCreateWithoutHexCellInputObjectSchema as HexTypeUncheckedCreateWithoutHexCellInputObjectSchema } from './HexTypeUncheckedCreateWithoutHexCellInput.schema';
+import { HexTypeCreateOrConnectWithoutHexCellInputObjectSchema as HexTypeCreateOrConnectWithoutHexCellInputObjectSchema } from './HexTypeCreateOrConnectWithoutHexCellInput.schema';
+import { HexTypeUpsertWithoutHexCellInputObjectSchema as HexTypeUpsertWithoutHexCellInputObjectSchema } from './HexTypeUpsertWithoutHexCellInput.schema';
+import { HexTypeWhereUniqueInputObjectSchema as HexTypeWhereUniqueInputObjectSchema } from './HexTypeWhereUniqueInput.schema';
+import { HexTypeUpdateToOneWithWhereWithoutHexCellInputObjectSchema as HexTypeUpdateToOneWithWhereWithoutHexCellInputObjectSchema } from './HexTypeUpdateToOneWithWhereWithoutHexCellInput.schema';
+import { HexTypeUpdateWithoutHexCellInputObjectSchema as HexTypeUpdateWithoutHexCellInputObjectSchema } from './HexTypeUpdateWithoutHexCellInput.schema';
+import { HexTypeUncheckedUpdateWithoutHexCellInputObjectSchema as HexTypeUncheckedUpdateWithoutHexCellInputObjectSchema } from './HexTypeUncheckedUpdateWithoutHexCellInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => HexTypeCreateWithoutHexCellInputObjectSchema), z.lazy(() => HexTypeUncheckedCreateWithoutHexCellInputObjectSchema)]).optional(),

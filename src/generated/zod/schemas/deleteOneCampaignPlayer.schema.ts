@@ -1,6 +1,9 @@
-import { z } from 'zod';
-import { CampaignPlayerSelectObjectSchema } from './objects/CampaignPlayerSelect.schema';
-import { CampaignPlayerIncludeObjectSchema } from './objects/CampaignPlayerInclude.schema';
-import { CampaignPlayerWhereUniqueInputObjectSchema } from './objects/CampaignPlayerWhereUniqueInput.schema';
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { CampaignPlayerSelectObjectSchema as CampaignPlayerSelectObjectSchema } from './objects/CampaignPlayerSelect.schema';
+import { CampaignPlayerIncludeObjectSchema as CampaignPlayerIncludeObjectSchema } from './objects/CampaignPlayerInclude.schema';
+import { CampaignPlayerWhereUniqueInputObjectSchema as CampaignPlayerWhereUniqueInputObjectSchema } from './objects/CampaignPlayerWhereUniqueInput.schema';
 
-export const CampaignPlayerDeleteOneSchema = z.object({ select: CampaignPlayerSelectObjectSchema.optional(), include: CampaignPlayerIncludeObjectSchema.optional(), where: CampaignPlayerWhereUniqueInputObjectSchema  })
+export const CampaignPlayerDeleteOneSchema: z.ZodType<Prisma.CampaignPlayerDeleteArgs> = z.object({ select: CampaignPlayerSelectObjectSchema.optional(), include: CampaignPlayerIncludeObjectSchema.optional(), where: CampaignPlayerWhereUniqueInputObjectSchema }).strict() as unknown as z.ZodType<Prisma.CampaignPlayerDeleteArgs>;
+
+export const CampaignPlayerDeleteOneZodSchema = z.object({ select: CampaignPlayerSelectObjectSchema.optional(), include: CampaignPlayerIncludeObjectSchema.optional(), where: CampaignPlayerWhereUniqueInputObjectSchema }).strict();

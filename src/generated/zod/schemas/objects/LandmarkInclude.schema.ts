@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexTypeArgsObjectSchema } from './HexTypeArgs.schema';
-import { LandmarkDetailFindManySchema } from '../findManyLandmarkDetail.schema';
-import { HexCellFindManySchema } from '../findManyHexCell.schema';
-import { LandmarkCountOutputTypeArgsObjectSchema } from './LandmarkCountOutputTypeArgs.schema'
+import { HexTypeArgsObjectSchema as HexTypeArgsObjectSchema } from './HexTypeArgs.schema';
+import { LandmarkDetailFindManySchema as LandmarkDetailFindManySchema } from '../findManyLandmarkDetail.schema';
+import { HexCellFindManySchema as HexCellFindManySchema } from '../findManyHexCell.schema';
+import { LandmarkCountOutputTypeArgsObjectSchema as LandmarkCountOutputTypeArgsObjectSchema } from './LandmarkCountOutputTypeArgs.schema'
 
 const makeSchema = () => z.object({
   hexType: z.union([z.boolean(), z.lazy(() => HexTypeArgsObjectSchema)]).optional(),

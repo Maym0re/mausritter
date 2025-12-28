@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkDetailCreateWithoutLandmarkInputObjectSchema } from './LandmarkDetailCreateWithoutLandmarkInput.schema';
-import { LandmarkDetailUncheckedCreateWithoutLandmarkInputObjectSchema } from './LandmarkDetailUncheckedCreateWithoutLandmarkInput.schema';
-import { LandmarkDetailCreateOrConnectWithoutLandmarkInputObjectSchema } from './LandmarkDetailCreateOrConnectWithoutLandmarkInput.schema';
-import { LandmarkDetailCreateManyLandmarkInputEnvelopeObjectSchema } from './LandmarkDetailCreateManyLandmarkInputEnvelope.schema';
-import { LandmarkDetailWhereUniqueInputObjectSchema } from './LandmarkDetailWhereUniqueInput.schema'
+import { LandmarkDetailCreateWithoutLandmarkInputObjectSchema as LandmarkDetailCreateWithoutLandmarkInputObjectSchema } from './LandmarkDetailCreateWithoutLandmarkInput.schema';
+import { LandmarkDetailUncheckedCreateWithoutLandmarkInputObjectSchema as LandmarkDetailUncheckedCreateWithoutLandmarkInputObjectSchema } from './LandmarkDetailUncheckedCreateWithoutLandmarkInput.schema';
+import { LandmarkDetailCreateOrConnectWithoutLandmarkInputObjectSchema as LandmarkDetailCreateOrConnectWithoutLandmarkInputObjectSchema } from './LandmarkDetailCreateOrConnectWithoutLandmarkInput.schema';
+import { LandmarkDetailCreateManyLandmarkInputEnvelopeObjectSchema as LandmarkDetailCreateManyLandmarkInputEnvelopeObjectSchema } from './LandmarkDetailCreateManyLandmarkInputEnvelope.schema';
+import { LandmarkDetailWhereUniqueInputObjectSchema as LandmarkDetailWhereUniqueInputObjectSchema } from './LandmarkDetailWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => LandmarkDetailCreateWithoutLandmarkInputObjectSchema), z.lazy(() => LandmarkDetailCreateWithoutLandmarkInputObjectSchema).array(), z.lazy(() => LandmarkDetailUncheckedCreateWithoutLandmarkInputObjectSchema), z.lazy(() => LandmarkDetailUncheckedCreateWithoutLandmarkInputObjectSchema).array()]).optional(),

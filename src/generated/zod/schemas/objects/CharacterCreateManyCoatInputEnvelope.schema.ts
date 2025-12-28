@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterCreateManyCoatInputObjectSchema } from './CharacterCreateManyCoatInput.schema'
+import { CharacterCreateManyCoatInputObjectSchema as CharacterCreateManyCoatInputObjectSchema } from './CharacterCreateManyCoatInput.schema'
 
 const makeSchema = () => z.object({
   data: z.union([z.lazy(() => CharacterCreateManyCoatInputObjectSchema), z.lazy(() => CharacterCreateManyCoatInputObjectSchema).array()]),

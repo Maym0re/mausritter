@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const LandmarkInputSchema = z.object({
     id: z.string(),
@@ -7,8 +6,8 @@ export const LandmarkInputSchema = z.object({
     description: z.string(),
     hexTypeId: z.string(),
     hexType: z.unknown(),
-    details: z.array(z.unknown()).array(),
-    HexCell: z.array(z.unknown()).array()
+    details: z.array(z.unknown()),
+    HexCell: z.array(z.unknown())
 }).strict();
 
 export type LandmarkInputType = z.infer<typeof LandmarkInputSchema>;

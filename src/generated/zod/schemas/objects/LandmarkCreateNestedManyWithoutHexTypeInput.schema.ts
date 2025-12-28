@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkCreateWithoutHexTypeInputObjectSchema } from './LandmarkCreateWithoutHexTypeInput.schema';
-import { LandmarkUncheckedCreateWithoutHexTypeInputObjectSchema } from './LandmarkUncheckedCreateWithoutHexTypeInput.schema';
-import { LandmarkCreateOrConnectWithoutHexTypeInputObjectSchema } from './LandmarkCreateOrConnectWithoutHexTypeInput.schema';
-import { LandmarkCreateManyHexTypeInputEnvelopeObjectSchema } from './LandmarkCreateManyHexTypeInputEnvelope.schema';
-import { LandmarkWhereUniqueInputObjectSchema } from './LandmarkWhereUniqueInput.schema'
+import { LandmarkCreateWithoutHexTypeInputObjectSchema as LandmarkCreateWithoutHexTypeInputObjectSchema } from './LandmarkCreateWithoutHexTypeInput.schema';
+import { LandmarkUncheckedCreateWithoutHexTypeInputObjectSchema as LandmarkUncheckedCreateWithoutHexTypeInputObjectSchema } from './LandmarkUncheckedCreateWithoutHexTypeInput.schema';
+import { LandmarkCreateOrConnectWithoutHexTypeInputObjectSchema as LandmarkCreateOrConnectWithoutHexTypeInputObjectSchema } from './LandmarkCreateOrConnectWithoutHexTypeInput.schema';
+import { LandmarkCreateManyHexTypeInputEnvelopeObjectSchema as LandmarkCreateManyHexTypeInputEnvelopeObjectSchema } from './LandmarkCreateManyHexTypeInputEnvelope.schema';
+import { LandmarkWhereUniqueInputObjectSchema as LandmarkWhereUniqueInputObjectSchema } from './LandmarkWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => LandmarkCreateWithoutHexTypeInputObjectSchema), z.lazy(() => LandmarkCreateWithoutHexTypeInputObjectSchema).array(), z.lazy(() => LandmarkUncheckedCreateWithoutHexTypeInputObjectSchema), z.lazy(() => LandmarkUncheckedCreateWithoutHexTypeInputObjectSchema).array()]).optional(),

@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterWhereInputObjectSchema } from './CharacterWhereInput.schema'
+import { CharacterWhereInputObjectSchema as CharacterWhereInputObjectSchema } from './CharacterWhereInput.schema'
 
 const makeSchema = () => z.object({
   is: z.lazy(() => CharacterWhereInputObjectSchema).optional(),

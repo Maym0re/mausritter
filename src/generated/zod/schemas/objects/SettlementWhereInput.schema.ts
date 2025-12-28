@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { EnumSettlementSizeFilterObjectSchema } from './EnumSettlementSizeFilter.schema';
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { EnumSettlementSizeFilterObjectSchema as EnumSettlementSizeFilterObjectSchema } from './EnumSettlementSizeFilter.schema';
 import { SettlementSizeSchema } from '../enums/SettlementSize.schema';
-import { IntFilterObjectSchema } from './IntFilter.schema';
-import { HexCellListRelationFilterObjectSchema } from './HexCellListRelationFilter.schema'
+import { IntFilterObjectSchema as IntFilterObjectSchema } from './IntFilter.schema';
+import { HexCellListRelationFilterObjectSchema as HexCellListRelationFilterObjectSchema } from './HexCellListRelationFilter.schema'
 
 const settlementwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => SettlementWhereInputObjectSchema), z.lazy(() => SettlementWhereInputObjectSchema).array()]).optional(),

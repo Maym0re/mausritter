@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { IntFilterObjectSchema } from './IntFilter.schema';
-import { IntNullableFilterObjectSchema } from './IntNullableFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { DiceRollLogScalarRelationFilterObjectSchema } from './DiceRollLogScalarRelationFilter.schema';
-import { DiceRollLogWhereInputObjectSchema } from './DiceRollLogWhereInput.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { IntFilterObjectSchema as IntFilterObjectSchema } from './IntFilter.schema';
+import { IntNullableFilterObjectSchema as IntNullableFilterObjectSchema } from './IntNullableFilter.schema';
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { DiceRollLogScalarRelationFilterObjectSchema as DiceRollLogScalarRelationFilterObjectSchema } from './DiceRollLogScalarRelationFilter.schema';
+import { DiceRollLogWhereInputObjectSchema as DiceRollLogWhereInputObjectSchema } from './DiceRollLogWhereInput.schema'
 
 const dicerollentrywhereinputSchema = z.object({
   AND: z.union([z.lazy(() => DiceRollEntryWhereInputObjectSchema), z.lazy(() => DiceRollEntryWhereInputObjectSchema).array()]).optional(),

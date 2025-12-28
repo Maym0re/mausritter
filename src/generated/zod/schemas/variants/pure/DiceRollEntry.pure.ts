@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const DiceRollEntryModelSchema = z.object({
     id: z.string(),
@@ -12,4 +11,4 @@ export const DiceRollEntryModelSchema = z.object({
     createdAt: z.date()
 }).strict();
 
-export type DiceRollEntryModelType = z.infer<typeof DiceRollEntryModelSchema>;
+export type DiceRollEntryPureType = z.infer<typeof DiceRollEntryModelSchema>;

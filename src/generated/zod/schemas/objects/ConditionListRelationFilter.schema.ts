@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { ConditionWhereInputObjectSchema } from './ConditionWhereInput.schema'
+import { ConditionWhereInputObjectSchema as ConditionWhereInputObjectSchema } from './ConditionWhereInput.schema'
 
 const makeSchema = () => z.object({
   every: z.lazy(() => ConditionWhereInputObjectSchema).optional(),

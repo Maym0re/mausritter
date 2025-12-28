@@ -1,17 +1,17 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
-import { NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
-import { BoolFieldUpdateOperationsInputObjectSchema } from './BoolFieldUpdateOperationsInput.schema';
+import { StringFieldUpdateOperationsInputObjectSchema as StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
+import { NullableStringFieldUpdateOperationsInputObjectSchema as NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
+import { BoolFieldUpdateOperationsInputObjectSchema as BoolFieldUpdateOperationsInputObjectSchema } from './BoolFieldUpdateOperationsInput.schema';
 import { SeasonNameSchema } from '../enums/SeasonName.schema';
-import { EnumSeasonNameFieldUpdateOperationsInputObjectSchema } from './EnumSeasonNameFieldUpdateOperationsInput.schema';
-import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
-import { UserUpdateOneRequiredWithoutOwnedCampaignsNestedInputObjectSchema } from './UserUpdateOneRequiredWithoutOwnedCampaignsNestedInput.schema';
-import { CampaignPlayerUpdateManyWithoutCampaignNestedInputObjectSchema } from './CampaignPlayerUpdateManyWithoutCampaignNestedInput.schema';
-import { CharacterUpdateManyWithoutCampaignNestedInputObjectSchema } from './CharacterUpdateManyWithoutCampaignNestedInput.schema';
-import { GameTimeUpdateOneWithoutCampaignNestedInputObjectSchema } from './GameTimeUpdateOneWithoutCampaignNestedInput.schema';
-import { HexMapUpdateOneWithoutCampaignNestedInputObjectSchema } from './HexMapUpdateOneWithoutCampaignNestedInput.schema';
-import { DiceRollLogUpdateManyWithoutCampaignNestedInputObjectSchema } from './DiceRollLogUpdateManyWithoutCampaignNestedInput.schema'
+import { EnumSeasonNameFieldUpdateOperationsInputObjectSchema as EnumSeasonNameFieldUpdateOperationsInputObjectSchema } from './EnumSeasonNameFieldUpdateOperationsInput.schema';
+import { DateTimeFieldUpdateOperationsInputObjectSchema as DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
+import { UserUpdateOneRequiredWithoutOwnedCampaignsNestedInputObjectSchema as UserUpdateOneRequiredWithoutOwnedCampaignsNestedInputObjectSchema } from './UserUpdateOneRequiredWithoutOwnedCampaignsNestedInput.schema';
+import { CampaignPlayerUpdateManyWithoutCampaignNestedInputObjectSchema as CampaignPlayerUpdateManyWithoutCampaignNestedInputObjectSchema } from './CampaignPlayerUpdateManyWithoutCampaignNestedInput.schema';
+import { CharacterUpdateManyWithoutCampaignNestedInputObjectSchema as CharacterUpdateManyWithoutCampaignNestedInputObjectSchema } from './CharacterUpdateManyWithoutCampaignNestedInput.schema';
+import { GameTimeUpdateOneWithoutCampaignNestedInputObjectSchema as GameTimeUpdateOneWithoutCampaignNestedInputObjectSchema } from './GameTimeUpdateOneWithoutCampaignNestedInput.schema';
+import { HexMapUpdateOneWithoutCampaignNestedInputObjectSchema as HexMapUpdateOneWithoutCampaignNestedInputObjectSchema } from './HexMapUpdateOneWithoutCampaignNestedInput.schema';
+import { DiceRollLogUpdateManyWithoutCampaignNestedInputObjectSchema as DiceRollLogUpdateManyWithoutCampaignNestedInputObjectSchema } from './DiceRollLogUpdateManyWithoutCampaignNestedInput.schema'
 
 const makeSchema = () => z.object({
   id: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),

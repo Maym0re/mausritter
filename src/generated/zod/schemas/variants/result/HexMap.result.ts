@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const HexMapResultSchema = z.object({
     id: z.string(),
@@ -8,9 +7,9 @@ export const HexMapResultSchema = z.object({
     size: z.number().int(),
     centerX: z.number().int(),
     centerY: z.number().int(),
-    cells: z.array(z.unknown()).array(),
-    images: z.array(z.unknown()).array(),
-    markers: z.array(z.unknown()).array(),
+    cells: z.array(z.unknown()),
+    images: z.array(z.unknown()),
+    markers: z.array(z.unknown()),
     createdAt: z.date(),
     updatedAt: z.date()
 }).strict();

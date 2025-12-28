@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const HexCellScalarFieldEnumSchema = z.enum(['id', 'hexMapId', 'q', 'r', 's', 'hexTypeId', 'landmarkId', 'landmarkDetailId', 'settlementId', 'isRevealed', 'notes', 'customName', 'masterNotes', 'createdAt', 'updatedAt'])
 

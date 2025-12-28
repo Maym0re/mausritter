@@ -1,22 +1,22 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
-import { IntFilterObjectSchema } from './IntFilter.schema';
-import { BoolFilterObjectSchema } from './BoolFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { UserScalarRelationFilterObjectSchema } from './UserScalarRelationFilter.schema';
-import { UserWhereInputObjectSchema } from './UserWhereInput.schema';
-import { CampaignScalarRelationFilterObjectSchema } from './CampaignScalarRelationFilter.schema';
-import { CampaignWhereInputObjectSchema } from './CampaignWhereInput.schema';
-import { BackgroundScalarRelationFilterObjectSchema } from './BackgroundScalarRelationFilter.schema';
-import { BackgroundWhereInputObjectSchema } from './BackgroundWhereInput.schema';
-import { BirthsignScalarRelationFilterObjectSchema } from './BirthsignScalarRelationFilter.schema';
-import { BirthsignWhereInputObjectSchema } from './BirthsignWhereInput.schema';
-import { CoatScalarRelationFilterObjectSchema } from './CoatScalarRelationFilter.schema';
-import { CoatWhereInputObjectSchema } from './CoatWhereInput.schema';
-import { InventoryItemListRelationFilterObjectSchema } from './InventoryItemListRelationFilter.schema';
-import { ConditionListRelationFilterObjectSchema } from './ConditionListRelationFilter.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { StringNullableFilterObjectSchema as StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
+import { IntFilterObjectSchema as IntFilterObjectSchema } from './IntFilter.schema';
+import { BoolFilterObjectSchema as BoolFilterObjectSchema } from './BoolFilter.schema';
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { UserScalarRelationFilterObjectSchema as UserScalarRelationFilterObjectSchema } from './UserScalarRelationFilter.schema';
+import { UserWhereInputObjectSchema as UserWhereInputObjectSchema } from './UserWhereInput.schema';
+import { CampaignScalarRelationFilterObjectSchema as CampaignScalarRelationFilterObjectSchema } from './CampaignScalarRelationFilter.schema';
+import { CampaignWhereInputObjectSchema as CampaignWhereInputObjectSchema } from './CampaignWhereInput.schema';
+import { BackgroundScalarRelationFilterObjectSchema as BackgroundScalarRelationFilterObjectSchema } from './BackgroundScalarRelationFilter.schema';
+import { BackgroundWhereInputObjectSchema as BackgroundWhereInputObjectSchema } from './BackgroundWhereInput.schema';
+import { BirthsignScalarRelationFilterObjectSchema as BirthsignScalarRelationFilterObjectSchema } from './BirthsignScalarRelationFilter.schema';
+import { BirthsignWhereInputObjectSchema as BirthsignWhereInputObjectSchema } from './BirthsignWhereInput.schema';
+import { CoatScalarRelationFilterObjectSchema as CoatScalarRelationFilterObjectSchema } from './CoatScalarRelationFilter.schema';
+import { CoatWhereInputObjectSchema as CoatWhereInputObjectSchema } from './CoatWhereInput.schema';
+import { InventoryItemListRelationFilterObjectSchema as InventoryItemListRelationFilterObjectSchema } from './InventoryItemListRelationFilter.schema';
+import { ConditionListRelationFilterObjectSchema as ConditionListRelationFilterObjectSchema } from './ConditionListRelationFilter.schema'
 
 const characterwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => CharacterWhereInputObjectSchema), z.lazy(() => CharacterWhereInputObjectSchema).array()]).optional(),

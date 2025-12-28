@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { SortOrderInputObjectSchema } from './SortOrderInput.schema';
-import { UserOrderByWithRelationInputObjectSchema } from './UserOrderByWithRelationInput.schema';
-import { CampaignPlayerOrderByRelationAggregateInputObjectSchema } from './CampaignPlayerOrderByRelationAggregateInput.schema';
-import { CharacterOrderByRelationAggregateInputObjectSchema } from './CharacterOrderByRelationAggregateInput.schema';
-import { GameTimeOrderByWithRelationInputObjectSchema } from './GameTimeOrderByWithRelationInput.schema';
-import { WeatherEntryOrderByWithRelationInputObjectSchema } from './WeatherEntryOrderByWithRelationInput.schema';
-import { HexMapOrderByWithRelationInputObjectSchema } from './HexMapOrderByWithRelationInput.schema';
-import { DiceRollLogOrderByRelationAggregateInputObjectSchema } from './DiceRollLogOrderByRelationAggregateInput.schema'
+import { SortOrderInputObjectSchema as SortOrderInputObjectSchema } from './SortOrderInput.schema';
+import { UserOrderByWithRelationInputObjectSchema as UserOrderByWithRelationInputObjectSchema } from './UserOrderByWithRelationInput.schema';
+import { CampaignPlayerOrderByRelationAggregateInputObjectSchema as CampaignPlayerOrderByRelationAggregateInputObjectSchema } from './CampaignPlayerOrderByRelationAggregateInput.schema';
+import { CharacterOrderByRelationAggregateInputObjectSchema as CharacterOrderByRelationAggregateInputObjectSchema } from './CharacterOrderByRelationAggregateInput.schema';
+import { GameTimeOrderByWithRelationInputObjectSchema as GameTimeOrderByWithRelationInputObjectSchema } from './GameTimeOrderByWithRelationInput.schema';
+import { WeatherEntryOrderByWithRelationInputObjectSchema as WeatherEntryOrderByWithRelationInputObjectSchema } from './WeatherEntryOrderByWithRelationInput.schema';
+import { HexMapOrderByWithRelationInputObjectSchema as HexMapOrderByWithRelationInputObjectSchema } from './HexMapOrderByWithRelationInput.schema';
+import { DiceRollLogOrderByRelationAggregateInputObjectSchema as DiceRollLogOrderByRelationAggregateInputObjectSchema } from './DiceRollLogOrderByRelationAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

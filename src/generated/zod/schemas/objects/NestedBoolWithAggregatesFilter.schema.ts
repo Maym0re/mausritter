@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { NestedIntFilterObjectSchema } from './NestedIntFilter.schema';
-import { NestedBoolFilterObjectSchema } from './NestedBoolFilter.schema'
+import { NestedIntFilterObjectSchema as NestedIntFilterObjectSchema } from './NestedIntFilter.schema';
+import { NestedBoolFilterObjectSchema as NestedBoolFilterObjectSchema } from './NestedBoolFilter.schema'
 
 const nestedboolwithaggregatesfilterSchema = z.object({
   equals: z.boolean().optional(),

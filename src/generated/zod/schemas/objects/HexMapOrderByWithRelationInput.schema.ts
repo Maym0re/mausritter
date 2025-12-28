@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { CampaignOrderByWithRelationInputObjectSchema } from './CampaignOrderByWithRelationInput.schema';
-import { HexCellOrderByRelationAggregateInputObjectSchema } from './HexCellOrderByRelationAggregateInput.schema';
-import { MapImageOrderByRelationAggregateInputObjectSchema } from './MapImageOrderByRelationAggregateInput.schema';
-import { MapMarkerOrderByRelationAggregateInputObjectSchema } from './MapMarkerOrderByRelationAggregateInput.schema'
+import { CampaignOrderByWithRelationInputObjectSchema as CampaignOrderByWithRelationInputObjectSchema } from './CampaignOrderByWithRelationInput.schema';
+import { HexCellOrderByRelationAggregateInputObjectSchema as HexCellOrderByRelationAggregateInputObjectSchema } from './HexCellOrderByRelationAggregateInput.schema';
+import { MapImageOrderByRelationAggregateInputObjectSchema as MapImageOrderByRelationAggregateInputObjectSchema } from './MapImageOrderByRelationAggregateInput.schema';
+import { MapMarkerOrderByRelationAggregateInputObjectSchema as MapMarkerOrderByRelationAggregateInputObjectSchema } from './MapMarkerOrderByRelationAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { SortOrderInputObjectSchema } from './SortOrderInput.schema';
-import { UserOrderByWithRelationInputObjectSchema } from './UserOrderByWithRelationInput.schema';
-import { CampaignOrderByWithRelationInputObjectSchema } from './CampaignOrderByWithRelationInput.schema';
-import { BackgroundOrderByWithRelationInputObjectSchema } from './BackgroundOrderByWithRelationInput.schema';
-import { BirthsignOrderByWithRelationInputObjectSchema } from './BirthsignOrderByWithRelationInput.schema';
-import { CoatOrderByWithRelationInputObjectSchema } from './CoatOrderByWithRelationInput.schema';
-import { InventoryItemOrderByRelationAggregateInputObjectSchema } from './InventoryItemOrderByRelationAggregateInput.schema';
-import { ConditionOrderByRelationAggregateInputObjectSchema } from './ConditionOrderByRelationAggregateInput.schema'
+import { SortOrderInputObjectSchema as SortOrderInputObjectSchema } from './SortOrderInput.schema';
+import { UserOrderByWithRelationInputObjectSchema as UserOrderByWithRelationInputObjectSchema } from './UserOrderByWithRelationInput.schema';
+import { CampaignOrderByWithRelationInputObjectSchema as CampaignOrderByWithRelationInputObjectSchema } from './CampaignOrderByWithRelationInput.schema';
+import { BackgroundOrderByWithRelationInputObjectSchema as BackgroundOrderByWithRelationInputObjectSchema } from './BackgroundOrderByWithRelationInput.schema';
+import { BirthsignOrderByWithRelationInputObjectSchema as BirthsignOrderByWithRelationInputObjectSchema } from './BirthsignOrderByWithRelationInput.schema';
+import { CoatOrderByWithRelationInputObjectSchema as CoatOrderByWithRelationInputObjectSchema } from './CoatOrderByWithRelationInput.schema';
+import { InventoryItemOrderByRelationAggregateInputObjectSchema as InventoryItemOrderByRelationAggregateInputObjectSchema } from './InventoryItemOrderByRelationAggregateInput.schema';
+import { ConditionOrderByRelationAggregateInputObjectSchema as ConditionOrderByRelationAggregateInputObjectSchema } from './ConditionOrderByRelationAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

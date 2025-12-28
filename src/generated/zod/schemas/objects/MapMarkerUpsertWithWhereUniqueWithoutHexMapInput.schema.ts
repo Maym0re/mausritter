@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { MapMarkerWhereUniqueInputObjectSchema } from './MapMarkerWhereUniqueInput.schema';
-import { MapMarkerUpdateWithoutHexMapInputObjectSchema } from './MapMarkerUpdateWithoutHexMapInput.schema';
-import { MapMarkerUncheckedUpdateWithoutHexMapInputObjectSchema } from './MapMarkerUncheckedUpdateWithoutHexMapInput.schema';
-import { MapMarkerCreateWithoutHexMapInputObjectSchema } from './MapMarkerCreateWithoutHexMapInput.schema';
-import { MapMarkerUncheckedCreateWithoutHexMapInputObjectSchema } from './MapMarkerUncheckedCreateWithoutHexMapInput.schema'
+import { MapMarkerWhereUniqueInputObjectSchema as MapMarkerWhereUniqueInputObjectSchema } from './MapMarkerWhereUniqueInput.schema';
+import { MapMarkerUpdateWithoutHexMapInputObjectSchema as MapMarkerUpdateWithoutHexMapInputObjectSchema } from './MapMarkerUpdateWithoutHexMapInput.schema';
+import { MapMarkerUncheckedUpdateWithoutHexMapInputObjectSchema as MapMarkerUncheckedUpdateWithoutHexMapInputObjectSchema } from './MapMarkerUncheckedUpdateWithoutHexMapInput.schema';
+import { MapMarkerCreateWithoutHexMapInputObjectSchema as MapMarkerCreateWithoutHexMapInputObjectSchema } from './MapMarkerCreateWithoutHexMapInput.schema';
+import { MapMarkerUncheckedCreateWithoutHexMapInputObjectSchema as MapMarkerUncheckedCreateWithoutHexMapInputObjectSchema } from './MapMarkerUncheckedCreateWithoutHexMapInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => MapMarkerWhereUniqueInputObjectSchema),

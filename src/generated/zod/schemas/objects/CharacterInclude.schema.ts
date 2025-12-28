@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { UserArgsObjectSchema } from './UserArgs.schema';
-import { CampaignArgsObjectSchema } from './CampaignArgs.schema';
-import { BackgroundArgsObjectSchema } from './BackgroundArgs.schema';
-import { BirthsignArgsObjectSchema } from './BirthsignArgs.schema';
-import { CoatArgsObjectSchema } from './CoatArgs.schema';
-import { InventoryItemFindManySchema } from '../findManyInventoryItem.schema';
-import { ConditionFindManySchema } from '../findManyCondition.schema';
-import { CharacterCountOutputTypeArgsObjectSchema } from './CharacterCountOutputTypeArgs.schema'
+import { UserArgsObjectSchema as UserArgsObjectSchema } from './UserArgs.schema';
+import { CampaignArgsObjectSchema as CampaignArgsObjectSchema } from './CampaignArgs.schema';
+import { BackgroundArgsObjectSchema as BackgroundArgsObjectSchema } from './BackgroundArgs.schema';
+import { BirthsignArgsObjectSchema as BirthsignArgsObjectSchema } from './BirthsignArgs.schema';
+import { CoatArgsObjectSchema as CoatArgsObjectSchema } from './CoatArgs.schema';
+import { InventoryItemFindManySchema as InventoryItemFindManySchema } from '../findManyInventoryItem.schema';
+import { ConditionFindManySchema as ConditionFindManySchema } from '../findManyCondition.schema';
+import { CharacterCountOutputTypeArgsObjectSchema as CharacterCountOutputTypeArgsObjectSchema } from './CharacterCountOutputTypeArgs.schema'
 
 const makeSchema = () => z.object({
   player: z.union([z.boolean(), z.lazy(() => UserArgsObjectSchema)]).optional(),

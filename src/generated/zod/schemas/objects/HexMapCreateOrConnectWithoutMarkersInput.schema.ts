@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexMapWhereUniqueInputObjectSchema } from './HexMapWhereUniqueInput.schema';
-import { HexMapCreateWithoutMarkersInputObjectSchema } from './HexMapCreateWithoutMarkersInput.schema';
-import { HexMapUncheckedCreateWithoutMarkersInputObjectSchema } from './HexMapUncheckedCreateWithoutMarkersInput.schema'
+import { HexMapWhereUniqueInputObjectSchema as HexMapWhereUniqueInputObjectSchema } from './HexMapWhereUniqueInput.schema';
+import { HexMapCreateWithoutMarkersInputObjectSchema as HexMapCreateWithoutMarkersInputObjectSchema } from './HexMapCreateWithoutMarkersInput.schema';
+import { HexMapUncheckedCreateWithoutMarkersInputObjectSchema as HexMapUncheckedCreateWithoutMarkersInputObjectSchema } from './HexMapUncheckedCreateWithoutMarkersInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => HexMapWhereUniqueInputObjectSchema),

@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { DiceRollLogWhereUniqueInputObjectSchema } from './DiceRollLogWhereUniqueInput.schema';
-import { DiceRollLogUpdateWithoutUserInputObjectSchema } from './DiceRollLogUpdateWithoutUserInput.schema';
-import { DiceRollLogUncheckedUpdateWithoutUserInputObjectSchema } from './DiceRollLogUncheckedUpdateWithoutUserInput.schema'
+import { DiceRollLogWhereUniqueInputObjectSchema as DiceRollLogWhereUniqueInputObjectSchema } from './DiceRollLogWhereUniqueInput.schema';
+import { DiceRollLogUpdateWithoutUserInputObjectSchema as DiceRollLogUpdateWithoutUserInputObjectSchema } from './DiceRollLogUpdateWithoutUserInput.schema';
+import { DiceRollLogUncheckedUpdateWithoutUserInputObjectSchema as DiceRollLogUncheckedUpdateWithoutUserInputObjectSchema } from './DiceRollLogUncheckedUpdateWithoutUserInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => DiceRollLogWhereUniqueInputObjectSchema),

@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterWhereUniqueInputObjectSchema } from './CharacterWhereUniqueInput.schema';
-import { CharacterUpdateWithoutBirthsignInputObjectSchema } from './CharacterUpdateWithoutBirthsignInput.schema';
-import { CharacterUncheckedUpdateWithoutBirthsignInputObjectSchema } from './CharacterUncheckedUpdateWithoutBirthsignInput.schema'
+import { CharacterWhereUniqueInputObjectSchema as CharacterWhereUniqueInputObjectSchema } from './CharacterWhereUniqueInput.schema';
+import { CharacterUpdateWithoutBirthsignInputObjectSchema as CharacterUpdateWithoutBirthsignInputObjectSchema } from './CharacterUpdateWithoutBirthsignInput.schema';
+import { CharacterUncheckedUpdateWithoutBirthsignInputObjectSchema as CharacterUncheckedUpdateWithoutBirthsignInputObjectSchema } from './CharacterUncheckedUpdateWithoutBirthsignInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => CharacterWhereUniqueInputObjectSchema),

@@ -1,15 +1,15 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
-import { NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
-import { BoolFieldUpdateOperationsInputObjectSchema } from './BoolFieldUpdateOperationsInput.schema';
+import { StringFieldUpdateOperationsInputObjectSchema as StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
+import { NullableStringFieldUpdateOperationsInputObjectSchema as NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
+import { BoolFieldUpdateOperationsInputObjectSchema as BoolFieldUpdateOperationsInputObjectSchema } from './BoolFieldUpdateOperationsInput.schema';
 import { SeasonNameSchema } from '../enums/SeasonName.schema';
-import { EnumSeasonNameFieldUpdateOperationsInputObjectSchema } from './EnumSeasonNameFieldUpdateOperationsInput.schema';
-import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
-import { CharacterUncheckedUpdateManyWithoutCampaignNestedInputObjectSchema } from './CharacterUncheckedUpdateManyWithoutCampaignNestedInput.schema';
-import { GameTimeUncheckedUpdateOneWithoutCampaignNestedInputObjectSchema } from './GameTimeUncheckedUpdateOneWithoutCampaignNestedInput.schema';
-import { HexMapUncheckedUpdateOneWithoutCampaignNestedInputObjectSchema } from './HexMapUncheckedUpdateOneWithoutCampaignNestedInput.schema';
-import { DiceRollLogUncheckedUpdateManyWithoutCampaignNestedInputObjectSchema } from './DiceRollLogUncheckedUpdateManyWithoutCampaignNestedInput.schema'
+import { EnumSeasonNameFieldUpdateOperationsInputObjectSchema as EnumSeasonNameFieldUpdateOperationsInputObjectSchema } from './EnumSeasonNameFieldUpdateOperationsInput.schema';
+import { DateTimeFieldUpdateOperationsInputObjectSchema as DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
+import { CharacterUncheckedUpdateManyWithoutCampaignNestedInputObjectSchema as CharacterUncheckedUpdateManyWithoutCampaignNestedInputObjectSchema } from './CharacterUncheckedUpdateManyWithoutCampaignNestedInput.schema';
+import { GameTimeUncheckedUpdateOneWithoutCampaignNestedInputObjectSchema as GameTimeUncheckedUpdateOneWithoutCampaignNestedInputObjectSchema } from './GameTimeUncheckedUpdateOneWithoutCampaignNestedInput.schema';
+import { HexMapUncheckedUpdateOneWithoutCampaignNestedInputObjectSchema as HexMapUncheckedUpdateOneWithoutCampaignNestedInputObjectSchema } from './HexMapUncheckedUpdateOneWithoutCampaignNestedInput.schema';
+import { DiceRollLogUncheckedUpdateManyWithoutCampaignNestedInputObjectSchema as DiceRollLogUncheckedUpdateManyWithoutCampaignNestedInputObjectSchema } from './DiceRollLogUncheckedUpdateManyWithoutCampaignNestedInput.schema'
 
 const makeSchema = () => z.object({
   id: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),

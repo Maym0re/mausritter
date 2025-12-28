@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { UserArgsObjectSchema } from './UserArgs.schema'
+import { UserArgsObjectSchema as UserArgsObjectSchema } from './UserArgs.schema'
 
 const makeSchema = () => z.object({
   id: z.boolean().optional(),

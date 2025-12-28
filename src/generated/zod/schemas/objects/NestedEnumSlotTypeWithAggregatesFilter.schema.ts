@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SlotTypeSchema } from '../enums/SlotType.schema';
-import { NestedIntFilterObjectSchema } from './NestedIntFilter.schema';
-import { NestedEnumSlotTypeFilterObjectSchema } from './NestedEnumSlotTypeFilter.schema'
+import { NestedIntFilterObjectSchema as NestedIntFilterObjectSchema } from './NestedIntFilter.schema';
+import { NestedEnumSlotTypeFilterObjectSchema as NestedEnumSlotTypeFilterObjectSchema } from './NestedEnumSlotTypeFilter.schema'
 
 const nestedenumslottypewithaggregatesfilterSchema = z.object({
   equals: SlotTypeSchema.optional(),

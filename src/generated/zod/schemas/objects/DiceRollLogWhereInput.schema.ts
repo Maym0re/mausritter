@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { IntFilterObjectSchema } from './IntFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { CampaignScalarRelationFilterObjectSchema } from './CampaignScalarRelationFilter.schema';
-import { CampaignWhereInputObjectSchema } from './CampaignWhereInput.schema';
-import { UserScalarRelationFilterObjectSchema } from './UserScalarRelationFilter.schema';
-import { UserWhereInputObjectSchema } from './UserWhereInput.schema';
-import { DiceRollEntryListRelationFilterObjectSchema } from './DiceRollEntryListRelationFilter.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { IntFilterObjectSchema as IntFilterObjectSchema } from './IntFilter.schema';
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { CampaignScalarRelationFilterObjectSchema as CampaignScalarRelationFilterObjectSchema } from './CampaignScalarRelationFilter.schema';
+import { CampaignWhereInputObjectSchema as CampaignWhereInputObjectSchema } from './CampaignWhereInput.schema';
+import { UserScalarRelationFilterObjectSchema as UserScalarRelationFilterObjectSchema } from './UserScalarRelationFilter.schema';
+import { UserWhereInputObjectSchema as UserWhereInputObjectSchema } from './UserWhereInput.schema';
+import { DiceRollEntryListRelationFilterObjectSchema as DiceRollEntryListRelationFilterObjectSchema } from './DiceRollEntryListRelationFilter.schema'
 
 const dicerolllogwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => DiceRollLogWhereInputObjectSchema), z.lazy(() => DiceRollLogWhereInputObjectSchema).array()]).optional(),

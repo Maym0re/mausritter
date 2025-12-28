@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { InventoryItemIncludeObjectSchema } from './objects/InventoryItemInclude.schema';
-import { InventoryItemOrderByWithRelationInputObjectSchema } from './objects/InventoryItemOrderByWithRelationInput.schema';
-import { InventoryItemWhereInputObjectSchema } from './objects/InventoryItemWhereInput.schema';
-import { InventoryItemWhereUniqueInputObjectSchema } from './objects/InventoryItemWhereUniqueInput.schema';
+import * as z from 'zod';
+import { InventoryItemIncludeObjectSchema as InventoryItemIncludeObjectSchema } from './objects/InventoryItemInclude.schema';
+import { InventoryItemOrderByWithRelationInputObjectSchema as InventoryItemOrderByWithRelationInputObjectSchema } from './objects/InventoryItemOrderByWithRelationInput.schema';
+import { InventoryItemWhereInputObjectSchema as InventoryItemWhereInputObjectSchema } from './objects/InventoryItemWhereInput.schema';
+import { InventoryItemWhereUniqueInputObjectSchema as InventoryItemWhereUniqueInputObjectSchema } from './objects/InventoryItemWhereUniqueInput.schema';
 import { InventoryItemScalarFieldEnumSchema } from './enums/InventoryItemScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

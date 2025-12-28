@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { HexMapIncludeObjectSchema } from './objects/HexMapInclude.schema';
-import { HexMapOrderByWithRelationInputObjectSchema } from './objects/HexMapOrderByWithRelationInput.schema';
-import { HexMapWhereInputObjectSchema } from './objects/HexMapWhereInput.schema';
-import { HexMapWhereUniqueInputObjectSchema } from './objects/HexMapWhereUniqueInput.schema';
+import * as z from 'zod';
+import { HexMapIncludeObjectSchema as HexMapIncludeObjectSchema } from './objects/HexMapInclude.schema';
+import { HexMapOrderByWithRelationInputObjectSchema as HexMapOrderByWithRelationInputObjectSchema } from './objects/HexMapOrderByWithRelationInput.schema';
+import { HexMapWhereInputObjectSchema as HexMapWhereInputObjectSchema } from './objects/HexMapWhereInput.schema';
+import { HexMapWhereUniqueInputObjectSchema as HexMapWhereUniqueInputObjectSchema } from './objects/HexMapWhereUniqueInput.schema';
 import { HexMapScalarFieldEnumSchema } from './enums/HexMapScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

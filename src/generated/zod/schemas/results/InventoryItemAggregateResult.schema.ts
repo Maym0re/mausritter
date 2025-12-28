@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const InventoryItemAggregateResultSchema = z.object({  _count: z.object({
     id: z.number(),
     characterId: z.number(),

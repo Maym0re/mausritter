@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const VerificationTokenFindManyResultSchema = z.object({
   data: z.array(z.object({
   identifier: z.string(),

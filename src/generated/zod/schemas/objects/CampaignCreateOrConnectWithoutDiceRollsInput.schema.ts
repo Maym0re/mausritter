@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema';
-import { CampaignCreateWithoutDiceRollsInputObjectSchema } from './CampaignCreateWithoutDiceRollsInput.schema';
-import { CampaignUncheckedCreateWithoutDiceRollsInputObjectSchema } from './CampaignUncheckedCreateWithoutDiceRollsInput.schema'
+import { CampaignWhereUniqueInputObjectSchema as CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema';
+import { CampaignCreateWithoutDiceRollsInputObjectSchema as CampaignCreateWithoutDiceRollsInputObjectSchema } from './CampaignCreateWithoutDiceRollsInput.schema';
+import { CampaignUncheckedCreateWithoutDiceRollsInputObjectSchema as CampaignUncheckedCreateWithoutDiceRollsInputObjectSchema } from './CampaignUncheckedCreateWithoutDiceRollsInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => CampaignWhereUniqueInputObjectSchema),

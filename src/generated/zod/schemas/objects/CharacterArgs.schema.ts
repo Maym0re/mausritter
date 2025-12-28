@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterSelectObjectSchema } from './CharacterSelect.schema';
-import { CharacterIncludeObjectSchema } from './CharacterInclude.schema'
+import { CharacterSelectObjectSchema as CharacterSelectObjectSchema } from './CharacterSelect.schema';
+import { CharacterIncludeObjectSchema as CharacterIncludeObjectSchema } from './CharacterInclude.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => CharacterSelectObjectSchema).optional(),

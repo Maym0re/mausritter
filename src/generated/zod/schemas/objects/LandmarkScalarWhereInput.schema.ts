@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema'
 
 const landmarkscalarwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => LandmarkScalarWhereInputObjectSchema), z.lazy(() => LandmarkScalarWhereInputObjectSchema).array()]).optional(),

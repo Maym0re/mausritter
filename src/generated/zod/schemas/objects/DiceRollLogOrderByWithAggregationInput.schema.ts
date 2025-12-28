@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { DiceRollLogCountOrderByAggregateInputObjectSchema } from './DiceRollLogCountOrderByAggregateInput.schema';
-import { DiceRollLogAvgOrderByAggregateInputObjectSchema } from './DiceRollLogAvgOrderByAggregateInput.schema';
-import { DiceRollLogMaxOrderByAggregateInputObjectSchema } from './DiceRollLogMaxOrderByAggregateInput.schema';
-import { DiceRollLogMinOrderByAggregateInputObjectSchema } from './DiceRollLogMinOrderByAggregateInput.schema';
-import { DiceRollLogSumOrderByAggregateInputObjectSchema } from './DiceRollLogSumOrderByAggregateInput.schema'
+import { DiceRollLogCountOrderByAggregateInputObjectSchema as DiceRollLogCountOrderByAggregateInputObjectSchema } from './DiceRollLogCountOrderByAggregateInput.schema';
+import { DiceRollLogAvgOrderByAggregateInputObjectSchema as DiceRollLogAvgOrderByAggregateInputObjectSchema } from './DiceRollLogAvgOrderByAggregateInput.schema';
+import { DiceRollLogMaxOrderByAggregateInputObjectSchema as DiceRollLogMaxOrderByAggregateInputObjectSchema } from './DiceRollLogMaxOrderByAggregateInput.schema';
+import { DiceRollLogMinOrderByAggregateInputObjectSchema as DiceRollLogMinOrderByAggregateInputObjectSchema } from './DiceRollLogMinOrderByAggregateInput.schema';
+import { DiceRollLogSumOrderByAggregateInputObjectSchema as DiceRollLogSumOrderByAggregateInputObjectSchema } from './DiceRollLogSumOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

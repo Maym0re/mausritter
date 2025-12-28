@@ -9,7 +9,6 @@ generator zod {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum SlotType {
@@ -76,7 +75,7 @@ model User {
   characters     Character[]
   playerIn       CampaignPlayer[]
 
-  diceRollLogs   DiceRollLog[]
+  diceRollLogs DiceRollLog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -409,14 +408,14 @@ model VerificationToken {
 }
 
 model DiceRollLog {
-  id         String   @id @default(cuid())
+  id         String          @id @default(cuid())
   campaignId String
-  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaign   Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   notation   String
   total      Int
-  createdAt  DateTime @default(now())
+  createdAt  DateTime        @default(now())
   entries    DiceRollEntry[]
 
   @@index([campaignId, createdAt])
@@ -424,14 +423,14 @@ model DiceRollLog {
 }
 
 model DiceRollEntry {
-  id        String       @id @default(cuid())
+  id        String      @id @default(cuid())
   logId     String
-  log       DiceRollLog  @relation(fields: [logId], references: [id], onDelete: Cascade)
+  log       DiceRollLog @relation(fields: [logId], references: [id], onDelete: Cascade)
   order     Int
   type      String
   value     Int
   sides     Int?
-  createdAt DateTime     @default(now())
+  createdAt DateTime    @default(now())
 
   @@index([logId])
 }

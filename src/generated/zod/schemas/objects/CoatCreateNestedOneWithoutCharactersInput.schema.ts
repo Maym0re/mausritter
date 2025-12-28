@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CoatCreateWithoutCharactersInputObjectSchema } from './CoatCreateWithoutCharactersInput.schema';
-import { CoatUncheckedCreateWithoutCharactersInputObjectSchema } from './CoatUncheckedCreateWithoutCharactersInput.schema';
-import { CoatCreateOrConnectWithoutCharactersInputObjectSchema } from './CoatCreateOrConnectWithoutCharactersInput.schema';
-import { CoatWhereUniqueInputObjectSchema } from './CoatWhereUniqueInput.schema'
+import { CoatCreateWithoutCharactersInputObjectSchema as CoatCreateWithoutCharactersInputObjectSchema } from './CoatCreateWithoutCharactersInput.schema';
+import { CoatUncheckedCreateWithoutCharactersInputObjectSchema as CoatUncheckedCreateWithoutCharactersInputObjectSchema } from './CoatUncheckedCreateWithoutCharactersInput.schema';
+import { CoatCreateOrConnectWithoutCharactersInputObjectSchema as CoatCreateOrConnectWithoutCharactersInputObjectSchema } from './CoatCreateOrConnectWithoutCharactersInput.schema';
+import { CoatWhereUniqueInputObjectSchema as CoatWhereUniqueInputObjectSchema } from './CoatWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => CoatCreateWithoutCharactersInputObjectSchema), z.lazy(() => CoatUncheckedCreateWithoutCharactersInputObjectSchema)]).optional(),

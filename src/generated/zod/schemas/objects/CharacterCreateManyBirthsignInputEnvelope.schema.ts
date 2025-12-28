@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterCreateManyBirthsignInputObjectSchema } from './CharacterCreateManyBirthsignInput.schema'
+import { CharacterCreateManyBirthsignInputObjectSchema as CharacterCreateManyBirthsignInputObjectSchema } from './CharacterCreateManyBirthsignInput.schema'
 
 const makeSchema = () => z.object({
   data: z.union([z.lazy(() => CharacterCreateManyBirthsignInputObjectSchema), z.lazy(() => CharacterCreateManyBirthsignInputObjectSchema).array()]),

@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignCountOutputTypeSelectObjectSchema } from './CampaignCountOutputTypeSelect.schema'
+import { CampaignCountOutputTypeSelectObjectSchema as CampaignCountOutputTypeSelectObjectSchema } from './CampaignCountOutputTypeSelect.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => CampaignCountOutputTypeSelectObjectSchema).optional()

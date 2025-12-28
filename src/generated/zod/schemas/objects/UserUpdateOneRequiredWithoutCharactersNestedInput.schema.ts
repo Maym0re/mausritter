@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { UserCreateWithoutCharactersInputObjectSchema } from './UserCreateWithoutCharactersInput.schema';
-import { UserUncheckedCreateWithoutCharactersInputObjectSchema } from './UserUncheckedCreateWithoutCharactersInput.schema';
-import { UserCreateOrConnectWithoutCharactersInputObjectSchema } from './UserCreateOrConnectWithoutCharactersInput.schema';
-import { UserUpsertWithoutCharactersInputObjectSchema } from './UserUpsertWithoutCharactersInput.schema';
-import { UserWhereUniqueInputObjectSchema } from './UserWhereUniqueInput.schema';
-import { UserUpdateToOneWithWhereWithoutCharactersInputObjectSchema } from './UserUpdateToOneWithWhereWithoutCharactersInput.schema';
-import { UserUpdateWithoutCharactersInputObjectSchema } from './UserUpdateWithoutCharactersInput.schema';
-import { UserUncheckedUpdateWithoutCharactersInputObjectSchema } from './UserUncheckedUpdateWithoutCharactersInput.schema'
+import { UserCreateWithoutCharactersInputObjectSchema as UserCreateWithoutCharactersInputObjectSchema } from './UserCreateWithoutCharactersInput.schema';
+import { UserUncheckedCreateWithoutCharactersInputObjectSchema as UserUncheckedCreateWithoutCharactersInputObjectSchema } from './UserUncheckedCreateWithoutCharactersInput.schema';
+import { UserCreateOrConnectWithoutCharactersInputObjectSchema as UserCreateOrConnectWithoutCharactersInputObjectSchema } from './UserCreateOrConnectWithoutCharactersInput.schema';
+import { UserUpsertWithoutCharactersInputObjectSchema as UserUpsertWithoutCharactersInputObjectSchema } from './UserUpsertWithoutCharactersInput.schema';
+import { UserWhereUniqueInputObjectSchema as UserWhereUniqueInputObjectSchema } from './UserWhereUniqueInput.schema';
+import { UserUpdateToOneWithWhereWithoutCharactersInputObjectSchema as UserUpdateToOneWithWhereWithoutCharactersInputObjectSchema } from './UserUpdateToOneWithWhereWithoutCharactersInput.schema';
+import { UserUpdateWithoutCharactersInputObjectSchema as UserUpdateWithoutCharactersInputObjectSchema } from './UserUpdateWithoutCharactersInput.schema';
+import { UserUncheckedUpdateWithoutCharactersInputObjectSchema as UserUncheckedUpdateWithoutCharactersInputObjectSchema } from './UserUncheckedUpdateWithoutCharactersInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => UserCreateWithoutCharactersInputObjectSchema), z.lazy(() => UserUncheckedCreateWithoutCharactersInputObjectSchema)]).optional(),

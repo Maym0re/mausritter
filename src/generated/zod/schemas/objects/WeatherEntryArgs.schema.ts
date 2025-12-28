@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { WeatherEntrySelectObjectSchema } from './WeatherEntrySelect.schema';
-import { WeatherEntryIncludeObjectSchema } from './WeatherEntryInclude.schema'
+import { WeatherEntrySelectObjectSchema as WeatherEntrySelectObjectSchema } from './WeatherEntrySelect.schema';
+import { WeatherEntryIncludeObjectSchema as WeatherEntryIncludeObjectSchema } from './WeatherEntryInclude.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => WeatherEntrySelectObjectSchema).optional(),

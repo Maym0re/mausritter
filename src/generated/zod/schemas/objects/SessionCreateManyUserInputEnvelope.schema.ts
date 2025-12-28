@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { SessionCreateManyUserInputObjectSchema } from './SessionCreateManyUserInput.schema'
+import { SessionCreateManyUserInputObjectSchema as SessionCreateManyUserInputObjectSchema } from './SessionCreateManyUserInput.schema'
 
 const makeSchema = () => z.object({
   data: z.union([z.lazy(() => SessionCreateManyUserInputObjectSchema), z.lazy(() => SessionCreateManyUserInputObjectSchema).array()]),

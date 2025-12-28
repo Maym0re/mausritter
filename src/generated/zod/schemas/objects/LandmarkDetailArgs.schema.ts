@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkDetailSelectObjectSchema } from './LandmarkDetailSelect.schema';
-import { LandmarkDetailIncludeObjectSchema } from './LandmarkDetailInclude.schema'
+import { LandmarkDetailSelectObjectSchema as LandmarkDetailSelectObjectSchema } from './LandmarkDetailSelect.schema';
+import { LandmarkDetailIncludeObjectSchema as LandmarkDetailIncludeObjectSchema } from './LandmarkDetailInclude.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => LandmarkDetailSelectObjectSchema).optional(),

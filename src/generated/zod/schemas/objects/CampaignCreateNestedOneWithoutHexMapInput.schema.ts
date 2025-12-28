@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignCreateWithoutHexMapInputObjectSchema } from './CampaignCreateWithoutHexMapInput.schema';
-import { CampaignUncheckedCreateWithoutHexMapInputObjectSchema } from './CampaignUncheckedCreateWithoutHexMapInput.schema';
-import { CampaignCreateOrConnectWithoutHexMapInputObjectSchema } from './CampaignCreateOrConnectWithoutHexMapInput.schema';
-import { CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema'
+import { CampaignCreateWithoutHexMapInputObjectSchema as CampaignCreateWithoutHexMapInputObjectSchema } from './CampaignCreateWithoutHexMapInput.schema';
+import { CampaignUncheckedCreateWithoutHexMapInputObjectSchema as CampaignUncheckedCreateWithoutHexMapInputObjectSchema } from './CampaignUncheckedCreateWithoutHexMapInput.schema';
+import { CampaignCreateOrConnectWithoutHexMapInputObjectSchema as CampaignCreateOrConnectWithoutHexMapInputObjectSchema } from './CampaignCreateOrConnectWithoutHexMapInput.schema';
+import { CampaignWhereUniqueInputObjectSchema as CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => CampaignCreateWithoutHexMapInputObjectSchema), z.lazy(() => CampaignUncheckedCreateWithoutHexMapInputObjectSchema)]).optional(),

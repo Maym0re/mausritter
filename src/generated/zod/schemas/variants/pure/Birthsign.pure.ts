@@ -1,13 +1,12 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const BirthsignModelSchema = z.object({
     id: z.string(),
     sign: z.string(),
     disposition: z.string(),
-    characters: z.array(z.unknown()).array(),
+    characters: z.array(z.unknown()),
     createdAt: z.date(),
     updatedAt: z.date()
 }).strict();
 
-export type BirthsignModelType = z.infer<typeof BirthsignModelSchema>;
+export type BirthsignPureType = z.infer<typeof BirthsignModelSchema>;

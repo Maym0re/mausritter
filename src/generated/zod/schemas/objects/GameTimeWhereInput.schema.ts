@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { IntFilterObjectSchema } from './IntFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { CampaignScalarRelationFilterObjectSchema } from './CampaignScalarRelationFilter.schema';
-import { CampaignWhereInputObjectSchema } from './CampaignWhereInput.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { IntFilterObjectSchema as IntFilterObjectSchema } from './IntFilter.schema';
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { CampaignScalarRelationFilterObjectSchema as CampaignScalarRelationFilterObjectSchema } from './CampaignScalarRelationFilter.schema';
+import { CampaignWhereInputObjectSchema as CampaignWhereInputObjectSchema } from './CampaignWhereInput.schema'
 
 const gametimewhereinputSchema = z.object({
   AND: z.union([z.lazy(() => GameTimeWhereInputObjectSchema), z.lazy(() => GameTimeWhereInputObjectSchema).array()]).optional(),

@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { DiceRollLogCreateWithoutUserInputObjectSchema } from './DiceRollLogCreateWithoutUserInput.schema';
-import { DiceRollLogUncheckedCreateWithoutUserInputObjectSchema } from './DiceRollLogUncheckedCreateWithoutUserInput.schema';
-import { DiceRollLogCreateOrConnectWithoutUserInputObjectSchema } from './DiceRollLogCreateOrConnectWithoutUserInput.schema';
-import { DiceRollLogCreateManyUserInputEnvelopeObjectSchema } from './DiceRollLogCreateManyUserInputEnvelope.schema';
-import { DiceRollLogWhereUniqueInputObjectSchema } from './DiceRollLogWhereUniqueInput.schema'
+import { DiceRollLogCreateWithoutUserInputObjectSchema as DiceRollLogCreateWithoutUserInputObjectSchema } from './DiceRollLogCreateWithoutUserInput.schema';
+import { DiceRollLogUncheckedCreateWithoutUserInputObjectSchema as DiceRollLogUncheckedCreateWithoutUserInputObjectSchema } from './DiceRollLogUncheckedCreateWithoutUserInput.schema';
+import { DiceRollLogCreateOrConnectWithoutUserInputObjectSchema as DiceRollLogCreateOrConnectWithoutUserInputObjectSchema } from './DiceRollLogCreateOrConnectWithoutUserInput.schema';
+import { DiceRollLogCreateManyUserInputEnvelopeObjectSchema as DiceRollLogCreateManyUserInputEnvelopeObjectSchema } from './DiceRollLogCreateManyUserInputEnvelope.schema';
+import { DiceRollLogWhereUniqueInputObjectSchema as DiceRollLogWhereUniqueInputObjectSchema } from './DiceRollLogWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => DiceRollLogCreateWithoutUserInputObjectSchema), z.lazy(() => DiceRollLogCreateWithoutUserInputObjectSchema).array(), z.lazy(() => DiceRollLogUncheckedCreateWithoutUserInputObjectSchema), z.lazy(() => DiceRollLogUncheckedCreateWithoutUserInputObjectSchema).array()]).optional(),

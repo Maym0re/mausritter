@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkWhereInputObjectSchema } from './LandmarkWhereInput.schema';
-import { LandmarkUpdateWithoutHexCellInputObjectSchema } from './LandmarkUpdateWithoutHexCellInput.schema';
-import { LandmarkUncheckedUpdateWithoutHexCellInputObjectSchema } from './LandmarkUncheckedUpdateWithoutHexCellInput.schema'
+import { LandmarkWhereInputObjectSchema as LandmarkWhereInputObjectSchema } from './LandmarkWhereInput.schema';
+import { LandmarkUpdateWithoutHexCellInputObjectSchema as LandmarkUpdateWithoutHexCellInputObjectSchema } from './LandmarkUpdateWithoutHexCellInput.schema';
+import { LandmarkUncheckedUpdateWithoutHexCellInputObjectSchema as LandmarkUncheckedUpdateWithoutHexCellInputObjectSchema } from './LandmarkUncheckedUpdateWithoutHexCellInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => LandmarkWhereInputObjectSchema).optional(),

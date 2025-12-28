@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const MapImageAggregateResultSchema = z.object({  _count: z.object({
     id: z.number(),
     hexMapId: z.number(),

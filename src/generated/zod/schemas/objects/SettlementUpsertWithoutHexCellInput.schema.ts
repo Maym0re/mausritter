@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { SettlementUpdateWithoutHexCellInputObjectSchema } from './SettlementUpdateWithoutHexCellInput.schema';
-import { SettlementUncheckedUpdateWithoutHexCellInputObjectSchema } from './SettlementUncheckedUpdateWithoutHexCellInput.schema';
-import { SettlementCreateWithoutHexCellInputObjectSchema } from './SettlementCreateWithoutHexCellInput.schema';
-import { SettlementUncheckedCreateWithoutHexCellInputObjectSchema } from './SettlementUncheckedCreateWithoutHexCellInput.schema';
-import { SettlementWhereInputObjectSchema } from './SettlementWhereInput.schema'
+import { SettlementUpdateWithoutHexCellInputObjectSchema as SettlementUpdateWithoutHexCellInputObjectSchema } from './SettlementUpdateWithoutHexCellInput.schema';
+import { SettlementUncheckedUpdateWithoutHexCellInputObjectSchema as SettlementUncheckedUpdateWithoutHexCellInputObjectSchema } from './SettlementUncheckedUpdateWithoutHexCellInput.schema';
+import { SettlementCreateWithoutHexCellInputObjectSchema as SettlementCreateWithoutHexCellInputObjectSchema } from './SettlementCreateWithoutHexCellInput.schema';
+import { SettlementUncheckedCreateWithoutHexCellInputObjectSchema as SettlementUncheckedCreateWithoutHexCellInputObjectSchema } from './SettlementUncheckedCreateWithoutHexCellInput.schema';
+import { SettlementWhereInputObjectSchema as SettlementWhereInputObjectSchema } from './SettlementWhereInput.schema'
 
 const makeSchema = () => z.object({
   update: z.union([z.lazy(() => SettlementUpdateWithoutHexCellInputObjectSchema), z.lazy(() => SettlementUncheckedUpdateWithoutHexCellInputObjectSchema)]),

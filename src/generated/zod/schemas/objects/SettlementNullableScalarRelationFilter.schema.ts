@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { SettlementWhereInputObjectSchema } from './SettlementWhereInput.schema'
+import { SettlementWhereInputObjectSchema as SettlementWhereInputObjectSchema } from './SettlementWhereInput.schema'
 
 const makeSchema = () => z.object({
   is: z.lazy(() => SettlementWhereInputObjectSchema).optional().nullable(),

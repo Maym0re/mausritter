@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
-import { NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
-import { NullableDateTimeFieldUpdateOperationsInputObjectSchema } from './NullableDateTimeFieldUpdateOperationsInput.schema';
-import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
-import { AccountUncheckedUpdateManyWithoutUserNestedInputObjectSchema } from './AccountUncheckedUpdateManyWithoutUserNestedInput.schema';
-import { SessionUncheckedUpdateManyWithoutUserNestedInputObjectSchema } from './SessionUncheckedUpdateManyWithoutUserNestedInput.schema';
-import { CharacterUncheckedUpdateManyWithoutPlayerNestedInputObjectSchema } from './CharacterUncheckedUpdateManyWithoutPlayerNestedInput.schema';
-import { CampaignPlayerUncheckedUpdateManyWithoutUserNestedInputObjectSchema } from './CampaignPlayerUncheckedUpdateManyWithoutUserNestedInput.schema';
-import { DiceRollLogUncheckedUpdateManyWithoutUserNestedInputObjectSchema } from './DiceRollLogUncheckedUpdateManyWithoutUserNestedInput.schema'
+import { StringFieldUpdateOperationsInputObjectSchema as StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
+import { NullableStringFieldUpdateOperationsInputObjectSchema as NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
+import { NullableDateTimeFieldUpdateOperationsInputObjectSchema as NullableDateTimeFieldUpdateOperationsInputObjectSchema } from './NullableDateTimeFieldUpdateOperationsInput.schema';
+import { DateTimeFieldUpdateOperationsInputObjectSchema as DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
+import { AccountUncheckedUpdateManyWithoutUserNestedInputObjectSchema as AccountUncheckedUpdateManyWithoutUserNestedInputObjectSchema } from './AccountUncheckedUpdateManyWithoutUserNestedInput.schema';
+import { SessionUncheckedUpdateManyWithoutUserNestedInputObjectSchema as SessionUncheckedUpdateManyWithoutUserNestedInputObjectSchema } from './SessionUncheckedUpdateManyWithoutUserNestedInput.schema';
+import { CharacterUncheckedUpdateManyWithoutPlayerNestedInputObjectSchema as CharacterUncheckedUpdateManyWithoutPlayerNestedInputObjectSchema } from './CharacterUncheckedUpdateManyWithoutPlayerNestedInput.schema';
+import { CampaignPlayerUncheckedUpdateManyWithoutUserNestedInputObjectSchema as CampaignPlayerUncheckedUpdateManyWithoutUserNestedInputObjectSchema } from './CampaignPlayerUncheckedUpdateManyWithoutUserNestedInput.schema';
+import { DiceRollLogUncheckedUpdateManyWithoutUserNestedInputObjectSchema as DiceRollLogUncheckedUpdateManyWithoutUserNestedInputObjectSchema } from './DiceRollLogUncheckedUpdateManyWithoutUserNestedInput.schema'
 
 const makeSchema = () => z.object({
   id: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),

@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
-import { IntFieldUpdateOperationsInputObjectSchema } from './IntFieldUpdateOperationsInput.schema';
-import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
-import { CampaignUpdateOneRequiredWithoutHexMapNestedInputObjectSchema } from './CampaignUpdateOneRequiredWithoutHexMapNestedInput.schema';
-import { MapImageUpdateManyWithoutHexMapNestedInputObjectSchema } from './MapImageUpdateManyWithoutHexMapNestedInput.schema';
-import { MapMarkerUpdateManyWithoutHexMapNestedInputObjectSchema } from './MapMarkerUpdateManyWithoutHexMapNestedInput.schema'
+import { StringFieldUpdateOperationsInputObjectSchema as StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
+import { IntFieldUpdateOperationsInputObjectSchema as IntFieldUpdateOperationsInputObjectSchema } from './IntFieldUpdateOperationsInput.schema';
+import { DateTimeFieldUpdateOperationsInputObjectSchema as DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
+import { CampaignUpdateOneRequiredWithoutHexMapNestedInputObjectSchema as CampaignUpdateOneRequiredWithoutHexMapNestedInputObjectSchema } from './CampaignUpdateOneRequiredWithoutHexMapNestedInput.schema';
+import { MapImageUpdateManyWithoutHexMapNestedInputObjectSchema as MapImageUpdateManyWithoutHexMapNestedInputObjectSchema } from './MapImageUpdateManyWithoutHexMapNestedInput.schema';
+import { MapMarkerUpdateManyWithoutHexMapNestedInputObjectSchema as MapMarkerUpdateManyWithoutHexMapNestedInputObjectSchema } from './MapMarkerUpdateManyWithoutHexMapNestedInput.schema'
 
 const makeSchema = () => z.object({
   id: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),

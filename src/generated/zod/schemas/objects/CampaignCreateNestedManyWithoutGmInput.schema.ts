@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignCreateWithoutGmInputObjectSchema } from './CampaignCreateWithoutGmInput.schema';
-import { CampaignUncheckedCreateWithoutGmInputObjectSchema } from './CampaignUncheckedCreateWithoutGmInput.schema';
-import { CampaignCreateOrConnectWithoutGmInputObjectSchema } from './CampaignCreateOrConnectWithoutGmInput.schema';
-import { CampaignCreateManyGmInputEnvelopeObjectSchema } from './CampaignCreateManyGmInputEnvelope.schema';
-import { CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema'
+import { CampaignCreateWithoutGmInputObjectSchema as CampaignCreateWithoutGmInputObjectSchema } from './CampaignCreateWithoutGmInput.schema';
+import { CampaignUncheckedCreateWithoutGmInputObjectSchema as CampaignUncheckedCreateWithoutGmInputObjectSchema } from './CampaignUncheckedCreateWithoutGmInput.schema';
+import { CampaignCreateOrConnectWithoutGmInputObjectSchema as CampaignCreateOrConnectWithoutGmInputObjectSchema } from './CampaignCreateOrConnectWithoutGmInput.schema';
+import { CampaignCreateManyGmInputEnvelopeObjectSchema as CampaignCreateManyGmInputEnvelopeObjectSchema } from './CampaignCreateManyGmInputEnvelope.schema';
+import { CampaignWhereUniqueInputObjectSchema as CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => CampaignCreateWithoutGmInputObjectSchema), z.lazy(() => CampaignCreateWithoutGmInputObjectSchema).array(), z.lazy(() => CampaignUncheckedCreateWithoutGmInputObjectSchema), z.lazy(() => CampaignUncheckedCreateWithoutGmInputObjectSchema).array()]).optional(),

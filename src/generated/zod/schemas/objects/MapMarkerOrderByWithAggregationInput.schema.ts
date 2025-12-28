@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { MapMarkerCountOrderByAggregateInputObjectSchema } from './MapMarkerCountOrderByAggregateInput.schema';
-import { MapMarkerAvgOrderByAggregateInputObjectSchema } from './MapMarkerAvgOrderByAggregateInput.schema';
-import { MapMarkerMaxOrderByAggregateInputObjectSchema } from './MapMarkerMaxOrderByAggregateInput.schema';
-import { MapMarkerMinOrderByAggregateInputObjectSchema } from './MapMarkerMinOrderByAggregateInput.schema';
-import { MapMarkerSumOrderByAggregateInputObjectSchema } from './MapMarkerSumOrderByAggregateInput.schema'
+import { MapMarkerCountOrderByAggregateInputObjectSchema as MapMarkerCountOrderByAggregateInputObjectSchema } from './MapMarkerCountOrderByAggregateInput.schema';
+import { MapMarkerAvgOrderByAggregateInputObjectSchema as MapMarkerAvgOrderByAggregateInputObjectSchema } from './MapMarkerAvgOrderByAggregateInput.schema';
+import { MapMarkerMaxOrderByAggregateInputObjectSchema as MapMarkerMaxOrderByAggregateInputObjectSchema } from './MapMarkerMaxOrderByAggregateInput.schema';
+import { MapMarkerMinOrderByAggregateInputObjectSchema as MapMarkerMinOrderByAggregateInputObjectSchema } from './MapMarkerMinOrderByAggregateInput.schema';
+import { MapMarkerSumOrderByAggregateInputObjectSchema as MapMarkerSumOrderByAggregateInputObjectSchema } from './MapMarkerSumOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

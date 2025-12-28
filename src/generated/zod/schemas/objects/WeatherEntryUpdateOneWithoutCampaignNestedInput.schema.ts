@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { WeatherEntryCreateWithoutCampaignInputObjectSchema } from './WeatherEntryCreateWithoutCampaignInput.schema';
-import { WeatherEntryUncheckedCreateWithoutCampaignInputObjectSchema } from './WeatherEntryUncheckedCreateWithoutCampaignInput.schema';
-import { WeatherEntryCreateOrConnectWithoutCampaignInputObjectSchema } from './WeatherEntryCreateOrConnectWithoutCampaignInput.schema';
-import { WeatherEntryUpsertWithoutCampaignInputObjectSchema } from './WeatherEntryUpsertWithoutCampaignInput.schema';
-import { WeatherEntryWhereInputObjectSchema } from './WeatherEntryWhereInput.schema';
-import { WeatherEntryWhereUniqueInputObjectSchema } from './WeatherEntryWhereUniqueInput.schema';
-import { WeatherEntryUpdateToOneWithWhereWithoutCampaignInputObjectSchema } from './WeatherEntryUpdateToOneWithWhereWithoutCampaignInput.schema';
-import { WeatherEntryUpdateWithoutCampaignInputObjectSchema } from './WeatherEntryUpdateWithoutCampaignInput.schema';
-import { WeatherEntryUncheckedUpdateWithoutCampaignInputObjectSchema } from './WeatherEntryUncheckedUpdateWithoutCampaignInput.schema'
+import { WeatherEntryCreateWithoutCampaignInputObjectSchema as WeatherEntryCreateWithoutCampaignInputObjectSchema } from './WeatherEntryCreateWithoutCampaignInput.schema';
+import { WeatherEntryUncheckedCreateWithoutCampaignInputObjectSchema as WeatherEntryUncheckedCreateWithoutCampaignInputObjectSchema } from './WeatherEntryUncheckedCreateWithoutCampaignInput.schema';
+import { WeatherEntryCreateOrConnectWithoutCampaignInputObjectSchema as WeatherEntryCreateOrConnectWithoutCampaignInputObjectSchema } from './WeatherEntryCreateOrConnectWithoutCampaignInput.schema';
+import { WeatherEntryUpsertWithoutCampaignInputObjectSchema as WeatherEntryUpsertWithoutCampaignInputObjectSchema } from './WeatherEntryUpsertWithoutCampaignInput.schema';
+import { WeatherEntryWhereInputObjectSchema as WeatherEntryWhereInputObjectSchema } from './WeatherEntryWhereInput.schema';
+import { WeatherEntryWhereUniqueInputObjectSchema as WeatherEntryWhereUniqueInputObjectSchema } from './WeatherEntryWhereUniqueInput.schema';
+import { WeatherEntryUpdateToOneWithWhereWithoutCampaignInputObjectSchema as WeatherEntryUpdateToOneWithWhereWithoutCampaignInputObjectSchema } from './WeatherEntryUpdateToOneWithWhereWithoutCampaignInput.schema';
+import { WeatherEntryUpdateWithoutCampaignInputObjectSchema as WeatherEntryUpdateWithoutCampaignInputObjectSchema } from './WeatherEntryUpdateWithoutCampaignInput.schema';
+import { WeatherEntryUncheckedUpdateWithoutCampaignInputObjectSchema as WeatherEntryUncheckedUpdateWithoutCampaignInputObjectSchema } from './WeatherEntryUncheckedUpdateWithoutCampaignInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => WeatherEntryCreateWithoutCampaignInputObjectSchema), z.lazy(() => WeatherEntryUncheckedCreateWithoutCampaignInputObjectSchema)]).optional(),

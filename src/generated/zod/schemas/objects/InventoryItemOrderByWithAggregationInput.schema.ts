@@ -1,12 +1,12 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { SortOrderInputObjectSchema } from './SortOrderInput.schema';
-import { InventoryItemCountOrderByAggregateInputObjectSchema } from './InventoryItemCountOrderByAggregateInput.schema';
-import { InventoryItemAvgOrderByAggregateInputObjectSchema } from './InventoryItemAvgOrderByAggregateInput.schema';
-import { InventoryItemMaxOrderByAggregateInputObjectSchema } from './InventoryItemMaxOrderByAggregateInput.schema';
-import { InventoryItemMinOrderByAggregateInputObjectSchema } from './InventoryItemMinOrderByAggregateInput.schema';
-import { InventoryItemSumOrderByAggregateInputObjectSchema } from './InventoryItemSumOrderByAggregateInput.schema'
+import { SortOrderInputObjectSchema as SortOrderInputObjectSchema } from './SortOrderInput.schema';
+import { InventoryItemCountOrderByAggregateInputObjectSchema as InventoryItemCountOrderByAggregateInputObjectSchema } from './InventoryItemCountOrderByAggregateInput.schema';
+import { InventoryItemAvgOrderByAggregateInputObjectSchema as InventoryItemAvgOrderByAggregateInputObjectSchema } from './InventoryItemAvgOrderByAggregateInput.schema';
+import { InventoryItemMaxOrderByAggregateInputObjectSchema as InventoryItemMaxOrderByAggregateInputObjectSchema } from './InventoryItemMaxOrderByAggregateInput.schema';
+import { InventoryItemMinOrderByAggregateInputObjectSchema as InventoryItemMinOrderByAggregateInputObjectSchema } from './InventoryItemMinOrderByAggregateInput.schema';
+import { InventoryItemSumOrderByAggregateInputObjectSchema as InventoryItemSumOrderByAggregateInputObjectSchema } from './InventoryItemSumOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

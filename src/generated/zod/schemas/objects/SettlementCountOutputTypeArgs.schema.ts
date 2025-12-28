@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { SettlementCountOutputTypeSelectObjectSchema } from './SettlementCountOutputTypeSelect.schema'
+import { SettlementCountOutputTypeSelectObjectSchema as SettlementCountOutputTypeSelectObjectSchema } from './SettlementCountOutputTypeSelect.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => SettlementCountOutputTypeSelectObjectSchema).optional()

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const MapImageScalarFieldEnumSchema = z.enum(['id', 'hexMapId', 'data', 'x', 'y', 'width', 'height', 'createdAt', 'updatedAt'])
 

@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignPlayerCreateWithoutCampaignInputObjectSchema } from './CampaignPlayerCreateWithoutCampaignInput.schema';
-import { CampaignPlayerUncheckedCreateWithoutCampaignInputObjectSchema } from './CampaignPlayerUncheckedCreateWithoutCampaignInput.schema';
-import { CampaignPlayerCreateOrConnectWithoutCampaignInputObjectSchema } from './CampaignPlayerCreateOrConnectWithoutCampaignInput.schema';
-import { CampaignPlayerCreateManyCampaignInputEnvelopeObjectSchema } from './CampaignPlayerCreateManyCampaignInputEnvelope.schema';
-import { CampaignPlayerWhereUniqueInputObjectSchema } from './CampaignPlayerWhereUniqueInput.schema'
+import { CampaignPlayerCreateWithoutCampaignInputObjectSchema as CampaignPlayerCreateWithoutCampaignInputObjectSchema } from './CampaignPlayerCreateWithoutCampaignInput.schema';
+import { CampaignPlayerUncheckedCreateWithoutCampaignInputObjectSchema as CampaignPlayerUncheckedCreateWithoutCampaignInputObjectSchema } from './CampaignPlayerUncheckedCreateWithoutCampaignInput.schema';
+import { CampaignPlayerCreateOrConnectWithoutCampaignInputObjectSchema as CampaignPlayerCreateOrConnectWithoutCampaignInputObjectSchema } from './CampaignPlayerCreateOrConnectWithoutCampaignInput.schema';
+import { CampaignPlayerCreateManyCampaignInputEnvelopeObjectSchema as CampaignPlayerCreateManyCampaignInputEnvelopeObjectSchema } from './CampaignPlayerCreateManyCampaignInputEnvelope.schema';
+import { CampaignPlayerWhereUniqueInputObjectSchema as CampaignPlayerWhereUniqueInputObjectSchema } from './CampaignPlayerWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => CampaignPlayerCreateWithoutCampaignInputObjectSchema), z.lazy(() => CampaignPlayerCreateWithoutCampaignInputObjectSchema).array(), z.lazy(() => CampaignPlayerUncheckedCreateWithoutCampaignInputObjectSchema), z.lazy(() => CampaignPlayerUncheckedCreateWithoutCampaignInputObjectSchema).array()]).optional(),

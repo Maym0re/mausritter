@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { ConditionUncheckedCreateNestedManyWithoutCharactersInputObjectSchema } from './ConditionUncheckedCreateNestedManyWithoutCharactersInput.schema'
+import { ConditionUncheckedCreateNestedManyWithoutCharactersInputObjectSchema as ConditionUncheckedCreateNestedManyWithoutCharactersInputObjectSchema } from './ConditionUncheckedCreateNestedManyWithoutCharactersInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string().optional(),

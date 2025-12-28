@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { CampaignPlayerIncludeObjectSchema } from './objects/CampaignPlayerInclude.schema';
-import { CampaignPlayerOrderByWithRelationInputObjectSchema } from './objects/CampaignPlayerOrderByWithRelationInput.schema';
-import { CampaignPlayerWhereInputObjectSchema } from './objects/CampaignPlayerWhereInput.schema';
-import { CampaignPlayerWhereUniqueInputObjectSchema } from './objects/CampaignPlayerWhereUniqueInput.schema';
+import * as z from 'zod';
+import { CampaignPlayerIncludeObjectSchema as CampaignPlayerIncludeObjectSchema } from './objects/CampaignPlayerInclude.schema';
+import { CampaignPlayerOrderByWithRelationInputObjectSchema as CampaignPlayerOrderByWithRelationInputObjectSchema } from './objects/CampaignPlayerOrderByWithRelationInput.schema';
+import { CampaignPlayerWhereInputObjectSchema as CampaignPlayerWhereInputObjectSchema } from './objects/CampaignPlayerWhereInput.schema';
+import { CampaignPlayerWhereUniqueInputObjectSchema as CampaignPlayerWhereUniqueInputObjectSchema } from './objects/CampaignPlayerWhereUniqueInput.schema';
 import { CampaignPlayerScalarFieldEnumSchema } from './enums/CampaignPlayerScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { MapImageScalarWhereInputObjectSchema } from './MapImageScalarWhereInput.schema';
-import { MapImageUpdateManyMutationInputObjectSchema } from './MapImageUpdateManyMutationInput.schema';
-import { MapImageUncheckedUpdateManyWithoutHexMapInputObjectSchema } from './MapImageUncheckedUpdateManyWithoutHexMapInput.schema'
+import { MapImageScalarWhereInputObjectSchema as MapImageScalarWhereInputObjectSchema } from './MapImageScalarWhereInput.schema';
+import { MapImageUpdateManyMutationInputObjectSchema as MapImageUpdateManyMutationInputObjectSchema } from './MapImageUpdateManyMutationInput.schema';
+import { MapImageUncheckedUpdateManyWithoutHexMapInputObjectSchema as MapImageUncheckedUpdateManyWithoutHexMapInputObjectSchema } from './MapImageUncheckedUpdateManyWithoutHexMapInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => MapImageScalarWhereInputObjectSchema),

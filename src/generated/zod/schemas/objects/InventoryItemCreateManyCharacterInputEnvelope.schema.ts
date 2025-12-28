@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { InventoryItemCreateManyCharacterInputObjectSchema } from './InventoryItemCreateManyCharacterInput.schema'
+import { InventoryItemCreateManyCharacterInputObjectSchema as InventoryItemCreateManyCharacterInputObjectSchema } from './InventoryItemCreateManyCharacterInput.schema'
 
 const makeSchema = () => z.object({
   data: z.union([z.lazy(() => InventoryItemCreateManyCharacterInputObjectSchema), z.lazy(() => InventoryItemCreateManyCharacterInputObjectSchema).array()]),

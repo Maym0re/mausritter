@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexCellCreateManyLandmarkInputObjectSchema } from './HexCellCreateManyLandmarkInput.schema'
+import { HexCellCreateManyLandmarkInputObjectSchema as HexCellCreateManyLandmarkInputObjectSchema } from './HexCellCreateManyLandmarkInput.schema'
 
 const makeSchema = () => z.object({
   data: z.union([z.lazy(() => HexCellCreateManyLandmarkInputObjectSchema), z.lazy(() => HexCellCreateManyLandmarkInputObjectSchema).array()]),

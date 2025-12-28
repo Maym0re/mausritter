@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { MapImageCreateWithoutHexMapInputObjectSchema } from './MapImageCreateWithoutHexMapInput.schema';
-import { MapImageUncheckedCreateWithoutHexMapInputObjectSchema } from './MapImageUncheckedCreateWithoutHexMapInput.schema';
-import { MapImageCreateOrConnectWithoutHexMapInputObjectSchema } from './MapImageCreateOrConnectWithoutHexMapInput.schema';
-import { MapImageUpsertWithWhereUniqueWithoutHexMapInputObjectSchema } from './MapImageUpsertWithWhereUniqueWithoutHexMapInput.schema';
-import { MapImageCreateManyHexMapInputEnvelopeObjectSchema } from './MapImageCreateManyHexMapInputEnvelope.schema';
-import { MapImageWhereUniqueInputObjectSchema } from './MapImageWhereUniqueInput.schema';
-import { MapImageUpdateWithWhereUniqueWithoutHexMapInputObjectSchema } from './MapImageUpdateWithWhereUniqueWithoutHexMapInput.schema';
-import { MapImageUpdateManyWithWhereWithoutHexMapInputObjectSchema } from './MapImageUpdateManyWithWhereWithoutHexMapInput.schema';
-import { MapImageScalarWhereInputObjectSchema } from './MapImageScalarWhereInput.schema'
+import { MapImageCreateWithoutHexMapInputObjectSchema as MapImageCreateWithoutHexMapInputObjectSchema } from './MapImageCreateWithoutHexMapInput.schema';
+import { MapImageUncheckedCreateWithoutHexMapInputObjectSchema as MapImageUncheckedCreateWithoutHexMapInputObjectSchema } from './MapImageUncheckedCreateWithoutHexMapInput.schema';
+import { MapImageCreateOrConnectWithoutHexMapInputObjectSchema as MapImageCreateOrConnectWithoutHexMapInputObjectSchema } from './MapImageCreateOrConnectWithoutHexMapInput.schema';
+import { MapImageUpsertWithWhereUniqueWithoutHexMapInputObjectSchema as MapImageUpsertWithWhereUniqueWithoutHexMapInputObjectSchema } from './MapImageUpsertWithWhereUniqueWithoutHexMapInput.schema';
+import { MapImageCreateManyHexMapInputEnvelopeObjectSchema as MapImageCreateManyHexMapInputEnvelopeObjectSchema } from './MapImageCreateManyHexMapInputEnvelope.schema';
+import { MapImageWhereUniqueInputObjectSchema as MapImageWhereUniqueInputObjectSchema } from './MapImageWhereUniqueInput.schema';
+import { MapImageUpdateWithWhereUniqueWithoutHexMapInputObjectSchema as MapImageUpdateWithWhereUniqueWithoutHexMapInputObjectSchema } from './MapImageUpdateWithWhereUniqueWithoutHexMapInput.schema';
+import { MapImageUpdateManyWithWhereWithoutHexMapInputObjectSchema as MapImageUpdateManyWithWhereWithoutHexMapInputObjectSchema } from './MapImageUpdateManyWithWhereWithoutHexMapInput.schema';
+import { MapImageScalarWhereInputObjectSchema as MapImageScalarWhereInputObjectSchema } from './MapImageScalarWhereInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => MapImageCreateWithoutHexMapInputObjectSchema), z.lazy(() => MapImageCreateWithoutHexMapInputObjectSchema).array(), z.lazy(() => MapImageUncheckedCreateWithoutHexMapInputObjectSchema), z.lazy(() => MapImageUncheckedCreateWithoutHexMapInputObjectSchema).array()]).optional(),

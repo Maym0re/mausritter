@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 import { SeasonNameSchema } from '../../enums/SeasonName.schema';
 // prettier-ignore
 export const WeatherEntryModelSchema = z.object({
@@ -8,7 +7,7 @@ export const WeatherEntryModelSchema = z.object({
     roll: z.number().int(),
     weather: z.string(),
     isPoorCondition: z.boolean(),
-    Campaign: z.array(z.unknown()).array()
+    Campaign: z.array(z.unknown())
 }).strict();
 
-export type WeatherEntryModelType = z.infer<typeof WeatherEntryModelSchema>;
+export type WeatherEntryPureType = z.infer<typeof WeatherEntryModelSchema>;

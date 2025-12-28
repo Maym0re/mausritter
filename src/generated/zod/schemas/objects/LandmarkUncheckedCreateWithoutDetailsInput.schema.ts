@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexCellUncheckedCreateNestedManyWithoutLandmarkInputObjectSchema } from './HexCellUncheckedCreateNestedManyWithoutLandmarkInput.schema'
+import { HexCellUncheckedCreateNestedManyWithoutLandmarkInputObjectSchema as HexCellUncheckedCreateNestedManyWithoutLandmarkInputObjectSchema } from './HexCellUncheckedCreateNestedManyWithoutLandmarkInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string(),

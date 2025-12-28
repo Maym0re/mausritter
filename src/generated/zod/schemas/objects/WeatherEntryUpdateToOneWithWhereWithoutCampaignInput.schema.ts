@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { WeatherEntryWhereInputObjectSchema } from './WeatherEntryWhereInput.schema';
-import { WeatherEntryUpdateWithoutCampaignInputObjectSchema } from './WeatherEntryUpdateWithoutCampaignInput.schema';
-import { WeatherEntryUncheckedUpdateWithoutCampaignInputObjectSchema } from './WeatherEntryUncheckedUpdateWithoutCampaignInput.schema'
+import { WeatherEntryWhereInputObjectSchema as WeatherEntryWhereInputObjectSchema } from './WeatherEntryWhereInput.schema';
+import { WeatherEntryUpdateWithoutCampaignInputObjectSchema as WeatherEntryUpdateWithoutCampaignInputObjectSchema } from './WeatherEntryUpdateWithoutCampaignInput.schema';
+import { WeatherEntryUncheckedUpdateWithoutCampaignInputObjectSchema as WeatherEntryUncheckedUpdateWithoutCampaignInputObjectSchema } from './WeatherEntryUncheckedUpdateWithoutCampaignInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => WeatherEntryWhereInputObjectSchema).optional(),

@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexCellFindManySchema } from '../findManyHexCell.schema';
-import { SettlementCountOutputTypeArgsObjectSchema } from './SettlementCountOutputTypeArgs.schema'
+import { HexCellFindManySchema as HexCellFindManySchema } from '../findManyHexCell.schema';
+import { SettlementCountOutputTypeArgsObjectSchema as SettlementCountOutputTypeArgsObjectSchema } from './SettlementCountOutputTypeArgs.schema'
 
 const makeSchema = () => z.object({
   HexCell: z.union([z.boolean(), z.lazy(() => HexCellFindManySchema)]).optional(),

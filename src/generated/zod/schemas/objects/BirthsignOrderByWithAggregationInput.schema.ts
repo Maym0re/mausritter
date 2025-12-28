@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { BirthsignCountOrderByAggregateInputObjectSchema } from './BirthsignCountOrderByAggregateInput.schema';
-import { BirthsignMaxOrderByAggregateInputObjectSchema } from './BirthsignMaxOrderByAggregateInput.schema';
-import { BirthsignMinOrderByAggregateInputObjectSchema } from './BirthsignMinOrderByAggregateInput.schema'
+import { BirthsignCountOrderByAggregateInputObjectSchema as BirthsignCountOrderByAggregateInputObjectSchema } from './BirthsignCountOrderByAggregateInput.schema';
+import { BirthsignMaxOrderByAggregateInputObjectSchema as BirthsignMaxOrderByAggregateInputObjectSchema } from './BirthsignMaxOrderByAggregateInput.schema';
+import { BirthsignMinOrderByAggregateInputObjectSchema as BirthsignMinOrderByAggregateInputObjectSchema } from './BirthsignMinOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

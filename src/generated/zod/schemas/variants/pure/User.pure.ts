@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const UserModelSchema = z.object({
     id: z.string(),
@@ -8,14 +7,14 @@ export const UserModelSchema = z.object({
     emailVerified: z.date().nullable(),
     image: z.string().nullable(),
     password: z.string().nullable(),
-    accounts: z.array(z.unknown()).array(),
-    sessions: z.array(z.unknown()).array(),
-    ownedCampaigns: z.array(z.unknown()).array(),
-    characters: z.array(z.unknown()).array(),
-    playerIn: z.array(z.unknown()).array(),
-    diceRollLogs: z.array(z.unknown()).array(),
+    accounts: z.array(z.unknown()),
+    sessions: z.array(z.unknown()),
+    ownedCampaigns: z.array(z.unknown()),
+    characters: z.array(z.unknown()),
+    playerIn: z.array(z.unknown()),
+    diceRollLogs: z.array(z.unknown()),
     createdAt: z.date(),
     updatedAt: z.date()
 }).strict();
 
-export type UserModelType = z.infer<typeof UserModelSchema>;
+export type UserPureType = z.infer<typeof UserModelSchema>;

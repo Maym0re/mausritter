@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignCreateWithoutHexMapInputObjectSchema } from './CampaignCreateWithoutHexMapInput.schema';
-import { CampaignUncheckedCreateWithoutHexMapInputObjectSchema } from './CampaignUncheckedCreateWithoutHexMapInput.schema';
-import { CampaignCreateOrConnectWithoutHexMapInputObjectSchema } from './CampaignCreateOrConnectWithoutHexMapInput.schema';
-import { CampaignUpsertWithoutHexMapInputObjectSchema } from './CampaignUpsertWithoutHexMapInput.schema';
-import { CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema';
-import { CampaignUpdateToOneWithWhereWithoutHexMapInputObjectSchema } from './CampaignUpdateToOneWithWhereWithoutHexMapInput.schema';
-import { CampaignUpdateWithoutHexMapInputObjectSchema } from './CampaignUpdateWithoutHexMapInput.schema';
-import { CampaignUncheckedUpdateWithoutHexMapInputObjectSchema } from './CampaignUncheckedUpdateWithoutHexMapInput.schema'
+import { CampaignCreateWithoutHexMapInputObjectSchema as CampaignCreateWithoutHexMapInputObjectSchema } from './CampaignCreateWithoutHexMapInput.schema';
+import { CampaignUncheckedCreateWithoutHexMapInputObjectSchema as CampaignUncheckedCreateWithoutHexMapInputObjectSchema } from './CampaignUncheckedCreateWithoutHexMapInput.schema';
+import { CampaignCreateOrConnectWithoutHexMapInputObjectSchema as CampaignCreateOrConnectWithoutHexMapInputObjectSchema } from './CampaignCreateOrConnectWithoutHexMapInput.schema';
+import { CampaignUpsertWithoutHexMapInputObjectSchema as CampaignUpsertWithoutHexMapInputObjectSchema } from './CampaignUpsertWithoutHexMapInput.schema';
+import { CampaignWhereUniqueInputObjectSchema as CampaignWhereUniqueInputObjectSchema } from './CampaignWhereUniqueInput.schema';
+import { CampaignUpdateToOneWithWhereWithoutHexMapInputObjectSchema as CampaignUpdateToOneWithWhereWithoutHexMapInputObjectSchema } from './CampaignUpdateToOneWithWhereWithoutHexMapInput.schema';
+import { CampaignUpdateWithoutHexMapInputObjectSchema as CampaignUpdateWithoutHexMapInputObjectSchema } from './CampaignUpdateWithoutHexMapInput.schema';
+import { CampaignUncheckedUpdateWithoutHexMapInputObjectSchema as CampaignUncheckedUpdateWithoutHexMapInputObjectSchema } from './CampaignUncheckedUpdateWithoutHexMapInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => CampaignCreateWithoutHexMapInputObjectSchema), z.lazy(() => CampaignUncheckedCreateWithoutHexMapInputObjectSchema)]).optional(),

@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { MapImageCountOrderByAggregateInputObjectSchema } from './MapImageCountOrderByAggregateInput.schema';
-import { MapImageAvgOrderByAggregateInputObjectSchema } from './MapImageAvgOrderByAggregateInput.schema';
-import { MapImageMaxOrderByAggregateInputObjectSchema } from './MapImageMaxOrderByAggregateInput.schema';
-import { MapImageMinOrderByAggregateInputObjectSchema } from './MapImageMinOrderByAggregateInput.schema';
-import { MapImageSumOrderByAggregateInputObjectSchema } from './MapImageSumOrderByAggregateInput.schema'
+import { MapImageCountOrderByAggregateInputObjectSchema as MapImageCountOrderByAggregateInputObjectSchema } from './MapImageCountOrderByAggregateInput.schema';
+import { MapImageAvgOrderByAggregateInputObjectSchema as MapImageAvgOrderByAggregateInputObjectSchema } from './MapImageAvgOrderByAggregateInput.schema';
+import { MapImageMaxOrderByAggregateInputObjectSchema as MapImageMaxOrderByAggregateInputObjectSchema } from './MapImageMaxOrderByAggregateInput.schema';
+import { MapImageMinOrderByAggregateInputObjectSchema as MapImageMinOrderByAggregateInputObjectSchema } from './MapImageMinOrderByAggregateInput.schema';
+import { MapImageSumOrderByAggregateInputObjectSchema as MapImageSumOrderByAggregateInputObjectSchema } from './MapImageSumOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

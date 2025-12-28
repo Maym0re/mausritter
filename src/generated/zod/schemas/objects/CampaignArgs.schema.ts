@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignSelectObjectSchema } from './CampaignSelect.schema';
-import { CampaignIncludeObjectSchema } from './CampaignInclude.schema'
+import { CampaignSelectObjectSchema as CampaignSelectObjectSchema } from './CampaignSelect.schema';
+import { CampaignIncludeObjectSchema as CampaignIncludeObjectSchema } from './CampaignInclude.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => CampaignSelectObjectSchema).optional(),

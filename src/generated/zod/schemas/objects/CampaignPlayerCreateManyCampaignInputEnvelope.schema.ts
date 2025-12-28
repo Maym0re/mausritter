@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignPlayerCreateManyCampaignInputObjectSchema } from './CampaignPlayerCreateManyCampaignInput.schema'
+import { CampaignPlayerCreateManyCampaignInputObjectSchema as CampaignPlayerCreateManyCampaignInputObjectSchema } from './CampaignPlayerCreateManyCampaignInput.schema'
 
 const makeSchema = () => z.object({
   data: z.union([z.lazy(() => CampaignPlayerCreateManyCampaignInputObjectSchema), z.lazy(() => CampaignPlayerCreateManyCampaignInputObjectSchema).array()]),

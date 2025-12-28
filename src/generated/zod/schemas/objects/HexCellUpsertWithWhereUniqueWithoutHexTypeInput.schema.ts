@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexCellWhereUniqueInputObjectSchema } from './HexCellWhereUniqueInput.schema';
-import { HexCellUpdateWithoutHexTypeInputObjectSchema } from './HexCellUpdateWithoutHexTypeInput.schema';
-import { HexCellUncheckedUpdateWithoutHexTypeInputObjectSchema } from './HexCellUncheckedUpdateWithoutHexTypeInput.schema';
-import { HexCellCreateWithoutHexTypeInputObjectSchema } from './HexCellCreateWithoutHexTypeInput.schema';
-import { HexCellUncheckedCreateWithoutHexTypeInputObjectSchema } from './HexCellUncheckedCreateWithoutHexTypeInput.schema'
+import { HexCellWhereUniqueInputObjectSchema as HexCellWhereUniqueInputObjectSchema } from './HexCellWhereUniqueInput.schema';
+import { HexCellUpdateWithoutHexTypeInputObjectSchema as HexCellUpdateWithoutHexTypeInputObjectSchema } from './HexCellUpdateWithoutHexTypeInput.schema';
+import { HexCellUncheckedUpdateWithoutHexTypeInputObjectSchema as HexCellUncheckedUpdateWithoutHexTypeInputObjectSchema } from './HexCellUncheckedUpdateWithoutHexTypeInput.schema';
+import { HexCellCreateWithoutHexTypeInputObjectSchema as HexCellCreateWithoutHexTypeInputObjectSchema } from './HexCellCreateWithoutHexTypeInput.schema';
+import { HexCellUncheckedCreateWithoutHexTypeInputObjectSchema as HexCellUncheckedCreateWithoutHexTypeInputObjectSchema } from './HexCellUncheckedCreateWithoutHexTypeInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => HexCellWhereUniqueInputObjectSchema),

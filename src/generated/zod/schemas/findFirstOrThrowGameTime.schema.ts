@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { GameTimeIncludeObjectSchema } from './objects/GameTimeInclude.schema';
-import { GameTimeOrderByWithRelationInputObjectSchema } from './objects/GameTimeOrderByWithRelationInput.schema';
-import { GameTimeWhereInputObjectSchema } from './objects/GameTimeWhereInput.schema';
-import { GameTimeWhereUniqueInputObjectSchema } from './objects/GameTimeWhereUniqueInput.schema';
+import * as z from 'zod';
+import { GameTimeIncludeObjectSchema as GameTimeIncludeObjectSchema } from './objects/GameTimeInclude.schema';
+import { GameTimeOrderByWithRelationInputObjectSchema as GameTimeOrderByWithRelationInputObjectSchema } from './objects/GameTimeOrderByWithRelationInput.schema';
+import { GameTimeWhereInputObjectSchema as GameTimeWhereInputObjectSchema } from './objects/GameTimeWhereInput.schema';
+import { GameTimeWhereUniqueInputObjectSchema as GameTimeWhereUniqueInputObjectSchema } from './objects/GameTimeWhereUniqueInput.schema';
 import { GameTimeScalarFieldEnumSchema } from './enums/GameTimeScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

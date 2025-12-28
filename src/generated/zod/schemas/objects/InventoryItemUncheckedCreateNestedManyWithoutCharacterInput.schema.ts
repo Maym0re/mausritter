@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { InventoryItemCreateWithoutCharacterInputObjectSchema } from './InventoryItemCreateWithoutCharacterInput.schema';
-import { InventoryItemUncheckedCreateWithoutCharacterInputObjectSchema } from './InventoryItemUncheckedCreateWithoutCharacterInput.schema';
-import { InventoryItemCreateOrConnectWithoutCharacterInputObjectSchema } from './InventoryItemCreateOrConnectWithoutCharacterInput.schema';
-import { InventoryItemCreateManyCharacterInputEnvelopeObjectSchema } from './InventoryItemCreateManyCharacterInputEnvelope.schema';
-import { InventoryItemWhereUniqueInputObjectSchema } from './InventoryItemWhereUniqueInput.schema'
+import { InventoryItemCreateWithoutCharacterInputObjectSchema as InventoryItemCreateWithoutCharacterInputObjectSchema } from './InventoryItemCreateWithoutCharacterInput.schema';
+import { InventoryItemUncheckedCreateWithoutCharacterInputObjectSchema as InventoryItemUncheckedCreateWithoutCharacterInputObjectSchema } from './InventoryItemUncheckedCreateWithoutCharacterInput.schema';
+import { InventoryItemCreateOrConnectWithoutCharacterInputObjectSchema as InventoryItemCreateOrConnectWithoutCharacterInputObjectSchema } from './InventoryItemCreateOrConnectWithoutCharacterInput.schema';
+import { InventoryItemCreateManyCharacterInputEnvelopeObjectSchema as InventoryItemCreateManyCharacterInputEnvelopeObjectSchema } from './InventoryItemCreateManyCharacterInputEnvelope.schema';
+import { InventoryItemWhereUniqueInputObjectSchema as InventoryItemWhereUniqueInputObjectSchema } from './InventoryItemWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => InventoryItemCreateWithoutCharacterInputObjectSchema), z.lazy(() => InventoryItemCreateWithoutCharacterInputObjectSchema).array(), z.lazy(() => InventoryItemUncheckedCreateWithoutCharacterInputObjectSchema), z.lazy(() => InventoryItemUncheckedCreateWithoutCharacterInputObjectSchema).array()]).optional(),

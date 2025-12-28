@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterCountOutputTypeSelectObjectSchema } from './CharacterCountOutputTypeSelect.schema'
+import { CharacterCountOutputTypeSelectObjectSchema as CharacterCountOutputTypeSelectObjectSchema } from './CharacterCountOutputTypeSelect.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => CharacterCountOutputTypeSelectObjectSchema).optional()

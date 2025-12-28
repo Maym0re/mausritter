@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const DiceRollEntryCreateResultSchema = z.object({
   id: z.string(),
   logId: z.string(),

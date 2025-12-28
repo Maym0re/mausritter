@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { DiceRollLogWhereUniqueInputObjectSchema } from './DiceRollLogWhereUniqueInput.schema';
-import { DiceRollLogUpdateWithoutCampaignInputObjectSchema } from './DiceRollLogUpdateWithoutCampaignInput.schema';
-import { DiceRollLogUncheckedUpdateWithoutCampaignInputObjectSchema } from './DiceRollLogUncheckedUpdateWithoutCampaignInput.schema';
-import { DiceRollLogCreateWithoutCampaignInputObjectSchema } from './DiceRollLogCreateWithoutCampaignInput.schema';
-import { DiceRollLogUncheckedCreateWithoutCampaignInputObjectSchema } from './DiceRollLogUncheckedCreateWithoutCampaignInput.schema'
+import { DiceRollLogWhereUniqueInputObjectSchema as DiceRollLogWhereUniqueInputObjectSchema } from './DiceRollLogWhereUniqueInput.schema';
+import { DiceRollLogUpdateWithoutCampaignInputObjectSchema as DiceRollLogUpdateWithoutCampaignInputObjectSchema } from './DiceRollLogUpdateWithoutCampaignInput.schema';
+import { DiceRollLogUncheckedUpdateWithoutCampaignInputObjectSchema as DiceRollLogUncheckedUpdateWithoutCampaignInputObjectSchema } from './DiceRollLogUncheckedUpdateWithoutCampaignInput.schema';
+import { DiceRollLogCreateWithoutCampaignInputObjectSchema as DiceRollLogCreateWithoutCampaignInputObjectSchema } from './DiceRollLogCreateWithoutCampaignInput.schema';
+import { DiceRollLogUncheckedCreateWithoutCampaignInputObjectSchema as DiceRollLogUncheckedCreateWithoutCampaignInputObjectSchema } from './DiceRollLogUncheckedCreateWithoutCampaignInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => DiceRollLogWhereUniqueInputObjectSchema),

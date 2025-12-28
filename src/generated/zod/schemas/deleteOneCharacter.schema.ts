@@ -1,6 +1,9 @@
-import { z } from 'zod';
-import { CharacterSelectObjectSchema } from './objects/CharacterSelect.schema';
-import { CharacterIncludeObjectSchema } from './objects/CharacterInclude.schema';
-import { CharacterWhereUniqueInputObjectSchema } from './objects/CharacterWhereUniqueInput.schema';
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { CharacterSelectObjectSchema as CharacterSelectObjectSchema } from './objects/CharacterSelect.schema';
+import { CharacterIncludeObjectSchema as CharacterIncludeObjectSchema } from './objects/CharacterInclude.schema';
+import { CharacterWhereUniqueInputObjectSchema as CharacterWhereUniqueInputObjectSchema } from './objects/CharacterWhereUniqueInput.schema';
 
-export const CharacterDeleteOneSchema = z.object({ select: CharacterSelectObjectSchema.optional(), include: CharacterIncludeObjectSchema.optional(), where: CharacterWhereUniqueInputObjectSchema  })
+export const CharacterDeleteOneSchema: z.ZodType<Prisma.CharacterDeleteArgs> = z.object({ select: CharacterSelectObjectSchema.optional(), include: CharacterIncludeObjectSchema.optional(), where: CharacterWhereUniqueInputObjectSchema }).strict() as unknown as z.ZodType<Prisma.CharacterDeleteArgs>;
+
+export const CharacterDeleteOneZodSchema = z.object({ select: CharacterSelectObjectSchema.optional(), include: CharacterIncludeObjectSchema.optional(), where: CharacterWhereUniqueInputObjectSchema }).strict();

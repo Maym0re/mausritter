@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const MapImageDeleteResultSchema = z.nullable(z.object({
   id: z.string(),
   hexMapId: z.string(),

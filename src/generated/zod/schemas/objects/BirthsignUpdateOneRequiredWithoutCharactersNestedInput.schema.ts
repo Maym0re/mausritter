@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { BirthsignCreateWithoutCharactersInputObjectSchema } from './BirthsignCreateWithoutCharactersInput.schema';
-import { BirthsignUncheckedCreateWithoutCharactersInputObjectSchema } from './BirthsignUncheckedCreateWithoutCharactersInput.schema';
-import { BirthsignCreateOrConnectWithoutCharactersInputObjectSchema } from './BirthsignCreateOrConnectWithoutCharactersInput.schema';
-import { BirthsignUpsertWithoutCharactersInputObjectSchema } from './BirthsignUpsertWithoutCharactersInput.schema';
-import { BirthsignWhereUniqueInputObjectSchema } from './BirthsignWhereUniqueInput.schema';
-import { BirthsignUpdateToOneWithWhereWithoutCharactersInputObjectSchema } from './BirthsignUpdateToOneWithWhereWithoutCharactersInput.schema';
-import { BirthsignUpdateWithoutCharactersInputObjectSchema } from './BirthsignUpdateWithoutCharactersInput.schema';
-import { BirthsignUncheckedUpdateWithoutCharactersInputObjectSchema } from './BirthsignUncheckedUpdateWithoutCharactersInput.schema'
+import { BirthsignCreateWithoutCharactersInputObjectSchema as BirthsignCreateWithoutCharactersInputObjectSchema } from './BirthsignCreateWithoutCharactersInput.schema';
+import { BirthsignUncheckedCreateWithoutCharactersInputObjectSchema as BirthsignUncheckedCreateWithoutCharactersInputObjectSchema } from './BirthsignUncheckedCreateWithoutCharactersInput.schema';
+import { BirthsignCreateOrConnectWithoutCharactersInputObjectSchema as BirthsignCreateOrConnectWithoutCharactersInputObjectSchema } from './BirthsignCreateOrConnectWithoutCharactersInput.schema';
+import { BirthsignUpsertWithoutCharactersInputObjectSchema as BirthsignUpsertWithoutCharactersInputObjectSchema } from './BirthsignUpsertWithoutCharactersInput.schema';
+import { BirthsignWhereUniqueInputObjectSchema as BirthsignWhereUniqueInputObjectSchema } from './BirthsignWhereUniqueInput.schema';
+import { BirthsignUpdateToOneWithWhereWithoutCharactersInputObjectSchema as BirthsignUpdateToOneWithWhereWithoutCharactersInputObjectSchema } from './BirthsignUpdateToOneWithWhereWithoutCharactersInput.schema';
+import { BirthsignUpdateWithoutCharactersInputObjectSchema as BirthsignUpdateWithoutCharactersInputObjectSchema } from './BirthsignUpdateWithoutCharactersInput.schema';
+import { BirthsignUncheckedUpdateWithoutCharactersInputObjectSchema as BirthsignUncheckedUpdateWithoutCharactersInputObjectSchema } from './BirthsignUncheckedUpdateWithoutCharactersInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => BirthsignCreateWithoutCharactersInputObjectSchema), z.lazy(() => BirthsignUncheckedCreateWithoutCharactersInputObjectSchema)]).optional(),

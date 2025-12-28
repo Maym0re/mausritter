@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { EnumSeasonNameFilterObjectSchema } from './EnumSeasonNameFilter.schema';
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { EnumSeasonNameFilterObjectSchema as EnumSeasonNameFilterObjectSchema } from './EnumSeasonNameFilter.schema';
 import { SeasonNameSchema } from '../enums/SeasonName.schema';
-import { IntFilterObjectSchema } from './IntFilter.schema';
-import { BoolFilterObjectSchema } from './BoolFilter.schema';
-import { CampaignListRelationFilterObjectSchema } from './CampaignListRelationFilter.schema'
+import { IntFilterObjectSchema as IntFilterObjectSchema } from './IntFilter.schema';
+import { BoolFilterObjectSchema as BoolFilterObjectSchema } from './BoolFilter.schema';
+import { CampaignListRelationFilterObjectSchema as CampaignListRelationFilterObjectSchema } from './CampaignListRelationFilter.schema'
 
 const weatherentrywhereinputSchema = z.object({
   AND: z.union([z.lazy(() => WeatherEntryWhereInputObjectSchema), z.lazy(() => WeatherEntryWhereInputObjectSchema).array()]).optional(),

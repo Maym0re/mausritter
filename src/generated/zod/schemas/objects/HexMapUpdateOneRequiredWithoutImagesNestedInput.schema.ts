@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexMapCreateWithoutImagesInputObjectSchema } from './HexMapCreateWithoutImagesInput.schema';
-import { HexMapUncheckedCreateWithoutImagesInputObjectSchema } from './HexMapUncheckedCreateWithoutImagesInput.schema';
-import { HexMapCreateOrConnectWithoutImagesInputObjectSchema } from './HexMapCreateOrConnectWithoutImagesInput.schema';
-import { HexMapUpsertWithoutImagesInputObjectSchema } from './HexMapUpsertWithoutImagesInput.schema';
-import { HexMapWhereUniqueInputObjectSchema } from './HexMapWhereUniqueInput.schema';
-import { HexMapUpdateToOneWithWhereWithoutImagesInputObjectSchema } from './HexMapUpdateToOneWithWhereWithoutImagesInput.schema';
-import { HexMapUpdateWithoutImagesInputObjectSchema } from './HexMapUpdateWithoutImagesInput.schema';
-import { HexMapUncheckedUpdateWithoutImagesInputObjectSchema } from './HexMapUncheckedUpdateWithoutImagesInput.schema'
+import { HexMapCreateWithoutImagesInputObjectSchema as HexMapCreateWithoutImagesInputObjectSchema } from './HexMapCreateWithoutImagesInput.schema';
+import { HexMapUncheckedCreateWithoutImagesInputObjectSchema as HexMapUncheckedCreateWithoutImagesInputObjectSchema } from './HexMapUncheckedCreateWithoutImagesInput.schema';
+import { HexMapCreateOrConnectWithoutImagesInputObjectSchema as HexMapCreateOrConnectWithoutImagesInputObjectSchema } from './HexMapCreateOrConnectWithoutImagesInput.schema';
+import { HexMapUpsertWithoutImagesInputObjectSchema as HexMapUpsertWithoutImagesInputObjectSchema } from './HexMapUpsertWithoutImagesInput.schema';
+import { HexMapWhereUniqueInputObjectSchema as HexMapWhereUniqueInputObjectSchema } from './HexMapWhereUniqueInput.schema';
+import { HexMapUpdateToOneWithWhereWithoutImagesInputObjectSchema as HexMapUpdateToOneWithWhereWithoutImagesInputObjectSchema } from './HexMapUpdateToOneWithWhereWithoutImagesInput.schema';
+import { HexMapUpdateWithoutImagesInputObjectSchema as HexMapUpdateWithoutImagesInputObjectSchema } from './HexMapUpdateWithoutImagesInput.schema';
+import { HexMapUncheckedUpdateWithoutImagesInputObjectSchema as HexMapUncheckedUpdateWithoutImagesInputObjectSchema } from './HexMapUncheckedUpdateWithoutImagesInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => HexMapCreateWithoutImagesInputObjectSchema), z.lazy(() => HexMapUncheckedCreateWithoutImagesInputObjectSchema)]).optional(),

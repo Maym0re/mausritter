@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { DiceRollLogCreateNestedOneWithoutEntriesInputObjectSchema } from './DiceRollLogCreateNestedOneWithoutEntriesInput.schema'
+import { DiceRollLogCreateNestedOneWithoutEntriesInputObjectSchema as DiceRollLogCreateNestedOneWithoutEntriesInputObjectSchema } from './DiceRollLogCreateNestedOneWithoutEntriesInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string().optional(),

@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexCellCreateWithoutHexTypeInputObjectSchema } from './HexCellCreateWithoutHexTypeInput.schema';
-import { HexCellUncheckedCreateWithoutHexTypeInputObjectSchema } from './HexCellUncheckedCreateWithoutHexTypeInput.schema';
-import { HexCellCreateOrConnectWithoutHexTypeInputObjectSchema } from './HexCellCreateOrConnectWithoutHexTypeInput.schema';
-import { HexCellUpsertWithWhereUniqueWithoutHexTypeInputObjectSchema } from './HexCellUpsertWithWhereUniqueWithoutHexTypeInput.schema';
-import { HexCellCreateManyHexTypeInputEnvelopeObjectSchema } from './HexCellCreateManyHexTypeInputEnvelope.schema';
-import { HexCellWhereUniqueInputObjectSchema } from './HexCellWhereUniqueInput.schema';
-import { HexCellUpdateWithWhereUniqueWithoutHexTypeInputObjectSchema } from './HexCellUpdateWithWhereUniqueWithoutHexTypeInput.schema';
-import { HexCellUpdateManyWithWhereWithoutHexTypeInputObjectSchema } from './HexCellUpdateManyWithWhereWithoutHexTypeInput.schema';
-import { HexCellScalarWhereInputObjectSchema } from './HexCellScalarWhereInput.schema'
+import { HexCellCreateWithoutHexTypeInputObjectSchema as HexCellCreateWithoutHexTypeInputObjectSchema } from './HexCellCreateWithoutHexTypeInput.schema';
+import { HexCellUncheckedCreateWithoutHexTypeInputObjectSchema as HexCellUncheckedCreateWithoutHexTypeInputObjectSchema } from './HexCellUncheckedCreateWithoutHexTypeInput.schema';
+import { HexCellCreateOrConnectWithoutHexTypeInputObjectSchema as HexCellCreateOrConnectWithoutHexTypeInputObjectSchema } from './HexCellCreateOrConnectWithoutHexTypeInput.schema';
+import { HexCellUpsertWithWhereUniqueWithoutHexTypeInputObjectSchema as HexCellUpsertWithWhereUniqueWithoutHexTypeInputObjectSchema } from './HexCellUpsertWithWhereUniqueWithoutHexTypeInput.schema';
+import { HexCellCreateManyHexTypeInputEnvelopeObjectSchema as HexCellCreateManyHexTypeInputEnvelopeObjectSchema } from './HexCellCreateManyHexTypeInputEnvelope.schema';
+import { HexCellWhereUniqueInputObjectSchema as HexCellWhereUniqueInputObjectSchema } from './HexCellWhereUniqueInput.schema';
+import { HexCellUpdateWithWhereUniqueWithoutHexTypeInputObjectSchema as HexCellUpdateWithWhereUniqueWithoutHexTypeInputObjectSchema } from './HexCellUpdateWithWhereUniqueWithoutHexTypeInput.schema';
+import { HexCellUpdateManyWithWhereWithoutHexTypeInputObjectSchema as HexCellUpdateManyWithWhereWithoutHexTypeInputObjectSchema } from './HexCellUpdateManyWithWhereWithoutHexTypeInput.schema';
+import { HexCellScalarWhereInputObjectSchema as HexCellScalarWhereInputObjectSchema } from './HexCellScalarWhereInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => HexCellCreateWithoutHexTypeInputObjectSchema), z.lazy(() => HexCellCreateWithoutHexTypeInputObjectSchema).array(), z.lazy(() => HexCellUncheckedCreateWithoutHexTypeInputObjectSchema), z.lazy(() => HexCellUncheckedCreateWithoutHexTypeInputObjectSchema).array()]).optional(),

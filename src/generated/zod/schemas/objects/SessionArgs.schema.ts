@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { SessionSelectObjectSchema } from './SessionSelect.schema';
-import { SessionIncludeObjectSchema } from './SessionInclude.schema'
+import { SessionSelectObjectSchema as SessionSelectObjectSchema } from './SessionSelect.schema';
+import { SessionIncludeObjectSchema as SessionIncludeObjectSchema } from './SessionInclude.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => SessionSelectObjectSchema).optional(),

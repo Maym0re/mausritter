@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { MapMarkerWhereInputObjectSchema } from './MapMarkerWhereInput.schema'
+import { MapMarkerWhereInputObjectSchema as MapMarkerWhereInputObjectSchema } from './MapMarkerWhereInput.schema'
 
 const makeSchema = () => z.object({
   every: z.lazy(() => MapMarkerWhereInputObjectSchema).optional(),

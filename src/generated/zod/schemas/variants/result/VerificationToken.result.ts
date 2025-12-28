@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const VerificationTokenResultSchema = z.object({
     identifier: z.string(),

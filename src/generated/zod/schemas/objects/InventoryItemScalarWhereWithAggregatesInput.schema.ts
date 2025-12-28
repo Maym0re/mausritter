@@ -1,12 +1,12 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
-import { IntWithAggregatesFilterObjectSchema } from './IntWithAggregatesFilter.schema';
-import { StringNullableWithAggregatesFilterObjectSchema } from './StringNullableWithAggregatesFilter.schema';
-import { IntNullableWithAggregatesFilterObjectSchema } from './IntNullableWithAggregatesFilter.schema';
-import { EnumSlotTypeWithAggregatesFilterObjectSchema } from './EnumSlotTypeWithAggregatesFilter.schema';
+import { StringWithAggregatesFilterObjectSchema as StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
+import { IntWithAggregatesFilterObjectSchema as IntWithAggregatesFilterObjectSchema } from './IntWithAggregatesFilter.schema';
+import { StringNullableWithAggregatesFilterObjectSchema as StringNullableWithAggregatesFilterObjectSchema } from './StringNullableWithAggregatesFilter.schema';
+import { IntNullableWithAggregatesFilterObjectSchema as IntNullableWithAggregatesFilterObjectSchema } from './IntNullableWithAggregatesFilter.schema';
+import { EnumSlotTypeWithAggregatesFilterObjectSchema as EnumSlotTypeWithAggregatesFilterObjectSchema } from './EnumSlotTypeWithAggregatesFilter.schema';
 import { SlotTypeSchema } from '../enums/SlotType.schema';
-import { DateTimeWithAggregatesFilterObjectSchema } from './DateTimeWithAggregatesFilter.schema'
+import { DateTimeWithAggregatesFilterObjectSchema as DateTimeWithAggregatesFilterObjectSchema } from './DateTimeWithAggregatesFilter.schema'
 
 const inventoryitemscalarwherewithaggregatesinputSchema = z.object({
   AND: z.union([z.lazy(() => InventoryItemScalarWhereWithAggregatesInputObjectSchema), z.lazy(() => InventoryItemScalarWhereWithAggregatesInputObjectSchema).array()]).optional(),

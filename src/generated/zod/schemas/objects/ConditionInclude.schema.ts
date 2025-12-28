@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterFindManySchema } from '../findManyCharacter.schema';
-import { ConditionCountOutputTypeArgsObjectSchema } from './ConditionCountOutputTypeArgs.schema'
+import { CharacterFindManySchema as CharacterFindManySchema } from '../findManyCharacter.schema';
+import { ConditionCountOutputTypeArgsObjectSchema as ConditionCountOutputTypeArgsObjectSchema } from './ConditionCountOutputTypeArgs.schema'
 
 const makeSchema = () => z.object({
   characters: z.union([z.boolean(), z.lazy(() => CharacterFindManySchema)]).optional(),

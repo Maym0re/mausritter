@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const MapMarkerInputSchema = z.object({
     id: z.string(),

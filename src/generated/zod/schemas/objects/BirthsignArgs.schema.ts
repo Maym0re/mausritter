@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { BirthsignSelectObjectSchema } from './BirthsignSelect.schema';
-import { BirthsignIncludeObjectSchema } from './BirthsignInclude.schema'
+import { BirthsignSelectObjectSchema as BirthsignSelectObjectSchema } from './BirthsignSelect.schema';
+import { BirthsignIncludeObjectSchema as BirthsignIncludeObjectSchema } from './BirthsignInclude.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => BirthsignSelectObjectSchema).optional(),

@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignArgsObjectSchema } from './CampaignArgs.schema';
-import { HexCellFindManySchema } from '../findManyHexCell.schema';
-import { MapImageFindManySchema } from '../findManyMapImage.schema';
-import { MapMarkerFindManySchema } from '../findManyMapMarker.schema';
-import { HexMapCountOutputTypeArgsObjectSchema } from './HexMapCountOutputTypeArgs.schema'
+import { CampaignArgsObjectSchema as CampaignArgsObjectSchema } from './CampaignArgs.schema';
+import { HexCellFindManySchema as HexCellFindManySchema } from '../findManyHexCell.schema';
+import { MapImageFindManySchema as MapImageFindManySchema } from '../findManyMapImage.schema';
+import { MapMarkerFindManySchema as MapMarkerFindManySchema } from '../findManyMapMarker.schema';
+import { HexMapCountOutputTypeArgsObjectSchema as HexMapCountOutputTypeArgsObjectSchema } from './HexMapCountOutputTypeArgs.schema'
 
 const makeSchema = () => z.object({
   campaign: z.union([z.boolean(), z.lazy(() => CampaignArgsObjectSchema)]).optional(),

@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { BackgroundCreateWithoutCharactersInputObjectSchema } from './BackgroundCreateWithoutCharactersInput.schema';
-import { BackgroundUncheckedCreateWithoutCharactersInputObjectSchema } from './BackgroundUncheckedCreateWithoutCharactersInput.schema';
-import { BackgroundCreateOrConnectWithoutCharactersInputObjectSchema } from './BackgroundCreateOrConnectWithoutCharactersInput.schema';
-import { BackgroundUpsertWithoutCharactersInputObjectSchema } from './BackgroundUpsertWithoutCharactersInput.schema';
-import { BackgroundWhereUniqueInputObjectSchema } from './BackgroundWhereUniqueInput.schema';
-import { BackgroundUpdateToOneWithWhereWithoutCharactersInputObjectSchema } from './BackgroundUpdateToOneWithWhereWithoutCharactersInput.schema';
-import { BackgroundUpdateWithoutCharactersInputObjectSchema } from './BackgroundUpdateWithoutCharactersInput.schema';
-import { BackgroundUncheckedUpdateWithoutCharactersInputObjectSchema } from './BackgroundUncheckedUpdateWithoutCharactersInput.schema'
+import { BackgroundCreateWithoutCharactersInputObjectSchema as BackgroundCreateWithoutCharactersInputObjectSchema } from './BackgroundCreateWithoutCharactersInput.schema';
+import { BackgroundUncheckedCreateWithoutCharactersInputObjectSchema as BackgroundUncheckedCreateWithoutCharactersInputObjectSchema } from './BackgroundUncheckedCreateWithoutCharactersInput.schema';
+import { BackgroundCreateOrConnectWithoutCharactersInputObjectSchema as BackgroundCreateOrConnectWithoutCharactersInputObjectSchema } from './BackgroundCreateOrConnectWithoutCharactersInput.schema';
+import { BackgroundUpsertWithoutCharactersInputObjectSchema as BackgroundUpsertWithoutCharactersInputObjectSchema } from './BackgroundUpsertWithoutCharactersInput.schema';
+import { BackgroundWhereUniqueInputObjectSchema as BackgroundWhereUniqueInputObjectSchema } from './BackgroundWhereUniqueInput.schema';
+import { BackgroundUpdateToOneWithWhereWithoutCharactersInputObjectSchema as BackgroundUpdateToOneWithWhereWithoutCharactersInputObjectSchema } from './BackgroundUpdateToOneWithWhereWithoutCharactersInput.schema';
+import { BackgroundUpdateWithoutCharactersInputObjectSchema as BackgroundUpdateWithoutCharactersInputObjectSchema } from './BackgroundUpdateWithoutCharactersInput.schema';
+import { BackgroundUncheckedUpdateWithoutCharactersInputObjectSchema as BackgroundUncheckedUpdateWithoutCharactersInputObjectSchema } from './BackgroundUncheckedUpdateWithoutCharactersInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => BackgroundCreateWithoutCharactersInputObjectSchema), z.lazy(() => BackgroundUncheckedCreateWithoutCharactersInputObjectSchema)]).optional(),

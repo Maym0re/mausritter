@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const DiceRollEntryFindFirstResultSchema = z.nullable(z.object({
   id: z.string(),
   logId: z.string(),

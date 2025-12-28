@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const LandmarkDetailFindUniqueResultSchema = z.nullable(z.object({
   id: z.string(),
   description: z.string(),

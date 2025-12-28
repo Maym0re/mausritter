@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { UserWhereInputObjectSchema } from './UserWhereInput.schema';
-import { UserUpdateWithoutPlayerInInputObjectSchema } from './UserUpdateWithoutPlayerInInput.schema';
-import { UserUncheckedUpdateWithoutPlayerInInputObjectSchema } from './UserUncheckedUpdateWithoutPlayerInInput.schema'
+import { UserWhereInputObjectSchema as UserWhereInputObjectSchema } from './UserWhereInput.schema';
+import { UserUpdateWithoutPlayerInInputObjectSchema as UserUpdateWithoutPlayerInInputObjectSchema } from './UserUpdateWithoutPlayerInInput.schema';
+import { UserUncheckedUpdateWithoutPlayerInInputObjectSchema as UserUncheckedUpdateWithoutPlayerInInputObjectSchema } from './UserUncheckedUpdateWithoutPlayerInInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => UserWhereInputObjectSchema).optional(),

@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { NestedDateTimeNullableFilterObjectSchema } from './NestedDateTimeNullableFilter.schema'
+import { NestedDateTimeNullableFilterObjectSchema as NestedDateTimeNullableFilterObjectSchema } from './NestedDateTimeNullableFilter.schema'
 
 const makeSchema = () => z.object({
   equals: z.date().optional().nullable(),

@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { IntFilterObjectSchema } from './IntFilter.schema';
-import { StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
-import { IntNullableFilterObjectSchema } from './IntNullableFilter.schema';
-import { EnumSlotTypeFilterObjectSchema } from './EnumSlotTypeFilter.schema';
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { IntFilterObjectSchema as IntFilterObjectSchema } from './IntFilter.schema';
+import { StringNullableFilterObjectSchema as StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
+import { IntNullableFilterObjectSchema as IntNullableFilterObjectSchema } from './IntNullableFilter.schema';
+import { EnumSlotTypeFilterObjectSchema as EnumSlotTypeFilterObjectSchema } from './EnumSlotTypeFilter.schema';
 import { SlotTypeSchema } from '../enums/SlotType.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { CharacterScalarRelationFilterObjectSchema } from './CharacterScalarRelationFilter.schema';
-import { CharacterWhereInputObjectSchema } from './CharacterWhereInput.schema'
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { CharacterScalarRelationFilterObjectSchema as CharacterScalarRelationFilterObjectSchema } from './CharacterScalarRelationFilter.schema';
+import { CharacterWhereInputObjectSchema as CharacterWhereInputObjectSchema } from './CharacterWhereInput.schema'
 
 const inventoryitemwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => InventoryItemWhereInputObjectSchema), z.lazy(() => InventoryItemWhereInputObjectSchema).array()]).optional(),

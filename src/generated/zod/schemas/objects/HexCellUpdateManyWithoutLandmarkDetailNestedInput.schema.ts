@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexCellCreateWithoutLandmarkDetailInputObjectSchema } from './HexCellCreateWithoutLandmarkDetailInput.schema';
-import { HexCellUncheckedCreateWithoutLandmarkDetailInputObjectSchema } from './HexCellUncheckedCreateWithoutLandmarkDetailInput.schema';
-import { HexCellCreateOrConnectWithoutLandmarkDetailInputObjectSchema } from './HexCellCreateOrConnectWithoutLandmarkDetailInput.schema';
-import { HexCellUpsertWithWhereUniqueWithoutLandmarkDetailInputObjectSchema } from './HexCellUpsertWithWhereUniqueWithoutLandmarkDetailInput.schema';
-import { HexCellCreateManyLandmarkDetailInputEnvelopeObjectSchema } from './HexCellCreateManyLandmarkDetailInputEnvelope.schema';
-import { HexCellWhereUniqueInputObjectSchema } from './HexCellWhereUniqueInput.schema';
-import { HexCellUpdateWithWhereUniqueWithoutLandmarkDetailInputObjectSchema } from './HexCellUpdateWithWhereUniqueWithoutLandmarkDetailInput.schema';
-import { HexCellUpdateManyWithWhereWithoutLandmarkDetailInputObjectSchema } from './HexCellUpdateManyWithWhereWithoutLandmarkDetailInput.schema';
-import { HexCellScalarWhereInputObjectSchema } from './HexCellScalarWhereInput.schema'
+import { HexCellCreateWithoutLandmarkDetailInputObjectSchema as HexCellCreateWithoutLandmarkDetailInputObjectSchema } from './HexCellCreateWithoutLandmarkDetailInput.schema';
+import { HexCellUncheckedCreateWithoutLandmarkDetailInputObjectSchema as HexCellUncheckedCreateWithoutLandmarkDetailInputObjectSchema } from './HexCellUncheckedCreateWithoutLandmarkDetailInput.schema';
+import { HexCellCreateOrConnectWithoutLandmarkDetailInputObjectSchema as HexCellCreateOrConnectWithoutLandmarkDetailInputObjectSchema } from './HexCellCreateOrConnectWithoutLandmarkDetailInput.schema';
+import { HexCellUpsertWithWhereUniqueWithoutLandmarkDetailInputObjectSchema as HexCellUpsertWithWhereUniqueWithoutLandmarkDetailInputObjectSchema } from './HexCellUpsertWithWhereUniqueWithoutLandmarkDetailInput.schema';
+import { HexCellCreateManyLandmarkDetailInputEnvelopeObjectSchema as HexCellCreateManyLandmarkDetailInputEnvelopeObjectSchema } from './HexCellCreateManyLandmarkDetailInputEnvelope.schema';
+import { HexCellWhereUniqueInputObjectSchema as HexCellWhereUniqueInputObjectSchema } from './HexCellWhereUniqueInput.schema';
+import { HexCellUpdateWithWhereUniqueWithoutLandmarkDetailInputObjectSchema as HexCellUpdateWithWhereUniqueWithoutLandmarkDetailInputObjectSchema } from './HexCellUpdateWithWhereUniqueWithoutLandmarkDetailInput.schema';
+import { HexCellUpdateManyWithWhereWithoutLandmarkDetailInputObjectSchema as HexCellUpdateManyWithWhereWithoutLandmarkDetailInputObjectSchema } from './HexCellUpdateManyWithWhereWithoutLandmarkDetailInput.schema';
+import { HexCellScalarWhereInputObjectSchema as HexCellScalarWhereInputObjectSchema } from './HexCellScalarWhereInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => HexCellCreateWithoutLandmarkDetailInputObjectSchema), z.lazy(() => HexCellCreateWithoutLandmarkDetailInputObjectSchema).array(), z.lazy(() => HexCellUncheckedCreateWithoutLandmarkDetailInputObjectSchema), z.lazy(() => HexCellUncheckedCreateWithoutLandmarkDetailInputObjectSchema).array()]).optional(),

@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { HexCellIncludeObjectSchema } from './objects/HexCellInclude.schema';
-import { HexCellOrderByWithRelationInputObjectSchema } from './objects/HexCellOrderByWithRelationInput.schema';
-import { HexCellWhereInputObjectSchema } from './objects/HexCellWhereInput.schema';
-import { HexCellWhereUniqueInputObjectSchema } from './objects/HexCellWhereUniqueInput.schema';
+import * as z from 'zod';
+import { HexCellIncludeObjectSchema as HexCellIncludeObjectSchema } from './objects/HexCellInclude.schema';
+import { HexCellOrderByWithRelationInputObjectSchema as HexCellOrderByWithRelationInputObjectSchema } from './objects/HexCellOrderByWithRelationInput.schema';
+import { HexCellWhereInputObjectSchema as HexCellWhereInputObjectSchema } from './objects/HexCellWhereInput.schema';
+import { HexCellWhereUniqueInputObjectSchema as HexCellWhereUniqueInputObjectSchema } from './objects/HexCellWhereUniqueInput.schema';
 import { HexCellScalarFieldEnumSchema } from './enums/HexCellScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

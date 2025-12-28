@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 import { SeasonNameSchema } from '../../enums/SeasonName.schema';
 // prettier-ignore
 export const CampaignModelSchema = z.object({
@@ -9,8 +8,8 @@ export const CampaignModelSchema = z.object({
     isActive: z.boolean(),
     gmId: z.string(),
     gm: z.unknown(),
-    players: z.array(z.unknown()).array(),
-    characters: z.array(z.unknown()).array(),
+    players: z.array(z.unknown()),
+    characters: z.array(z.unknown()),
     gameTime: z.unknown().nullable(),
     season: SeasonNameSchema,
     weatherEntryId: z.string().nullable(),
@@ -19,7 +18,7 @@ export const CampaignModelSchema = z.object({
     createdAt: z.date(),
     updatedAt: z.date(),
     todaysEvent: z.string().nullable(),
-    diceRolls: z.array(z.unknown()).array()
+    diceRolls: z.array(z.unknown())
 }).strict();
 
-export type CampaignModelType = z.infer<typeof CampaignModelSchema>;
+export type CampaignPureType = z.infer<typeof CampaignModelSchema>;

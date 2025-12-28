@@ -1,22 +1,22 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
-import { BoolFilterObjectSchema } from './BoolFilter.schema';
-import { EnumSeasonNameFilterObjectSchema } from './EnumSeasonNameFilter.schema';
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { StringNullableFilterObjectSchema as StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
+import { BoolFilterObjectSchema as BoolFilterObjectSchema } from './BoolFilter.schema';
+import { EnumSeasonNameFilterObjectSchema as EnumSeasonNameFilterObjectSchema } from './EnumSeasonNameFilter.schema';
 import { SeasonNameSchema } from '../enums/SeasonName.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { UserScalarRelationFilterObjectSchema } from './UserScalarRelationFilter.schema';
-import { UserWhereInputObjectSchema } from './UserWhereInput.schema';
-import { CampaignPlayerListRelationFilterObjectSchema } from './CampaignPlayerListRelationFilter.schema';
-import { CharacterListRelationFilterObjectSchema } from './CharacterListRelationFilter.schema';
-import { GameTimeNullableScalarRelationFilterObjectSchema } from './GameTimeNullableScalarRelationFilter.schema';
-import { GameTimeWhereInputObjectSchema } from './GameTimeWhereInput.schema';
-import { WeatherEntryNullableScalarRelationFilterObjectSchema } from './WeatherEntryNullableScalarRelationFilter.schema';
-import { WeatherEntryWhereInputObjectSchema } from './WeatherEntryWhereInput.schema';
-import { HexMapNullableScalarRelationFilterObjectSchema } from './HexMapNullableScalarRelationFilter.schema';
-import { HexMapWhereInputObjectSchema } from './HexMapWhereInput.schema';
-import { DiceRollLogListRelationFilterObjectSchema } from './DiceRollLogListRelationFilter.schema'
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { UserScalarRelationFilterObjectSchema as UserScalarRelationFilterObjectSchema } from './UserScalarRelationFilter.schema';
+import { UserWhereInputObjectSchema as UserWhereInputObjectSchema } from './UserWhereInput.schema';
+import { CampaignPlayerListRelationFilterObjectSchema as CampaignPlayerListRelationFilterObjectSchema } from './CampaignPlayerListRelationFilter.schema';
+import { CharacterListRelationFilterObjectSchema as CharacterListRelationFilterObjectSchema } from './CharacterListRelationFilter.schema';
+import { GameTimeNullableScalarRelationFilterObjectSchema as GameTimeNullableScalarRelationFilterObjectSchema } from './GameTimeNullableScalarRelationFilter.schema';
+import { GameTimeWhereInputObjectSchema as GameTimeWhereInputObjectSchema } from './GameTimeWhereInput.schema';
+import { WeatherEntryNullableScalarRelationFilterObjectSchema as WeatherEntryNullableScalarRelationFilterObjectSchema } from './WeatherEntryNullableScalarRelationFilter.schema';
+import { WeatherEntryWhereInputObjectSchema as WeatherEntryWhereInputObjectSchema } from './WeatherEntryWhereInput.schema';
+import { HexMapNullableScalarRelationFilterObjectSchema as HexMapNullableScalarRelationFilterObjectSchema } from './HexMapNullableScalarRelationFilter.schema';
+import { HexMapWhereInputObjectSchema as HexMapWhereInputObjectSchema } from './HexMapWhereInput.schema';
+import { DiceRollLogListRelationFilterObjectSchema as DiceRollLogListRelationFilterObjectSchema } from './DiceRollLogListRelationFilter.schema'
 
 const campaignwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => CampaignWhereInputObjectSchema), z.lazy(() => CampaignWhereInputObjectSchema).array()]).optional(),

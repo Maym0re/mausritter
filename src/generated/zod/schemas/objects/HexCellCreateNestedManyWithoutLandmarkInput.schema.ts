@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexCellCreateWithoutLandmarkInputObjectSchema } from './HexCellCreateWithoutLandmarkInput.schema';
-import { HexCellUncheckedCreateWithoutLandmarkInputObjectSchema } from './HexCellUncheckedCreateWithoutLandmarkInput.schema';
-import { HexCellCreateOrConnectWithoutLandmarkInputObjectSchema } from './HexCellCreateOrConnectWithoutLandmarkInput.schema';
-import { HexCellCreateManyLandmarkInputEnvelopeObjectSchema } from './HexCellCreateManyLandmarkInputEnvelope.schema';
-import { HexCellWhereUniqueInputObjectSchema } from './HexCellWhereUniqueInput.schema'
+import { HexCellCreateWithoutLandmarkInputObjectSchema as HexCellCreateWithoutLandmarkInputObjectSchema } from './HexCellCreateWithoutLandmarkInput.schema';
+import { HexCellUncheckedCreateWithoutLandmarkInputObjectSchema as HexCellUncheckedCreateWithoutLandmarkInputObjectSchema } from './HexCellUncheckedCreateWithoutLandmarkInput.schema';
+import { HexCellCreateOrConnectWithoutLandmarkInputObjectSchema as HexCellCreateOrConnectWithoutLandmarkInputObjectSchema } from './HexCellCreateOrConnectWithoutLandmarkInput.schema';
+import { HexCellCreateManyLandmarkInputEnvelopeObjectSchema as HexCellCreateManyLandmarkInputEnvelopeObjectSchema } from './HexCellCreateManyLandmarkInputEnvelope.schema';
+import { HexCellWhereUniqueInputObjectSchema as HexCellWhereUniqueInputObjectSchema } from './HexCellWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => HexCellCreateWithoutLandmarkInputObjectSchema), z.lazy(() => HexCellCreateWithoutLandmarkInputObjectSchema).array(), z.lazy(() => HexCellUncheckedCreateWithoutLandmarkInputObjectSchema), z.lazy(() => HexCellUncheckedCreateWithoutLandmarkInputObjectSchema).array()]).optional(),

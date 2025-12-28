@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { MapImageSelectObjectSchema } from './MapImageSelect.schema';
-import { MapImageIncludeObjectSchema } from './MapImageInclude.schema'
+import { MapImageSelectObjectSchema as MapImageSelectObjectSchema } from './MapImageSelect.schema';
+import { MapImageIncludeObjectSchema as MapImageIncludeObjectSchema } from './MapImageInclude.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => MapImageSelectObjectSchema).optional(),

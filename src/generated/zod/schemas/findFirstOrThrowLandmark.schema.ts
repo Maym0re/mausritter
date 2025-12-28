@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { LandmarkIncludeObjectSchema } from './objects/LandmarkInclude.schema';
-import { LandmarkOrderByWithRelationInputObjectSchema } from './objects/LandmarkOrderByWithRelationInput.schema';
-import { LandmarkWhereInputObjectSchema } from './objects/LandmarkWhereInput.schema';
-import { LandmarkWhereUniqueInputObjectSchema } from './objects/LandmarkWhereUniqueInput.schema';
+import * as z from 'zod';
+import { LandmarkIncludeObjectSchema as LandmarkIncludeObjectSchema } from './objects/LandmarkInclude.schema';
+import { LandmarkOrderByWithRelationInputObjectSchema as LandmarkOrderByWithRelationInputObjectSchema } from './objects/LandmarkOrderByWithRelationInput.schema';
+import { LandmarkWhereInputObjectSchema as LandmarkWhereInputObjectSchema } from './objects/LandmarkWhereInput.schema';
+import { LandmarkWhereUniqueInputObjectSchema as LandmarkWhereUniqueInputObjectSchema } from './objects/LandmarkWhereUniqueInput.schema';
 import { LandmarkScalarFieldEnumSchema } from './enums/LandmarkScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

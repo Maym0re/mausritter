@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { UserCreateWithoutPlayerInInputObjectSchema } from './UserCreateWithoutPlayerInInput.schema';
-import { UserUncheckedCreateWithoutPlayerInInputObjectSchema } from './UserUncheckedCreateWithoutPlayerInInput.schema';
-import { UserCreateOrConnectWithoutPlayerInInputObjectSchema } from './UserCreateOrConnectWithoutPlayerInInput.schema';
-import { UserUpsertWithoutPlayerInInputObjectSchema } from './UserUpsertWithoutPlayerInInput.schema';
-import { UserWhereUniqueInputObjectSchema } from './UserWhereUniqueInput.schema';
-import { UserUpdateToOneWithWhereWithoutPlayerInInputObjectSchema } from './UserUpdateToOneWithWhereWithoutPlayerInInput.schema';
-import { UserUpdateWithoutPlayerInInputObjectSchema } from './UserUpdateWithoutPlayerInInput.schema';
-import { UserUncheckedUpdateWithoutPlayerInInputObjectSchema } from './UserUncheckedUpdateWithoutPlayerInInput.schema'
+import { UserCreateWithoutPlayerInInputObjectSchema as UserCreateWithoutPlayerInInputObjectSchema } from './UserCreateWithoutPlayerInInput.schema';
+import { UserUncheckedCreateWithoutPlayerInInputObjectSchema as UserUncheckedCreateWithoutPlayerInInputObjectSchema } from './UserUncheckedCreateWithoutPlayerInInput.schema';
+import { UserCreateOrConnectWithoutPlayerInInputObjectSchema as UserCreateOrConnectWithoutPlayerInInputObjectSchema } from './UserCreateOrConnectWithoutPlayerInInput.schema';
+import { UserUpsertWithoutPlayerInInputObjectSchema as UserUpsertWithoutPlayerInInputObjectSchema } from './UserUpsertWithoutPlayerInInput.schema';
+import { UserWhereUniqueInputObjectSchema as UserWhereUniqueInputObjectSchema } from './UserWhereUniqueInput.schema';
+import { UserUpdateToOneWithWhereWithoutPlayerInInputObjectSchema as UserUpdateToOneWithWhereWithoutPlayerInInputObjectSchema } from './UserUpdateToOneWithWhereWithoutPlayerInInput.schema';
+import { UserUpdateWithoutPlayerInInputObjectSchema as UserUpdateWithoutPlayerInInputObjectSchema } from './UserUpdateWithoutPlayerInInput.schema';
+import { UserUncheckedUpdateWithoutPlayerInInputObjectSchema as UserUncheckedUpdateWithoutPlayerInInputObjectSchema } from './UserUncheckedUpdateWithoutPlayerInInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => UserCreateWithoutPlayerInInputObjectSchema), z.lazy(() => UserUncheckedCreateWithoutPlayerInInputObjectSchema)]).optional(),

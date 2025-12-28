@@ -1,12 +1,12 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { SortOrderInputObjectSchema } from './SortOrderInput.schema';
-import { HexMapOrderByWithRelationInputObjectSchema } from './HexMapOrderByWithRelationInput.schema';
-import { HexTypeOrderByWithRelationInputObjectSchema } from './HexTypeOrderByWithRelationInput.schema';
-import { LandmarkOrderByWithRelationInputObjectSchema } from './LandmarkOrderByWithRelationInput.schema';
-import { LandmarkDetailOrderByWithRelationInputObjectSchema } from './LandmarkDetailOrderByWithRelationInput.schema';
-import { SettlementOrderByWithRelationInputObjectSchema } from './SettlementOrderByWithRelationInput.schema'
+import { SortOrderInputObjectSchema as SortOrderInputObjectSchema } from './SortOrderInput.schema';
+import { HexMapOrderByWithRelationInputObjectSchema as HexMapOrderByWithRelationInputObjectSchema } from './HexMapOrderByWithRelationInput.schema';
+import { HexTypeOrderByWithRelationInputObjectSchema as HexTypeOrderByWithRelationInputObjectSchema } from './HexTypeOrderByWithRelationInput.schema';
+import { LandmarkOrderByWithRelationInputObjectSchema as LandmarkOrderByWithRelationInputObjectSchema } from './LandmarkOrderByWithRelationInput.schema';
+import { LandmarkDetailOrderByWithRelationInputObjectSchema as LandmarkDetailOrderByWithRelationInputObjectSchema } from './LandmarkDetailOrderByWithRelationInput.schema';
+import { SettlementOrderByWithRelationInputObjectSchema as SettlementOrderByWithRelationInputObjectSchema } from './SettlementOrderByWithRelationInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

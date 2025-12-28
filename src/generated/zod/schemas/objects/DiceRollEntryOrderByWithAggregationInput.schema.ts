@@ -1,12 +1,12 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { SortOrderInputObjectSchema } from './SortOrderInput.schema';
-import { DiceRollEntryCountOrderByAggregateInputObjectSchema } from './DiceRollEntryCountOrderByAggregateInput.schema';
-import { DiceRollEntryAvgOrderByAggregateInputObjectSchema } from './DiceRollEntryAvgOrderByAggregateInput.schema';
-import { DiceRollEntryMaxOrderByAggregateInputObjectSchema } from './DiceRollEntryMaxOrderByAggregateInput.schema';
-import { DiceRollEntryMinOrderByAggregateInputObjectSchema } from './DiceRollEntryMinOrderByAggregateInput.schema';
-import { DiceRollEntrySumOrderByAggregateInputObjectSchema } from './DiceRollEntrySumOrderByAggregateInput.schema'
+import { SortOrderInputObjectSchema as SortOrderInputObjectSchema } from './SortOrderInput.schema';
+import { DiceRollEntryCountOrderByAggregateInputObjectSchema as DiceRollEntryCountOrderByAggregateInputObjectSchema } from './DiceRollEntryCountOrderByAggregateInput.schema';
+import { DiceRollEntryAvgOrderByAggregateInputObjectSchema as DiceRollEntryAvgOrderByAggregateInputObjectSchema } from './DiceRollEntryAvgOrderByAggregateInput.schema';
+import { DiceRollEntryMaxOrderByAggregateInputObjectSchema as DiceRollEntryMaxOrderByAggregateInputObjectSchema } from './DiceRollEntryMaxOrderByAggregateInput.schema';
+import { DiceRollEntryMinOrderByAggregateInputObjectSchema as DiceRollEntryMinOrderByAggregateInputObjectSchema } from './DiceRollEntryMinOrderByAggregateInput.schema';
+import { DiceRollEntrySumOrderByAggregateInputObjectSchema as DiceRollEntrySumOrderByAggregateInputObjectSchema } from './DiceRollEntrySumOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

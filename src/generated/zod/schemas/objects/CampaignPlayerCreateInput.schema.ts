@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignCreateNestedOneWithoutPlayersInputObjectSchema } from './CampaignCreateNestedOneWithoutPlayersInput.schema';
-import { UserCreateNestedOneWithoutPlayerInInputObjectSchema } from './UserCreateNestedOneWithoutPlayerInInput.schema'
+import { CampaignCreateNestedOneWithoutPlayersInputObjectSchema as CampaignCreateNestedOneWithoutPlayersInputObjectSchema } from './CampaignCreateNestedOneWithoutPlayersInput.schema';
+import { UserCreateNestedOneWithoutPlayerInInputObjectSchema as UserCreateNestedOneWithoutPlayerInInputObjectSchema } from './UserCreateNestedOneWithoutPlayerInInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string().optional(),

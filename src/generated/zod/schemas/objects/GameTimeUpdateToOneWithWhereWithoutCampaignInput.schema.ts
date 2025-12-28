@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { GameTimeWhereInputObjectSchema } from './GameTimeWhereInput.schema';
-import { GameTimeUpdateWithoutCampaignInputObjectSchema } from './GameTimeUpdateWithoutCampaignInput.schema';
-import { GameTimeUncheckedUpdateWithoutCampaignInputObjectSchema } from './GameTimeUncheckedUpdateWithoutCampaignInput.schema'
+import { GameTimeWhereInputObjectSchema as GameTimeWhereInputObjectSchema } from './GameTimeWhereInput.schema';
+import { GameTimeUpdateWithoutCampaignInputObjectSchema as GameTimeUpdateWithoutCampaignInputObjectSchema } from './GameTimeUpdateWithoutCampaignInput.schema';
+import { GameTimeUncheckedUpdateWithoutCampaignInputObjectSchema as GameTimeUncheckedUpdateWithoutCampaignInputObjectSchema } from './GameTimeUncheckedUpdateWithoutCampaignInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => GameTimeWhereInputObjectSchema).optional(),

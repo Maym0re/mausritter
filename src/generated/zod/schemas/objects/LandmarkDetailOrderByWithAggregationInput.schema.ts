@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { SortOrderInputObjectSchema } from './SortOrderInput.schema';
-import { LandmarkDetailCountOrderByAggregateInputObjectSchema } from './LandmarkDetailCountOrderByAggregateInput.schema';
-import { LandmarkDetailMaxOrderByAggregateInputObjectSchema } from './LandmarkDetailMaxOrderByAggregateInput.schema';
-import { LandmarkDetailMinOrderByAggregateInputObjectSchema } from './LandmarkDetailMinOrderByAggregateInput.schema'
+import { SortOrderInputObjectSchema as SortOrderInputObjectSchema } from './SortOrderInput.schema';
+import { LandmarkDetailCountOrderByAggregateInputObjectSchema as LandmarkDetailCountOrderByAggregateInputObjectSchema } from './LandmarkDetailCountOrderByAggregateInput.schema';
+import { LandmarkDetailMaxOrderByAggregateInputObjectSchema as LandmarkDetailMaxOrderByAggregateInputObjectSchema } from './LandmarkDetailMaxOrderByAggregateInput.schema';
+import { LandmarkDetailMinOrderByAggregateInputObjectSchema as LandmarkDetailMinOrderByAggregateInputObjectSchema } from './LandmarkDetailMinOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

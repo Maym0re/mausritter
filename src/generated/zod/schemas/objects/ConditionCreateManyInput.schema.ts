@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { ConditionCreateeffectsInputObjectSchema } from './ConditionCreateeffectsInput.schema'
+import { ConditionCreateeffectsInputObjectSchema as ConditionCreateeffectsInputObjectSchema } from './ConditionCreateeffectsInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string().optional(),

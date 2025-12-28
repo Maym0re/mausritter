@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { EnumSeasonNameFilterObjectSchema } from './EnumSeasonNameFilter.schema';
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { EnumSeasonNameFilterObjectSchema as EnumSeasonNameFilterObjectSchema } from './EnumSeasonNameFilter.schema';
 import { SeasonNameSchema } from '../enums/SeasonName.schema';
-import { StringNullableFilterObjectSchema } from './StringNullableFilter.schema'
+import { StringNullableFilterObjectSchema as StringNullableFilterObjectSchema } from './StringNullableFilter.schema'
 
 const seasonaleventwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => SeasonalEventWhereInputObjectSchema), z.lazy(() => SeasonalEventWhereInputObjectSchema).array()]).optional(),

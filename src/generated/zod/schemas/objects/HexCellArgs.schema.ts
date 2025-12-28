@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexCellSelectObjectSchema } from './HexCellSelect.schema';
-import { HexCellIncludeObjectSchema } from './HexCellInclude.schema'
+import { HexCellSelectObjectSchema as HexCellSelectObjectSchema } from './HexCellSelect.schema';
+import { HexCellIncludeObjectSchema as HexCellIncludeObjectSchema } from './HexCellInclude.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => HexCellSelectObjectSchema).optional(),

@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexMapWhereInputObjectSchema } from './HexMapWhereInput.schema'
+import { HexMapWhereInputObjectSchema as HexMapWhereInputObjectSchema } from './HexMapWhereInput.schema'
 
 const makeSchema = () => z.object({
   is: z.lazy(() => HexMapWhereInputObjectSchema).optional(),

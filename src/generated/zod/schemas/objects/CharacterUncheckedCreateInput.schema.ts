@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { InventoryItemUncheckedCreateNestedManyWithoutCharacterInputObjectSchema } from './InventoryItemUncheckedCreateNestedManyWithoutCharacterInput.schema';
-import { ConditionUncheckedCreateNestedManyWithoutCharactersInputObjectSchema } from './ConditionUncheckedCreateNestedManyWithoutCharactersInput.schema'
+import { InventoryItemUncheckedCreateNestedManyWithoutCharacterInputObjectSchema as InventoryItemUncheckedCreateNestedManyWithoutCharacterInputObjectSchema } from './InventoryItemUncheckedCreateNestedManyWithoutCharacterInput.schema';
+import { ConditionUncheckedCreateNestedManyWithoutCharactersInputObjectSchema as ConditionUncheckedCreateNestedManyWithoutCharactersInputObjectSchema } from './ConditionUncheckedCreateNestedManyWithoutCharactersInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string().optional(),
@@ -24,8 +24,8 @@ const makeSchema = () => z.object({
   pips: z.number().int().optional(),
   isActive: z.boolean().optional(),
   createdAt: z.coerce.date().optional(),
-  inventory: z.lazy(() => InventoryItemUncheckedCreateNestedManyWithoutCharacterInputObjectSchema),
-  conditions: z.lazy(() => ConditionUncheckedCreateNestedManyWithoutCharactersInputObjectSchema)
+  inventory: z.lazy(() => InventoryItemUncheckedCreateNestedManyWithoutCharacterInputObjectSchema).optional(),
+  conditions: z.lazy(() => ConditionUncheckedCreateNestedManyWithoutCharactersInputObjectSchema).optional()
 }).strict();
 export const CharacterUncheckedCreateInputObjectSchema: z.ZodType<Prisma.CharacterUncheckedCreateInput> = makeSchema() as unknown as z.ZodType<Prisma.CharacterUncheckedCreateInput>;
 export const CharacterUncheckedCreateInputObjectZodSchema = makeSchema();

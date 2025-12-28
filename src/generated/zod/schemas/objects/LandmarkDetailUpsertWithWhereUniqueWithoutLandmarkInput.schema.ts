@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkDetailWhereUniqueInputObjectSchema } from './LandmarkDetailWhereUniqueInput.schema';
-import { LandmarkDetailUpdateWithoutLandmarkInputObjectSchema } from './LandmarkDetailUpdateWithoutLandmarkInput.schema';
-import { LandmarkDetailUncheckedUpdateWithoutLandmarkInputObjectSchema } from './LandmarkDetailUncheckedUpdateWithoutLandmarkInput.schema';
-import { LandmarkDetailCreateWithoutLandmarkInputObjectSchema } from './LandmarkDetailCreateWithoutLandmarkInput.schema';
-import { LandmarkDetailUncheckedCreateWithoutLandmarkInputObjectSchema } from './LandmarkDetailUncheckedCreateWithoutLandmarkInput.schema'
+import { LandmarkDetailWhereUniqueInputObjectSchema as LandmarkDetailWhereUniqueInputObjectSchema } from './LandmarkDetailWhereUniqueInput.schema';
+import { LandmarkDetailUpdateWithoutLandmarkInputObjectSchema as LandmarkDetailUpdateWithoutLandmarkInputObjectSchema } from './LandmarkDetailUpdateWithoutLandmarkInput.schema';
+import { LandmarkDetailUncheckedUpdateWithoutLandmarkInputObjectSchema as LandmarkDetailUncheckedUpdateWithoutLandmarkInputObjectSchema } from './LandmarkDetailUncheckedUpdateWithoutLandmarkInput.schema';
+import { LandmarkDetailCreateWithoutLandmarkInputObjectSchema as LandmarkDetailCreateWithoutLandmarkInputObjectSchema } from './LandmarkDetailCreateWithoutLandmarkInput.schema';
+import { LandmarkDetailUncheckedCreateWithoutLandmarkInputObjectSchema as LandmarkDetailUncheckedCreateWithoutLandmarkInputObjectSchema } from './LandmarkDetailUncheckedCreateWithoutLandmarkInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => LandmarkDetailWhereUniqueInputObjectSchema),

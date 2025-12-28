@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const HexCellModelSchema = z.object({
     id: z.string(),
@@ -24,4 +23,4 @@ export const HexCellModelSchema = z.object({
     updatedAt: z.date()
 }).strict();
 
-export type HexCellModelType = z.infer<typeof HexCellModelSchema>;
+export type HexCellPureType = z.infer<typeof HexCellModelSchema>;

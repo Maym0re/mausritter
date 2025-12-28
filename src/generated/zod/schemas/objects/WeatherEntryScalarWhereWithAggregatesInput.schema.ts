@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
-import { EnumSeasonNameWithAggregatesFilterObjectSchema } from './EnumSeasonNameWithAggregatesFilter.schema';
+import { StringWithAggregatesFilterObjectSchema as StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
+import { EnumSeasonNameWithAggregatesFilterObjectSchema as EnumSeasonNameWithAggregatesFilterObjectSchema } from './EnumSeasonNameWithAggregatesFilter.schema';
 import { SeasonNameSchema } from '../enums/SeasonName.schema';
-import { IntWithAggregatesFilterObjectSchema } from './IntWithAggregatesFilter.schema';
-import { BoolWithAggregatesFilterObjectSchema } from './BoolWithAggregatesFilter.schema'
+import { IntWithAggregatesFilterObjectSchema as IntWithAggregatesFilterObjectSchema } from './IntWithAggregatesFilter.schema';
+import { BoolWithAggregatesFilterObjectSchema as BoolWithAggregatesFilterObjectSchema } from './BoolWithAggregatesFilter.schema'
 
 const weatherentryscalarwherewithaggregatesinputSchema = z.object({
   AND: z.union([z.lazy(() => WeatherEntryScalarWhereWithAggregatesInputObjectSchema), z.lazy(() => WeatherEntryScalarWhereWithAggregatesInputObjectSchema).array()]).optional(),

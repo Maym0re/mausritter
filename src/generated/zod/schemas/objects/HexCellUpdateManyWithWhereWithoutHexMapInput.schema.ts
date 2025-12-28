@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexCellScalarWhereInputObjectSchema } from './HexCellScalarWhereInput.schema';
-import { HexCellUpdateManyMutationInputObjectSchema } from './HexCellUpdateManyMutationInput.schema';
-import { HexCellUncheckedUpdateManyWithoutHexMapInputObjectSchema } from './HexCellUncheckedUpdateManyWithoutHexMapInput.schema'
+import { HexCellScalarWhereInputObjectSchema as HexCellScalarWhereInputObjectSchema } from './HexCellScalarWhereInput.schema';
+import { HexCellUpdateManyMutationInputObjectSchema as HexCellUpdateManyMutationInputObjectSchema } from './HexCellUpdateManyMutationInput.schema';
+import { HexCellUncheckedUpdateManyWithoutHexMapInputObjectSchema as HexCellUncheckedUpdateManyWithoutHexMapInputObjectSchema } from './HexCellUncheckedUpdateManyWithoutHexMapInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => HexCellScalarWhereInputObjectSchema),

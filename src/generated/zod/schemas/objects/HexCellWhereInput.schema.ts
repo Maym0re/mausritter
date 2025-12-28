@@ -1,20 +1,20 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { IntFilterObjectSchema } from './IntFilter.schema';
-import { StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
-import { BoolFilterObjectSchema } from './BoolFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { HexMapScalarRelationFilterObjectSchema } from './HexMapScalarRelationFilter.schema';
-import { HexMapWhereInputObjectSchema } from './HexMapWhereInput.schema';
-import { HexTypeScalarRelationFilterObjectSchema } from './HexTypeScalarRelationFilter.schema';
-import { HexTypeWhereInputObjectSchema } from './HexTypeWhereInput.schema';
-import { LandmarkNullableScalarRelationFilterObjectSchema } from './LandmarkNullableScalarRelationFilter.schema';
-import { LandmarkWhereInputObjectSchema } from './LandmarkWhereInput.schema';
-import { LandmarkDetailNullableScalarRelationFilterObjectSchema } from './LandmarkDetailNullableScalarRelationFilter.schema';
-import { LandmarkDetailWhereInputObjectSchema } from './LandmarkDetailWhereInput.schema';
-import { SettlementNullableScalarRelationFilterObjectSchema } from './SettlementNullableScalarRelationFilter.schema';
-import { SettlementWhereInputObjectSchema } from './SettlementWhereInput.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { IntFilterObjectSchema as IntFilterObjectSchema } from './IntFilter.schema';
+import { StringNullableFilterObjectSchema as StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
+import { BoolFilterObjectSchema as BoolFilterObjectSchema } from './BoolFilter.schema';
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { HexMapScalarRelationFilterObjectSchema as HexMapScalarRelationFilterObjectSchema } from './HexMapScalarRelationFilter.schema';
+import { HexMapWhereInputObjectSchema as HexMapWhereInputObjectSchema } from './HexMapWhereInput.schema';
+import { HexTypeScalarRelationFilterObjectSchema as HexTypeScalarRelationFilterObjectSchema } from './HexTypeScalarRelationFilter.schema';
+import { HexTypeWhereInputObjectSchema as HexTypeWhereInputObjectSchema } from './HexTypeWhereInput.schema';
+import { LandmarkNullableScalarRelationFilterObjectSchema as LandmarkNullableScalarRelationFilterObjectSchema } from './LandmarkNullableScalarRelationFilter.schema';
+import { LandmarkWhereInputObjectSchema as LandmarkWhereInputObjectSchema } from './LandmarkWhereInput.schema';
+import { LandmarkDetailNullableScalarRelationFilterObjectSchema as LandmarkDetailNullableScalarRelationFilterObjectSchema } from './LandmarkDetailNullableScalarRelationFilter.schema';
+import { LandmarkDetailWhereInputObjectSchema as LandmarkDetailWhereInputObjectSchema } from './LandmarkDetailWhereInput.schema';
+import { SettlementNullableScalarRelationFilterObjectSchema as SettlementNullableScalarRelationFilterObjectSchema } from './SettlementNullableScalarRelationFilter.schema';
+import { SettlementWhereInputObjectSchema as SettlementWhereInputObjectSchema } from './SettlementWhereInput.schema'
 
 const hexcellwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => HexCellWhereInputObjectSchema), z.lazy(() => HexCellWhereInputObjectSchema).array()]).optional(),

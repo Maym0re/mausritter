@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const MapMarkerModelSchema = z.object({
     id: z.string(),
@@ -13,4 +12,4 @@ export const MapMarkerModelSchema = z.object({
     updatedAt: z.date()
 }).strict();
 
-export type MapMarkerModelType = z.infer<typeof MapMarkerModelSchema>;
+export type MapMarkerPureType = z.infer<typeof MapMarkerModelSchema>;

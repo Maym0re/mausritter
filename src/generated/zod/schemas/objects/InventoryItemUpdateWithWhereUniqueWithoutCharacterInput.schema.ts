@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { InventoryItemWhereUniqueInputObjectSchema } from './InventoryItemWhereUniqueInput.schema';
-import { InventoryItemUpdateWithoutCharacterInputObjectSchema } from './InventoryItemUpdateWithoutCharacterInput.schema';
-import { InventoryItemUncheckedUpdateWithoutCharacterInputObjectSchema } from './InventoryItemUncheckedUpdateWithoutCharacterInput.schema'
+import { InventoryItemWhereUniqueInputObjectSchema as InventoryItemWhereUniqueInputObjectSchema } from './InventoryItemWhereUniqueInput.schema';
+import { InventoryItemUpdateWithoutCharacterInputObjectSchema as InventoryItemUpdateWithoutCharacterInputObjectSchema } from './InventoryItemUpdateWithoutCharacterInput.schema';
+import { InventoryItemUncheckedUpdateWithoutCharacterInputObjectSchema as InventoryItemUncheckedUpdateWithoutCharacterInputObjectSchema } from './InventoryItemUncheckedUpdateWithoutCharacterInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => InventoryItemWhereUniqueInputObjectSchema),

@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { AccountScalarWhereInputObjectSchema } from './AccountScalarWhereInput.schema';
-import { AccountUpdateManyMutationInputObjectSchema } from './AccountUpdateManyMutationInput.schema';
-import { AccountUncheckedUpdateManyWithoutUserInputObjectSchema } from './AccountUncheckedUpdateManyWithoutUserInput.schema'
+import { AccountScalarWhereInputObjectSchema as AccountScalarWhereInputObjectSchema } from './AccountScalarWhereInput.schema';
+import { AccountUpdateManyMutationInputObjectSchema as AccountUpdateManyMutationInputObjectSchema } from './AccountUpdateManyMutationInput.schema';
+import { AccountUncheckedUpdateManyWithoutUserInputObjectSchema as AccountUncheckedUpdateManyWithoutUserInputObjectSchema } from './AccountUncheckedUpdateManyWithoutUserInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => AccountScalarWhereInputObjectSchema),

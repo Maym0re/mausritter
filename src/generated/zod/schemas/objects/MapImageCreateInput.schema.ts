@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexMapCreateNestedOneWithoutImagesInputObjectSchema } from './HexMapCreateNestedOneWithoutImagesInput.schema'
+import { HexMapCreateNestedOneWithoutImagesInputObjectSchema as HexMapCreateNestedOneWithoutImagesInputObjectSchema } from './HexMapCreateNestedOneWithoutImagesInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string().optional(),

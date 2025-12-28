@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { NestedFloatFilterObjectSchema } from './NestedFloatFilter.schema'
+import { NestedFloatFilterObjectSchema as NestedFloatFilterObjectSchema } from './NestedFloatFilter.schema'
 
 const makeSchema = () => z.object({
   equals: z.number().optional(),

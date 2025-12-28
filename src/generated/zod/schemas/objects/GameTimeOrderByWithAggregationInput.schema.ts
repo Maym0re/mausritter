@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { GameTimeCountOrderByAggregateInputObjectSchema } from './GameTimeCountOrderByAggregateInput.schema';
-import { GameTimeAvgOrderByAggregateInputObjectSchema } from './GameTimeAvgOrderByAggregateInput.schema';
-import { GameTimeMaxOrderByAggregateInputObjectSchema } from './GameTimeMaxOrderByAggregateInput.schema';
-import { GameTimeMinOrderByAggregateInputObjectSchema } from './GameTimeMinOrderByAggregateInput.schema';
-import { GameTimeSumOrderByAggregateInputObjectSchema } from './GameTimeSumOrderByAggregateInput.schema'
+import { GameTimeCountOrderByAggregateInputObjectSchema as GameTimeCountOrderByAggregateInputObjectSchema } from './GameTimeCountOrderByAggregateInput.schema';
+import { GameTimeAvgOrderByAggregateInputObjectSchema as GameTimeAvgOrderByAggregateInputObjectSchema } from './GameTimeAvgOrderByAggregateInput.schema';
+import { GameTimeMaxOrderByAggregateInputObjectSchema as GameTimeMaxOrderByAggregateInputObjectSchema } from './GameTimeMaxOrderByAggregateInput.schema';
+import { GameTimeMinOrderByAggregateInputObjectSchema as GameTimeMinOrderByAggregateInputObjectSchema } from './GameTimeMinOrderByAggregateInput.schema';
+import { GameTimeSumOrderByAggregateInputObjectSchema as GameTimeSumOrderByAggregateInputObjectSchema } from './GameTimeSumOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

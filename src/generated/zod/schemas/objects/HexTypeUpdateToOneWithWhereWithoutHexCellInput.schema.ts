@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexTypeWhereInputObjectSchema } from './HexTypeWhereInput.schema';
-import { HexTypeUpdateWithoutHexCellInputObjectSchema } from './HexTypeUpdateWithoutHexCellInput.schema';
-import { HexTypeUncheckedUpdateWithoutHexCellInputObjectSchema } from './HexTypeUncheckedUpdateWithoutHexCellInput.schema'
+import { HexTypeWhereInputObjectSchema as HexTypeWhereInputObjectSchema } from './HexTypeWhereInput.schema';
+import { HexTypeUpdateWithoutHexCellInputObjectSchema as HexTypeUpdateWithoutHexCellInputObjectSchema } from './HexTypeUpdateWithoutHexCellInput.schema';
+import { HexTypeUncheckedUpdateWithoutHexCellInputObjectSchema as HexTypeUncheckedUpdateWithoutHexCellInputObjectSchema } from './HexTypeUncheckedUpdateWithoutHexCellInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => HexTypeWhereInputObjectSchema).optional(),

@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexCellWhereInputObjectSchema } from './HexCellWhereInput.schema'
+import { HexCellWhereInputObjectSchema as HexCellWhereInputObjectSchema } from './HexCellWhereInput.schema'
 
 const makeSchema = () => z.object({
   every: z.lazy(() => HexCellWhereInputObjectSchema).optional(),

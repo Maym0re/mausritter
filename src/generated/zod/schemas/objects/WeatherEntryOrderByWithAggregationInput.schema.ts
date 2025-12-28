@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { WeatherEntryCountOrderByAggregateInputObjectSchema } from './WeatherEntryCountOrderByAggregateInput.schema';
-import { WeatherEntryAvgOrderByAggregateInputObjectSchema } from './WeatherEntryAvgOrderByAggregateInput.schema';
-import { WeatherEntryMaxOrderByAggregateInputObjectSchema } from './WeatherEntryMaxOrderByAggregateInput.schema';
-import { WeatherEntryMinOrderByAggregateInputObjectSchema } from './WeatherEntryMinOrderByAggregateInput.schema';
-import { WeatherEntrySumOrderByAggregateInputObjectSchema } from './WeatherEntrySumOrderByAggregateInput.schema'
+import { WeatherEntryCountOrderByAggregateInputObjectSchema as WeatherEntryCountOrderByAggregateInputObjectSchema } from './WeatherEntryCountOrderByAggregateInput.schema';
+import { WeatherEntryAvgOrderByAggregateInputObjectSchema as WeatherEntryAvgOrderByAggregateInputObjectSchema } from './WeatherEntryAvgOrderByAggregateInput.schema';
+import { WeatherEntryMaxOrderByAggregateInputObjectSchema as WeatherEntryMaxOrderByAggregateInputObjectSchema } from './WeatherEntryMaxOrderByAggregateInput.schema';
+import { WeatherEntryMinOrderByAggregateInputObjectSchema as WeatherEntryMinOrderByAggregateInputObjectSchema } from './WeatherEntryMinOrderByAggregateInput.schema';
+import { WeatherEntrySumOrderByAggregateInputObjectSchema as WeatherEntrySumOrderByAggregateInputObjectSchema } from './WeatherEntrySumOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

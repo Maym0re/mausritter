@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SeasonNameSchema } from '../enums/SeasonName.schema';
-import { NestedIntFilterObjectSchema } from './NestedIntFilter.schema';
-import { NestedEnumSeasonNameFilterObjectSchema } from './NestedEnumSeasonNameFilter.schema'
+import { NestedIntFilterObjectSchema as NestedIntFilterObjectSchema } from './NestedIntFilter.schema';
+import { NestedEnumSeasonNameFilterObjectSchema as NestedEnumSeasonNameFilterObjectSchema } from './NestedEnumSeasonNameFilter.schema'
 
 const nestedenumseasonnamewithaggregatesfilterSchema = z.object({
   equals: SeasonNameSchema.optional(),

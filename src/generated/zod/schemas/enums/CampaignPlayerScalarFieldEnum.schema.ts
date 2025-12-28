@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const CampaignPlayerScalarFieldEnumSchema = z.enum(['id', 'campaignId', 'userId', 'joinedAt'])
 

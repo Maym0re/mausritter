@@ -1,12 +1,12 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { UserCreateNestedOneWithoutCharactersInputObjectSchema } from './UserCreateNestedOneWithoutCharactersInput.schema';
-import { CampaignCreateNestedOneWithoutCharactersInputObjectSchema } from './CampaignCreateNestedOneWithoutCharactersInput.schema';
-import { BackgroundCreateNestedOneWithoutCharactersInputObjectSchema } from './BackgroundCreateNestedOneWithoutCharactersInput.schema';
-import { BirthsignCreateNestedOneWithoutCharactersInputObjectSchema } from './BirthsignCreateNestedOneWithoutCharactersInput.schema';
-import { CoatCreateNestedOneWithoutCharactersInputObjectSchema } from './CoatCreateNestedOneWithoutCharactersInput.schema';
-import { InventoryItemCreateNestedManyWithoutCharacterInputObjectSchema } from './InventoryItemCreateNestedManyWithoutCharacterInput.schema';
-import { ConditionCreateNestedManyWithoutCharactersInputObjectSchema } from './ConditionCreateNestedManyWithoutCharactersInput.schema'
+import { UserCreateNestedOneWithoutCharactersInputObjectSchema as UserCreateNestedOneWithoutCharactersInputObjectSchema } from './UserCreateNestedOneWithoutCharactersInput.schema';
+import { CampaignCreateNestedOneWithoutCharactersInputObjectSchema as CampaignCreateNestedOneWithoutCharactersInputObjectSchema } from './CampaignCreateNestedOneWithoutCharactersInput.schema';
+import { BackgroundCreateNestedOneWithoutCharactersInputObjectSchema as BackgroundCreateNestedOneWithoutCharactersInputObjectSchema } from './BackgroundCreateNestedOneWithoutCharactersInput.schema';
+import { BirthsignCreateNestedOneWithoutCharactersInputObjectSchema as BirthsignCreateNestedOneWithoutCharactersInputObjectSchema } from './BirthsignCreateNestedOneWithoutCharactersInput.schema';
+import { CoatCreateNestedOneWithoutCharactersInputObjectSchema as CoatCreateNestedOneWithoutCharactersInputObjectSchema } from './CoatCreateNestedOneWithoutCharactersInput.schema';
+import { InventoryItemCreateNestedManyWithoutCharacterInputObjectSchema as InventoryItemCreateNestedManyWithoutCharacterInputObjectSchema } from './InventoryItemCreateNestedManyWithoutCharacterInput.schema';
+import { ConditionCreateNestedManyWithoutCharactersInputObjectSchema as ConditionCreateNestedManyWithoutCharactersInputObjectSchema } from './ConditionCreateNestedManyWithoutCharactersInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string().optional(),
@@ -29,8 +29,8 @@ const makeSchema = () => z.object({
   background: z.lazy(() => BackgroundCreateNestedOneWithoutCharactersInputObjectSchema),
   birthsign: z.lazy(() => BirthsignCreateNestedOneWithoutCharactersInputObjectSchema),
   coat: z.lazy(() => CoatCreateNestedOneWithoutCharactersInputObjectSchema),
-  inventory: z.lazy(() => InventoryItemCreateNestedManyWithoutCharacterInputObjectSchema),
-  conditions: z.lazy(() => ConditionCreateNestedManyWithoutCharactersInputObjectSchema)
+  inventory: z.lazy(() => InventoryItemCreateNestedManyWithoutCharacterInputObjectSchema).optional(),
+  conditions: z.lazy(() => ConditionCreateNestedManyWithoutCharactersInputObjectSchema).optional()
 }).strict();
 export const CharacterCreateInputObjectSchema: z.ZodType<Prisma.CharacterCreateInput> = makeSchema() as unknown as z.ZodType<Prisma.CharacterCreateInput>;
 export const CharacterCreateInputObjectZodSchema = makeSchema();

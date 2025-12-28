@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { ConditionCreateWithoutCharactersInputObjectSchema } from './ConditionCreateWithoutCharactersInput.schema';
-import { ConditionUncheckedCreateWithoutCharactersInputObjectSchema } from './ConditionUncheckedCreateWithoutCharactersInput.schema';
-import { ConditionCreateOrConnectWithoutCharactersInputObjectSchema } from './ConditionCreateOrConnectWithoutCharactersInput.schema';
-import { ConditionWhereUniqueInputObjectSchema } from './ConditionWhereUniqueInput.schema'
+import { ConditionCreateWithoutCharactersInputObjectSchema as ConditionCreateWithoutCharactersInputObjectSchema } from './ConditionCreateWithoutCharactersInput.schema';
+import { ConditionUncheckedCreateWithoutCharactersInputObjectSchema as ConditionUncheckedCreateWithoutCharactersInputObjectSchema } from './ConditionUncheckedCreateWithoutCharactersInput.schema';
+import { ConditionCreateOrConnectWithoutCharactersInputObjectSchema as ConditionCreateOrConnectWithoutCharactersInputObjectSchema } from './ConditionCreateOrConnectWithoutCharactersInput.schema';
+import { ConditionWhereUniqueInputObjectSchema as ConditionWhereUniqueInputObjectSchema } from './ConditionWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => ConditionCreateWithoutCharactersInputObjectSchema), z.lazy(() => ConditionCreateWithoutCharactersInputObjectSchema).array(), z.lazy(() => ConditionUncheckedCreateWithoutCharactersInputObjectSchema), z.lazy(() => ConditionUncheckedCreateWithoutCharactersInputObjectSchema).array()]).optional(),

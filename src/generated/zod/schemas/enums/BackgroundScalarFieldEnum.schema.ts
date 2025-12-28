@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const BackgroundScalarFieldEnumSchema = z.enum(['id', 'name', 'itemA', 'itemB', 'createdAt', 'updatedAt'])
 

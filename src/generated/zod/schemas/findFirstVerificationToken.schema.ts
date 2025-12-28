@@ -1,8 +1,8 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { VerificationTokenOrderByWithRelationInputObjectSchema } from './objects/VerificationTokenOrderByWithRelationInput.schema';
-import { VerificationTokenWhereInputObjectSchema } from './objects/VerificationTokenWhereInput.schema';
-import { VerificationTokenWhereUniqueInputObjectSchema } from './objects/VerificationTokenWhereUniqueInput.schema';
+import * as z from 'zod';
+import { VerificationTokenOrderByWithRelationInputObjectSchema as VerificationTokenOrderByWithRelationInputObjectSchema } from './objects/VerificationTokenOrderByWithRelationInput.schema';
+import { VerificationTokenWhereInputObjectSchema as VerificationTokenWhereInputObjectSchema } from './objects/VerificationTokenWhereInput.schema';
+import { VerificationTokenWhereUniqueInputObjectSchema as VerificationTokenWhereUniqueInputObjectSchema } from './objects/VerificationTokenWhereUniqueInput.schema';
 import { VerificationTokenScalarFieldEnumSchema } from './enums/VerificationTokenScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

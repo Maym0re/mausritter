@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { ConditionScalarWhereInputObjectSchema } from './ConditionScalarWhereInput.schema';
-import { ConditionUpdateManyMutationInputObjectSchema } from './ConditionUpdateManyMutationInput.schema';
-import { ConditionUncheckedUpdateManyWithoutCharactersInputObjectSchema } from './ConditionUncheckedUpdateManyWithoutCharactersInput.schema'
+import { ConditionScalarWhereInputObjectSchema as ConditionScalarWhereInputObjectSchema } from './ConditionScalarWhereInput.schema';
+import { ConditionUpdateManyMutationInputObjectSchema as ConditionUpdateManyMutationInputObjectSchema } from './ConditionUpdateManyMutationInput.schema';
+import { ConditionUncheckedUpdateManyWithoutCharactersInputObjectSchema as ConditionUncheckedUpdateManyWithoutCharactersInputObjectSchema } from './ConditionUncheckedUpdateManyWithoutCharactersInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => ConditionScalarWhereInputObjectSchema),

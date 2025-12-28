@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterCreateManyPlayerInputObjectSchema } from './CharacterCreateManyPlayerInput.schema'
+import { CharacterCreateManyPlayerInputObjectSchema as CharacterCreateManyPlayerInputObjectSchema } from './CharacterCreateManyPlayerInput.schema'
 
 const makeSchema = () => z.object({
   data: z.union([z.lazy(() => CharacterCreateManyPlayerInputObjectSchema), z.lazy(() => CharacterCreateManyPlayerInputObjectSchema).array()]),

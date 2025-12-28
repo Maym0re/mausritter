@@ -1,15 +1,15 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
-import { DateTimeNullableFilterObjectSchema } from './DateTimeNullableFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { AccountListRelationFilterObjectSchema } from './AccountListRelationFilter.schema';
-import { SessionListRelationFilterObjectSchema } from './SessionListRelationFilter.schema';
-import { CampaignListRelationFilterObjectSchema } from './CampaignListRelationFilter.schema';
-import { CharacterListRelationFilterObjectSchema } from './CharacterListRelationFilter.schema';
-import { CampaignPlayerListRelationFilterObjectSchema } from './CampaignPlayerListRelationFilter.schema';
-import { DiceRollLogListRelationFilterObjectSchema } from './DiceRollLogListRelationFilter.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { StringNullableFilterObjectSchema as StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
+import { DateTimeNullableFilterObjectSchema as DateTimeNullableFilterObjectSchema } from './DateTimeNullableFilter.schema';
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { AccountListRelationFilterObjectSchema as AccountListRelationFilterObjectSchema } from './AccountListRelationFilter.schema';
+import { SessionListRelationFilterObjectSchema as SessionListRelationFilterObjectSchema } from './SessionListRelationFilter.schema';
+import { CampaignListRelationFilterObjectSchema as CampaignListRelationFilterObjectSchema } from './CampaignListRelationFilter.schema';
+import { CharacterListRelationFilterObjectSchema as CharacterListRelationFilterObjectSchema } from './CharacterListRelationFilter.schema';
+import { CampaignPlayerListRelationFilterObjectSchema as CampaignPlayerListRelationFilterObjectSchema } from './CampaignPlayerListRelationFilter.schema';
+import { DiceRollLogListRelationFilterObjectSchema as DiceRollLogListRelationFilterObjectSchema } from './DiceRollLogListRelationFilter.schema'
 
 const userwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => UserWhereInputObjectSchema), z.lazy(() => UserWhereInputObjectSchema).array()]).optional(),

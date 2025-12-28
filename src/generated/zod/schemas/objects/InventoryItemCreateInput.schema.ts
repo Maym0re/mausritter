@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SlotTypeSchema } from '../enums/SlotType.schema';
-import { CharacterCreateNestedOneWithoutInventoryInputObjectSchema } from './CharacterCreateNestedOneWithoutInventoryInput.schema'
+import { CharacterCreateNestedOneWithoutInventoryInputObjectSchema as CharacterCreateNestedOneWithoutInventoryInputObjectSchema } from './CharacterCreateNestedOneWithoutInventoryInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string().optional(),

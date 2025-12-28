@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { DiceRollEntryCreateWithoutLogInputObjectSchema } from './DiceRollEntryCreateWithoutLogInput.schema';
-import { DiceRollEntryUncheckedCreateWithoutLogInputObjectSchema } from './DiceRollEntryUncheckedCreateWithoutLogInput.schema';
-import { DiceRollEntryCreateOrConnectWithoutLogInputObjectSchema } from './DiceRollEntryCreateOrConnectWithoutLogInput.schema';
-import { DiceRollEntryUpsertWithWhereUniqueWithoutLogInputObjectSchema } from './DiceRollEntryUpsertWithWhereUniqueWithoutLogInput.schema';
-import { DiceRollEntryCreateManyLogInputEnvelopeObjectSchema } from './DiceRollEntryCreateManyLogInputEnvelope.schema';
-import { DiceRollEntryWhereUniqueInputObjectSchema } from './DiceRollEntryWhereUniqueInput.schema';
-import { DiceRollEntryUpdateWithWhereUniqueWithoutLogInputObjectSchema } from './DiceRollEntryUpdateWithWhereUniqueWithoutLogInput.schema';
-import { DiceRollEntryUpdateManyWithWhereWithoutLogInputObjectSchema } from './DiceRollEntryUpdateManyWithWhereWithoutLogInput.schema';
-import { DiceRollEntryScalarWhereInputObjectSchema } from './DiceRollEntryScalarWhereInput.schema'
+import { DiceRollEntryCreateWithoutLogInputObjectSchema as DiceRollEntryCreateWithoutLogInputObjectSchema } from './DiceRollEntryCreateWithoutLogInput.schema';
+import { DiceRollEntryUncheckedCreateWithoutLogInputObjectSchema as DiceRollEntryUncheckedCreateWithoutLogInputObjectSchema } from './DiceRollEntryUncheckedCreateWithoutLogInput.schema';
+import { DiceRollEntryCreateOrConnectWithoutLogInputObjectSchema as DiceRollEntryCreateOrConnectWithoutLogInputObjectSchema } from './DiceRollEntryCreateOrConnectWithoutLogInput.schema';
+import { DiceRollEntryUpsertWithWhereUniqueWithoutLogInputObjectSchema as DiceRollEntryUpsertWithWhereUniqueWithoutLogInputObjectSchema } from './DiceRollEntryUpsertWithWhereUniqueWithoutLogInput.schema';
+import { DiceRollEntryCreateManyLogInputEnvelopeObjectSchema as DiceRollEntryCreateManyLogInputEnvelopeObjectSchema } from './DiceRollEntryCreateManyLogInputEnvelope.schema';
+import { DiceRollEntryWhereUniqueInputObjectSchema as DiceRollEntryWhereUniqueInputObjectSchema } from './DiceRollEntryWhereUniqueInput.schema';
+import { DiceRollEntryUpdateWithWhereUniqueWithoutLogInputObjectSchema as DiceRollEntryUpdateWithWhereUniqueWithoutLogInputObjectSchema } from './DiceRollEntryUpdateWithWhereUniqueWithoutLogInput.schema';
+import { DiceRollEntryUpdateManyWithWhereWithoutLogInputObjectSchema as DiceRollEntryUpdateManyWithWhereWithoutLogInputObjectSchema } from './DiceRollEntryUpdateManyWithWhereWithoutLogInput.schema';
+import { DiceRollEntryScalarWhereInputObjectSchema as DiceRollEntryScalarWhereInputObjectSchema } from './DiceRollEntryScalarWhereInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => DiceRollEntryCreateWithoutLogInputObjectSchema), z.lazy(() => DiceRollEntryCreateWithoutLogInputObjectSchema).array(), z.lazy(() => DiceRollEntryUncheckedCreateWithoutLogInputObjectSchema), z.lazy(() => DiceRollEntryUncheckedCreateWithoutLogInputObjectSchema).array()]).optional(),

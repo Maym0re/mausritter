@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const VerificationTokenGroupByResultSchema = z.array(z.object({
   identifier: z.string(),
   token: z.string(),

@@ -1,12 +1,12 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { AccountFindManySchema } from '../findManyAccount.schema';
-import { SessionFindManySchema } from '../findManySession.schema';
-import { CampaignFindManySchema } from '../findManyCampaign.schema';
-import { CharacterFindManySchema } from '../findManyCharacter.schema';
-import { CampaignPlayerFindManySchema } from '../findManyCampaignPlayer.schema';
-import { DiceRollLogFindManySchema } from '../findManyDiceRollLog.schema';
-import { UserCountOutputTypeArgsObjectSchema } from './UserCountOutputTypeArgs.schema'
+import { AccountFindManySchema as AccountFindManySchema } from '../findManyAccount.schema';
+import { SessionFindManySchema as SessionFindManySchema } from '../findManySession.schema';
+import { CampaignFindManySchema as CampaignFindManySchema } from '../findManyCampaign.schema';
+import { CharacterFindManySchema as CharacterFindManySchema } from '../findManyCharacter.schema';
+import { CampaignPlayerFindManySchema as CampaignPlayerFindManySchema } from '../findManyCampaignPlayer.schema';
+import { DiceRollLogFindManySchema as DiceRollLogFindManySchema } from '../findManyDiceRollLog.schema';
+import { UserCountOutputTypeArgsObjectSchema as UserCountOutputTypeArgsObjectSchema } from './UserCountOutputTypeArgs.schema'
 
 const makeSchema = () => z.object({
   accounts: z.union([z.boolean(), z.lazy(() => AccountFindManySchema)]).optional(),

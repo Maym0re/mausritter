@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { DiceRollLogWhereInputObjectSchema } from './DiceRollLogWhereInput.schema'
+import { DiceRollLogWhereInputObjectSchema as DiceRollLogWhereInputObjectSchema } from './DiceRollLogWhereInput.schema'
 
 const makeSchema = () => z.object({
   is: z.lazy(() => DiceRollLogWhereInputObjectSchema).optional(),

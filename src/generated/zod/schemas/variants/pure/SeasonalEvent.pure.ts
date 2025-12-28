@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 import { SeasonNameSchema } from '../../enums/SeasonName.schema';
 // prettier-ignore
 export const SeasonalEventModelSchema = z.object({
@@ -9,4 +8,4 @@ export const SeasonalEventModelSchema = z.object({
     effect: z.string().nullable()
 }).strict();
 
-export type SeasonalEventModelType = z.infer<typeof SeasonalEventModelSchema>;
+export type SeasonalEventPureType = z.infer<typeof SeasonalEventModelSchema>;

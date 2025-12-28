@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const DiceRollEntryScalarFieldEnumSchema = z.enum(['id', 'logId', 'order', 'type', 'value', 'sides', 'createdAt'])
 

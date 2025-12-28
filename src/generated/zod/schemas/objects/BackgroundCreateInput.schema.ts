@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterCreateNestedManyWithoutBackgroundInputObjectSchema } from './CharacterCreateNestedManyWithoutBackgroundInput.schema'
+import { CharacterCreateNestedManyWithoutBackgroundInputObjectSchema as CharacterCreateNestedManyWithoutBackgroundInputObjectSchema } from './CharacterCreateNestedManyWithoutBackgroundInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string().optional(),
@@ -8,7 +8,7 @@ const makeSchema = () => z.object({
   itemA: z.string(),
   itemB: z.string(),
   createdAt: z.coerce.date().optional(),
-  characters: z.lazy(() => CharacterCreateNestedManyWithoutBackgroundInputObjectSchema)
+  characters: z.lazy(() => CharacterCreateNestedManyWithoutBackgroundInputObjectSchema).optional()
 }).strict();
 export const BackgroundCreateInputObjectSchema: z.ZodType<Prisma.BackgroundCreateInput> = makeSchema() as unknown as z.ZodType<Prisma.BackgroundCreateInput>;
 export const BackgroundCreateInputObjectZodSchema = makeSchema();

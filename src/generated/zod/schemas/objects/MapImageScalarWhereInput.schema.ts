@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { FloatFilterObjectSchema } from './FloatFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { FloatFilterObjectSchema as FloatFilterObjectSchema } from './FloatFilter.schema';
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema'
 
 const mapimagescalarwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => MapImageScalarWhereInputObjectSchema), z.lazy(() => MapImageScalarWhereInputObjectSchema).array()]).optional(),

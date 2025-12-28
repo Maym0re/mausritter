@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 import { SeasonNameSchema } from '../../enums/SeasonName.schema';
 // prettier-ignore
 export const SeasonalEventResultSchema = z.object({

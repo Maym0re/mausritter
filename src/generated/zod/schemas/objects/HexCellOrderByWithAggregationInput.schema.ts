@@ -1,12 +1,12 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { SortOrderInputObjectSchema } from './SortOrderInput.schema';
-import { HexCellCountOrderByAggregateInputObjectSchema } from './HexCellCountOrderByAggregateInput.schema';
-import { HexCellAvgOrderByAggregateInputObjectSchema } from './HexCellAvgOrderByAggregateInput.schema';
-import { HexCellMaxOrderByAggregateInputObjectSchema } from './HexCellMaxOrderByAggregateInput.schema';
-import { HexCellMinOrderByAggregateInputObjectSchema } from './HexCellMinOrderByAggregateInput.schema';
-import { HexCellSumOrderByAggregateInputObjectSchema } from './HexCellSumOrderByAggregateInput.schema'
+import { SortOrderInputObjectSchema as SortOrderInputObjectSchema } from './SortOrderInput.schema';
+import { HexCellCountOrderByAggregateInputObjectSchema as HexCellCountOrderByAggregateInputObjectSchema } from './HexCellCountOrderByAggregateInput.schema';
+import { HexCellAvgOrderByAggregateInputObjectSchema as HexCellAvgOrderByAggregateInputObjectSchema } from './HexCellAvgOrderByAggregateInput.schema';
+import { HexCellMaxOrderByAggregateInputObjectSchema as HexCellMaxOrderByAggregateInputObjectSchema } from './HexCellMaxOrderByAggregateInput.schema';
+import { HexCellMinOrderByAggregateInputObjectSchema as HexCellMinOrderByAggregateInputObjectSchema } from './HexCellMinOrderByAggregateInput.schema';
+import { HexCellSumOrderByAggregateInputObjectSchema as HexCellSumOrderByAggregateInputObjectSchema } from './HexCellSumOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

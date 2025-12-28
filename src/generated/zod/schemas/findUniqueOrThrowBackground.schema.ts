@@ -1,8 +1,8 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { BackgroundSelectObjectSchema } from './objects/BackgroundSelect.schema';
-import { BackgroundIncludeObjectSchema } from './objects/BackgroundInclude.schema';
-import { BackgroundWhereUniqueInputObjectSchema } from './objects/BackgroundWhereUniqueInput.schema';
+import * as z from 'zod';
+import { BackgroundSelectObjectSchema as BackgroundSelectObjectSchema } from './objects/BackgroundSelect.schema';
+import { BackgroundIncludeObjectSchema as BackgroundIncludeObjectSchema } from './objects/BackgroundInclude.schema';
+import { BackgroundWhereUniqueInputObjectSchema as BackgroundWhereUniqueInputObjectSchema } from './objects/BackgroundWhereUniqueInput.schema';
 
 export const BackgroundFindUniqueOrThrowSchema: z.ZodType<Prisma.BackgroundFindUniqueOrThrowArgs> = z.object({ select: BackgroundSelectObjectSchema.optional(), include: BackgroundIncludeObjectSchema.optional(), where: BackgroundWhereUniqueInputObjectSchema }).strict() as unknown as z.ZodType<Prisma.BackgroundFindUniqueOrThrowArgs>;
 

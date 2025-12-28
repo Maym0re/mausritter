@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const CharacterInputSchema = z.object({
     id: z.string(),
@@ -25,8 +24,8 @@ export const CharacterInputSchema = z.object({
     xp: z.number().int(),
     grit: z.number().int(),
     pips: z.number().int(),
-    inventory: z.array(z.unknown()).array(),
-    conditions: z.array(z.unknown()).array(),
+    inventory: z.array(z.unknown()),
+    conditions: z.array(z.unknown()),
     isActive: z.boolean(),
     createdAt: z.date(),
     updatedAt: z.date()

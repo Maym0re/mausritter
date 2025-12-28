@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkDetailCreateWithoutHexCellInputObjectSchema } from './LandmarkDetailCreateWithoutHexCellInput.schema';
-import { LandmarkDetailUncheckedCreateWithoutHexCellInputObjectSchema } from './LandmarkDetailUncheckedCreateWithoutHexCellInput.schema';
-import { LandmarkDetailCreateOrConnectWithoutHexCellInputObjectSchema } from './LandmarkDetailCreateOrConnectWithoutHexCellInput.schema';
-import { LandmarkDetailUpsertWithoutHexCellInputObjectSchema } from './LandmarkDetailUpsertWithoutHexCellInput.schema';
-import { LandmarkDetailWhereInputObjectSchema } from './LandmarkDetailWhereInput.schema';
-import { LandmarkDetailWhereUniqueInputObjectSchema } from './LandmarkDetailWhereUniqueInput.schema';
-import { LandmarkDetailUpdateToOneWithWhereWithoutHexCellInputObjectSchema } from './LandmarkDetailUpdateToOneWithWhereWithoutHexCellInput.schema';
-import { LandmarkDetailUpdateWithoutHexCellInputObjectSchema } from './LandmarkDetailUpdateWithoutHexCellInput.schema';
-import { LandmarkDetailUncheckedUpdateWithoutHexCellInputObjectSchema } from './LandmarkDetailUncheckedUpdateWithoutHexCellInput.schema'
+import { LandmarkDetailCreateWithoutHexCellInputObjectSchema as LandmarkDetailCreateWithoutHexCellInputObjectSchema } from './LandmarkDetailCreateWithoutHexCellInput.schema';
+import { LandmarkDetailUncheckedCreateWithoutHexCellInputObjectSchema as LandmarkDetailUncheckedCreateWithoutHexCellInputObjectSchema } from './LandmarkDetailUncheckedCreateWithoutHexCellInput.schema';
+import { LandmarkDetailCreateOrConnectWithoutHexCellInputObjectSchema as LandmarkDetailCreateOrConnectWithoutHexCellInputObjectSchema } from './LandmarkDetailCreateOrConnectWithoutHexCellInput.schema';
+import { LandmarkDetailUpsertWithoutHexCellInputObjectSchema as LandmarkDetailUpsertWithoutHexCellInputObjectSchema } from './LandmarkDetailUpsertWithoutHexCellInput.schema';
+import { LandmarkDetailWhereInputObjectSchema as LandmarkDetailWhereInputObjectSchema } from './LandmarkDetailWhereInput.schema';
+import { LandmarkDetailWhereUniqueInputObjectSchema as LandmarkDetailWhereUniqueInputObjectSchema } from './LandmarkDetailWhereUniqueInput.schema';
+import { LandmarkDetailUpdateToOneWithWhereWithoutHexCellInputObjectSchema as LandmarkDetailUpdateToOneWithWhereWithoutHexCellInputObjectSchema } from './LandmarkDetailUpdateToOneWithWhereWithoutHexCellInput.schema';
+import { LandmarkDetailUpdateWithoutHexCellInputObjectSchema as LandmarkDetailUpdateWithoutHexCellInputObjectSchema } from './LandmarkDetailUpdateWithoutHexCellInput.schema';
+import { LandmarkDetailUncheckedUpdateWithoutHexCellInputObjectSchema as LandmarkDetailUncheckedUpdateWithoutHexCellInputObjectSchema } from './LandmarkDetailUncheckedUpdateWithoutHexCellInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => LandmarkDetailCreateWithoutHexCellInputObjectSchema), z.lazy(() => LandmarkDetailUncheckedCreateWithoutHexCellInputObjectSchema)]).optional(),

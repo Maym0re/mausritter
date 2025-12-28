@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { BackgroundWhereInputObjectSchema } from './BackgroundWhereInput.schema';
-import { BackgroundUpdateWithoutCharactersInputObjectSchema } from './BackgroundUpdateWithoutCharactersInput.schema';
-import { BackgroundUncheckedUpdateWithoutCharactersInputObjectSchema } from './BackgroundUncheckedUpdateWithoutCharactersInput.schema'
+import { BackgroundWhereInputObjectSchema as BackgroundWhereInputObjectSchema } from './BackgroundWhereInput.schema';
+import { BackgroundUpdateWithoutCharactersInputObjectSchema as BackgroundUpdateWithoutCharactersInputObjectSchema } from './BackgroundUpdateWithoutCharactersInput.schema';
+import { BackgroundUncheckedUpdateWithoutCharactersInputObjectSchema as BackgroundUncheckedUpdateWithoutCharactersInputObjectSchema } from './BackgroundUncheckedUpdateWithoutCharactersInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => BackgroundWhereInputObjectSchema).optional(),

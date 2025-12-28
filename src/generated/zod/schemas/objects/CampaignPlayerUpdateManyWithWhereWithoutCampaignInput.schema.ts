@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignPlayerScalarWhereInputObjectSchema } from './CampaignPlayerScalarWhereInput.schema';
-import { CampaignPlayerUpdateManyMutationInputObjectSchema } from './CampaignPlayerUpdateManyMutationInput.schema';
-import { CampaignPlayerUncheckedUpdateManyWithoutCampaignInputObjectSchema } from './CampaignPlayerUncheckedUpdateManyWithoutCampaignInput.schema'
+import { CampaignPlayerScalarWhereInputObjectSchema as CampaignPlayerScalarWhereInputObjectSchema } from './CampaignPlayerScalarWhereInput.schema';
+import { CampaignPlayerUpdateManyMutationInputObjectSchema as CampaignPlayerUpdateManyMutationInputObjectSchema } from './CampaignPlayerUpdateManyMutationInput.schema';
+import { CampaignPlayerUncheckedUpdateManyWithoutCampaignInputObjectSchema as CampaignPlayerUncheckedUpdateManyWithoutCampaignInputObjectSchema } from './CampaignPlayerUncheckedUpdateManyWithoutCampaignInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => CampaignPlayerScalarWhereInputObjectSchema),

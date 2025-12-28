@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkDetailCreateManyLandmarkInputObjectSchema } from './LandmarkDetailCreateManyLandmarkInput.schema'
+import { LandmarkDetailCreateManyLandmarkInputObjectSchema as LandmarkDetailCreateManyLandmarkInputObjectSchema } from './LandmarkDetailCreateManyLandmarkInput.schema'
 
 const makeSchema = () => z.object({
   data: z.union([z.lazy(() => LandmarkDetailCreateManyLandmarkInputObjectSchema), z.lazy(() => LandmarkDetailCreateManyLandmarkInputObjectSchema).array()]),

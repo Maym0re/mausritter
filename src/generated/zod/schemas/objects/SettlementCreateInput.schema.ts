@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SettlementSizeSchema } from '../enums/SettlementSize.schema';
-import { HexCellCreateNestedManyWithoutSettlementInputObjectSchema } from './HexCellCreateNestedManyWithoutSettlementInput.schema'
+import { HexCellCreateNestedManyWithoutSettlementInputObjectSchema as HexCellCreateNestedManyWithoutSettlementInputObjectSchema } from './HexCellCreateNestedManyWithoutSettlementInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string(),
@@ -13,7 +13,7 @@ const makeSchema = () => z.object({
   industry: z.string(),
   event: z.string(),
   population: z.number().int(),
-  HexCell: z.lazy(() => HexCellCreateNestedManyWithoutSettlementInputObjectSchema)
+  HexCell: z.lazy(() => HexCellCreateNestedManyWithoutSettlementInputObjectSchema).optional()
 }).strict();
 export const SettlementCreateInputObjectSchema: z.ZodType<Prisma.SettlementCreateInput> = makeSchema() as unknown as z.ZodType<Prisma.SettlementCreateInput>;
 export const SettlementCreateInputObjectZodSchema = makeSchema();

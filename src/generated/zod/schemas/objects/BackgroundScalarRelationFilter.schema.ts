@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { BackgroundWhereInputObjectSchema } from './BackgroundWhereInput.schema'
+import { BackgroundWhereInputObjectSchema as BackgroundWhereInputObjectSchema } from './BackgroundWhereInput.schema'
 
 const makeSchema = () => z.object({
   is: z.lazy(() => BackgroundWhereInputObjectSchema).optional(),

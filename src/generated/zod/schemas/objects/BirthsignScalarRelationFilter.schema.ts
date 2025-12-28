@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { BirthsignWhereInputObjectSchema } from './BirthsignWhereInput.schema'
+import { BirthsignWhereInputObjectSchema as BirthsignWhereInputObjectSchema } from './BirthsignWhereInput.schema'
 
 const makeSchema = () => z.object({
   is: z.lazy(() => BirthsignWhereInputObjectSchema).optional(),

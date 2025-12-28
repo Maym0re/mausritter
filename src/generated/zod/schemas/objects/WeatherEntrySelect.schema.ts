@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CampaignFindManySchema } from '../findManyCampaign.schema';
-import { WeatherEntryCountOutputTypeArgsObjectSchema } from './WeatherEntryCountOutputTypeArgs.schema'
+import { CampaignFindManySchema as CampaignFindManySchema } from '../findManyCampaign.schema';
+import { WeatherEntryCountOutputTypeArgsObjectSchema as WeatherEntryCountOutputTypeArgsObjectSchema } from './WeatherEntryCountOutputTypeArgs.schema'
 
 const makeSchema = () => z.object({
   id: z.boolean().optional(),

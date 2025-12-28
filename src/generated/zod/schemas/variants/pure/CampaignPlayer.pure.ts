@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const CampaignPlayerModelSchema = z.object({
     id: z.string(),
@@ -10,4 +9,4 @@ export const CampaignPlayerModelSchema = z.object({
     joinedAt: z.date()
 }).strict();
 
-export type CampaignPlayerModelType = z.infer<typeof CampaignPlayerModelSchema>;
+export type CampaignPlayerPureType = z.infer<typeof CampaignPlayerModelSchema>;

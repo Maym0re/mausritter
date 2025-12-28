@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema'
+import { StringWithAggregatesFilterObjectSchema as StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema'
 
 const landmarkscalarwherewithaggregatesinputSchema = z.object({
   AND: z.union([z.lazy(() => LandmarkScalarWhereWithAggregatesInputObjectSchema), z.lazy(() => LandmarkScalarWhereWithAggregatesInputObjectSchema).array()]).optional(),

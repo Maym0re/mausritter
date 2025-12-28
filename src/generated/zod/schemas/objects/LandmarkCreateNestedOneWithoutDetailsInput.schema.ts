@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkCreateWithoutDetailsInputObjectSchema } from './LandmarkCreateWithoutDetailsInput.schema';
-import { LandmarkUncheckedCreateWithoutDetailsInputObjectSchema } from './LandmarkUncheckedCreateWithoutDetailsInput.schema';
-import { LandmarkCreateOrConnectWithoutDetailsInputObjectSchema } from './LandmarkCreateOrConnectWithoutDetailsInput.schema';
-import { LandmarkWhereUniqueInputObjectSchema } from './LandmarkWhereUniqueInput.schema'
+import { LandmarkCreateWithoutDetailsInputObjectSchema as LandmarkCreateWithoutDetailsInputObjectSchema } from './LandmarkCreateWithoutDetailsInput.schema';
+import { LandmarkUncheckedCreateWithoutDetailsInputObjectSchema as LandmarkUncheckedCreateWithoutDetailsInputObjectSchema } from './LandmarkUncheckedCreateWithoutDetailsInput.schema';
+import { LandmarkCreateOrConnectWithoutDetailsInputObjectSchema as LandmarkCreateOrConnectWithoutDetailsInputObjectSchema } from './LandmarkCreateOrConnectWithoutDetailsInput.schema';
+import { LandmarkWhereUniqueInputObjectSchema as LandmarkWhereUniqueInputObjectSchema } from './LandmarkWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => LandmarkCreateWithoutDetailsInputObjectSchema), z.lazy(() => LandmarkUncheckedCreateWithoutDetailsInputObjectSchema)]).optional(),

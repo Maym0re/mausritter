@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { CharacterIncludeObjectSchema } from './objects/CharacterInclude.schema';
-import { CharacterOrderByWithRelationInputObjectSchema } from './objects/CharacterOrderByWithRelationInput.schema';
-import { CharacterWhereInputObjectSchema } from './objects/CharacterWhereInput.schema';
-import { CharacterWhereUniqueInputObjectSchema } from './objects/CharacterWhereUniqueInput.schema';
+import * as z from 'zod';
+import { CharacterIncludeObjectSchema as CharacterIncludeObjectSchema } from './objects/CharacterInclude.schema';
+import { CharacterOrderByWithRelationInputObjectSchema as CharacterOrderByWithRelationInputObjectSchema } from './objects/CharacterOrderByWithRelationInput.schema';
+import { CharacterWhereInputObjectSchema as CharacterWhereInputObjectSchema } from './objects/CharacterWhereInput.schema';
+import { CharacterWhereUniqueInputObjectSchema as CharacterWhereUniqueInputObjectSchema } from './objects/CharacterWhereUniqueInput.schema';
 import { CharacterScalarFieldEnumSchema } from './enums/CharacterScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { SettlementWhereUniqueInputObjectSchema } from './SettlementWhereUniqueInput.schema';
-import { SettlementCreateWithoutHexCellInputObjectSchema } from './SettlementCreateWithoutHexCellInput.schema';
-import { SettlementUncheckedCreateWithoutHexCellInputObjectSchema } from './SettlementUncheckedCreateWithoutHexCellInput.schema'
+import { SettlementWhereUniqueInputObjectSchema as SettlementWhereUniqueInputObjectSchema } from './SettlementWhereUniqueInput.schema';
+import { SettlementCreateWithoutHexCellInputObjectSchema as SettlementCreateWithoutHexCellInputObjectSchema } from './SettlementCreateWithoutHexCellInput.schema';
+import { SettlementUncheckedCreateWithoutHexCellInputObjectSchema as SettlementUncheckedCreateWithoutHexCellInputObjectSchema } from './SettlementUncheckedCreateWithoutHexCellInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => SettlementWhereUniqueInputObjectSchema),

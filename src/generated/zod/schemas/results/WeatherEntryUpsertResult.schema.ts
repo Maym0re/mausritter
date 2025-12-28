@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const WeatherEntryUpsertResultSchema = z.object({
   id: z.string(),
   season: z.unknown(),

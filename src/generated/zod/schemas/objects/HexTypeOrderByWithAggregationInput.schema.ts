@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { HexTypeCountOrderByAggregateInputObjectSchema } from './HexTypeCountOrderByAggregateInput.schema';
-import { HexTypeMaxOrderByAggregateInputObjectSchema } from './HexTypeMaxOrderByAggregateInput.schema';
-import { HexTypeMinOrderByAggregateInputObjectSchema } from './HexTypeMinOrderByAggregateInput.schema'
+import { HexTypeCountOrderByAggregateInputObjectSchema as HexTypeCountOrderByAggregateInputObjectSchema } from './HexTypeCountOrderByAggregateInput.schema';
+import { HexTypeMaxOrderByAggregateInputObjectSchema as HexTypeMaxOrderByAggregateInputObjectSchema } from './HexTypeMaxOrderByAggregateInput.schema';
+import { HexTypeMinOrderByAggregateInputObjectSchema as HexTypeMinOrderByAggregateInputObjectSchema } from './HexTypeMinOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

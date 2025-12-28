@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
-import { StringNullableWithAggregatesFilterObjectSchema } from './StringNullableWithAggregatesFilter.schema';
-import { BoolWithAggregatesFilterObjectSchema } from './BoolWithAggregatesFilter.schema';
-import { EnumSeasonNameWithAggregatesFilterObjectSchema } from './EnumSeasonNameWithAggregatesFilter.schema';
+import { StringWithAggregatesFilterObjectSchema as StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
+import { StringNullableWithAggregatesFilterObjectSchema as StringNullableWithAggregatesFilterObjectSchema } from './StringNullableWithAggregatesFilter.schema';
+import { BoolWithAggregatesFilterObjectSchema as BoolWithAggregatesFilterObjectSchema } from './BoolWithAggregatesFilter.schema';
+import { EnumSeasonNameWithAggregatesFilterObjectSchema as EnumSeasonNameWithAggregatesFilterObjectSchema } from './EnumSeasonNameWithAggregatesFilter.schema';
 import { SeasonNameSchema } from '../enums/SeasonName.schema';
-import { DateTimeWithAggregatesFilterObjectSchema } from './DateTimeWithAggregatesFilter.schema'
+import { DateTimeWithAggregatesFilterObjectSchema as DateTimeWithAggregatesFilterObjectSchema } from './DateTimeWithAggregatesFilter.schema'
 
 const campaignscalarwherewithaggregatesinputSchema = z.object({
   AND: z.union([z.lazy(() => CampaignScalarWhereWithAggregatesInputObjectSchema), z.lazy(() => CampaignScalarWhereWithAggregatesInputObjectSchema).array()]).optional(),

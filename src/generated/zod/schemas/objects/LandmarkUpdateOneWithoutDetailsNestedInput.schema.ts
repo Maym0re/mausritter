@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkCreateWithoutDetailsInputObjectSchema } from './LandmarkCreateWithoutDetailsInput.schema';
-import { LandmarkUncheckedCreateWithoutDetailsInputObjectSchema } from './LandmarkUncheckedCreateWithoutDetailsInput.schema';
-import { LandmarkCreateOrConnectWithoutDetailsInputObjectSchema } from './LandmarkCreateOrConnectWithoutDetailsInput.schema';
-import { LandmarkUpsertWithoutDetailsInputObjectSchema } from './LandmarkUpsertWithoutDetailsInput.schema';
-import { LandmarkWhereInputObjectSchema } from './LandmarkWhereInput.schema';
-import { LandmarkWhereUniqueInputObjectSchema } from './LandmarkWhereUniqueInput.schema';
-import { LandmarkUpdateToOneWithWhereWithoutDetailsInputObjectSchema } from './LandmarkUpdateToOneWithWhereWithoutDetailsInput.schema';
-import { LandmarkUpdateWithoutDetailsInputObjectSchema } from './LandmarkUpdateWithoutDetailsInput.schema';
-import { LandmarkUncheckedUpdateWithoutDetailsInputObjectSchema } from './LandmarkUncheckedUpdateWithoutDetailsInput.schema'
+import { LandmarkCreateWithoutDetailsInputObjectSchema as LandmarkCreateWithoutDetailsInputObjectSchema } from './LandmarkCreateWithoutDetailsInput.schema';
+import { LandmarkUncheckedCreateWithoutDetailsInputObjectSchema as LandmarkUncheckedCreateWithoutDetailsInputObjectSchema } from './LandmarkUncheckedCreateWithoutDetailsInput.schema';
+import { LandmarkCreateOrConnectWithoutDetailsInputObjectSchema as LandmarkCreateOrConnectWithoutDetailsInputObjectSchema } from './LandmarkCreateOrConnectWithoutDetailsInput.schema';
+import { LandmarkUpsertWithoutDetailsInputObjectSchema as LandmarkUpsertWithoutDetailsInputObjectSchema } from './LandmarkUpsertWithoutDetailsInput.schema';
+import { LandmarkWhereInputObjectSchema as LandmarkWhereInputObjectSchema } from './LandmarkWhereInput.schema';
+import { LandmarkWhereUniqueInputObjectSchema as LandmarkWhereUniqueInputObjectSchema } from './LandmarkWhereUniqueInput.schema';
+import { LandmarkUpdateToOneWithWhereWithoutDetailsInputObjectSchema as LandmarkUpdateToOneWithWhereWithoutDetailsInputObjectSchema } from './LandmarkUpdateToOneWithWhereWithoutDetailsInput.schema';
+import { LandmarkUpdateWithoutDetailsInputObjectSchema as LandmarkUpdateWithoutDetailsInputObjectSchema } from './LandmarkUpdateWithoutDetailsInput.schema';
+import { LandmarkUncheckedUpdateWithoutDetailsInputObjectSchema as LandmarkUncheckedUpdateWithoutDetailsInputObjectSchema } from './LandmarkUncheckedUpdateWithoutDetailsInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => LandmarkCreateWithoutDetailsInputObjectSchema), z.lazy(() => LandmarkUncheckedCreateWithoutDetailsInputObjectSchema)]).optional(),

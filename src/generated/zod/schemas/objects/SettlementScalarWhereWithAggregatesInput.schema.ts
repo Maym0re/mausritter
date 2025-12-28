@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
-import { EnumSettlementSizeWithAggregatesFilterObjectSchema } from './EnumSettlementSizeWithAggregatesFilter.schema';
+import { StringWithAggregatesFilterObjectSchema as StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
+import { EnumSettlementSizeWithAggregatesFilterObjectSchema as EnumSettlementSizeWithAggregatesFilterObjectSchema } from './EnumSettlementSizeWithAggregatesFilter.schema';
 import { SettlementSizeSchema } from '../enums/SettlementSize.schema';
-import { IntWithAggregatesFilterObjectSchema } from './IntWithAggregatesFilter.schema'
+import { IntWithAggregatesFilterObjectSchema as IntWithAggregatesFilterObjectSchema } from './IntWithAggregatesFilter.schema'
 
 const settlementscalarwherewithaggregatesinputSchema = z.object({
   AND: z.union([z.lazy(() => SettlementScalarWhereWithAggregatesInputObjectSchema), z.lazy(() => SettlementScalarWhereWithAggregatesInputObjectSchema).array()]).optional(),

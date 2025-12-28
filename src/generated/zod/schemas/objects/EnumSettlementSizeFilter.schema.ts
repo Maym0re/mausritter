@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SettlementSizeSchema } from '../enums/SettlementSize.schema';
-import { NestedEnumSettlementSizeFilterObjectSchema } from './NestedEnumSettlementSizeFilter.schema'
+import { NestedEnumSettlementSizeFilterObjectSchema as NestedEnumSettlementSizeFilterObjectSchema } from './NestedEnumSettlementSizeFilter.schema'
 
 const makeSchema = () => z.object({
   equals: SettlementSizeSchema.optional(),

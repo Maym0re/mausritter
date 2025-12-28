@@ -1,17 +1,17 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
-import { NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
-import { IntFieldUpdateOperationsInputObjectSchema } from './IntFieldUpdateOperationsInput.schema';
-import { BoolFieldUpdateOperationsInputObjectSchema } from './BoolFieldUpdateOperationsInput.schema';
-import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
-import { UserUpdateOneRequiredWithoutCharactersNestedInputObjectSchema } from './UserUpdateOneRequiredWithoutCharactersNestedInput.schema';
-import { CampaignUpdateOneRequiredWithoutCharactersNestedInputObjectSchema } from './CampaignUpdateOneRequiredWithoutCharactersNestedInput.schema';
-import { BackgroundUpdateOneRequiredWithoutCharactersNestedInputObjectSchema } from './BackgroundUpdateOneRequiredWithoutCharactersNestedInput.schema';
-import { BirthsignUpdateOneRequiredWithoutCharactersNestedInputObjectSchema } from './BirthsignUpdateOneRequiredWithoutCharactersNestedInput.schema';
-import { CoatUpdateOneRequiredWithoutCharactersNestedInputObjectSchema } from './CoatUpdateOneRequiredWithoutCharactersNestedInput.schema';
-import { InventoryItemUpdateManyWithoutCharacterNestedInputObjectSchema } from './InventoryItemUpdateManyWithoutCharacterNestedInput.schema';
-import { ConditionUpdateManyWithoutCharactersNestedInputObjectSchema } from './ConditionUpdateManyWithoutCharactersNestedInput.schema'
+import { StringFieldUpdateOperationsInputObjectSchema as StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
+import { NullableStringFieldUpdateOperationsInputObjectSchema as NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
+import { IntFieldUpdateOperationsInputObjectSchema as IntFieldUpdateOperationsInputObjectSchema } from './IntFieldUpdateOperationsInput.schema';
+import { BoolFieldUpdateOperationsInputObjectSchema as BoolFieldUpdateOperationsInputObjectSchema } from './BoolFieldUpdateOperationsInput.schema';
+import { DateTimeFieldUpdateOperationsInputObjectSchema as DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
+import { UserUpdateOneRequiredWithoutCharactersNestedInputObjectSchema as UserUpdateOneRequiredWithoutCharactersNestedInputObjectSchema } from './UserUpdateOneRequiredWithoutCharactersNestedInput.schema';
+import { CampaignUpdateOneRequiredWithoutCharactersNestedInputObjectSchema as CampaignUpdateOneRequiredWithoutCharactersNestedInputObjectSchema } from './CampaignUpdateOneRequiredWithoutCharactersNestedInput.schema';
+import { BackgroundUpdateOneRequiredWithoutCharactersNestedInputObjectSchema as BackgroundUpdateOneRequiredWithoutCharactersNestedInputObjectSchema } from './BackgroundUpdateOneRequiredWithoutCharactersNestedInput.schema';
+import { BirthsignUpdateOneRequiredWithoutCharactersNestedInputObjectSchema as BirthsignUpdateOneRequiredWithoutCharactersNestedInputObjectSchema } from './BirthsignUpdateOneRequiredWithoutCharactersNestedInput.schema';
+import { CoatUpdateOneRequiredWithoutCharactersNestedInputObjectSchema as CoatUpdateOneRequiredWithoutCharactersNestedInputObjectSchema } from './CoatUpdateOneRequiredWithoutCharactersNestedInput.schema';
+import { InventoryItemUpdateManyWithoutCharacterNestedInputObjectSchema as InventoryItemUpdateManyWithoutCharacterNestedInputObjectSchema } from './InventoryItemUpdateManyWithoutCharacterNestedInput.schema';
+import { ConditionUpdateManyWithoutCharactersNestedInputObjectSchema as ConditionUpdateManyWithoutCharactersNestedInputObjectSchema } from './ConditionUpdateManyWithoutCharactersNestedInput.schema'
 
 const makeSchema = () => z.object({
   id: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),

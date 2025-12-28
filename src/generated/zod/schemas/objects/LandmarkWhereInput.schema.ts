@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { HexTypeScalarRelationFilterObjectSchema } from './HexTypeScalarRelationFilter.schema';
-import { HexTypeWhereInputObjectSchema } from './HexTypeWhereInput.schema';
-import { LandmarkDetailListRelationFilterObjectSchema } from './LandmarkDetailListRelationFilter.schema';
-import { HexCellListRelationFilterObjectSchema } from './HexCellListRelationFilter.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { HexTypeScalarRelationFilterObjectSchema as HexTypeScalarRelationFilterObjectSchema } from './HexTypeScalarRelationFilter.schema';
+import { HexTypeWhereInputObjectSchema as HexTypeWhereInputObjectSchema } from './HexTypeWhereInput.schema';
+import { LandmarkDetailListRelationFilterObjectSchema as LandmarkDetailListRelationFilterObjectSchema } from './LandmarkDetailListRelationFilter.schema';
+import { HexCellListRelationFilterObjectSchema as HexCellListRelationFilterObjectSchema } from './HexCellListRelationFilter.schema'
 
 const landmarkwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => LandmarkWhereInputObjectSchema), z.lazy(() => LandmarkWhereInputObjectSchema).array()]).optional(),

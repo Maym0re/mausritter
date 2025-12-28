@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { UserArgsObjectSchema } from './UserArgs.schema';
-import { CampaignPlayerFindManySchema } from '../findManyCampaignPlayer.schema';
-import { CharacterFindManySchema } from '../findManyCharacter.schema';
-import { GameTimeArgsObjectSchema } from './GameTimeArgs.schema';
-import { WeatherEntryArgsObjectSchema } from './WeatherEntryArgs.schema';
-import { HexMapArgsObjectSchema } from './HexMapArgs.schema';
-import { DiceRollLogFindManySchema } from '../findManyDiceRollLog.schema';
-import { CampaignCountOutputTypeArgsObjectSchema } from './CampaignCountOutputTypeArgs.schema'
+import { UserArgsObjectSchema as UserArgsObjectSchema } from './UserArgs.schema';
+import { CampaignPlayerFindManySchema as CampaignPlayerFindManySchema } from '../findManyCampaignPlayer.schema';
+import { CharacterFindManySchema as CharacterFindManySchema } from '../findManyCharacter.schema';
+import { GameTimeArgsObjectSchema as GameTimeArgsObjectSchema } from './GameTimeArgs.schema';
+import { WeatherEntryArgsObjectSchema as WeatherEntryArgsObjectSchema } from './WeatherEntryArgs.schema';
+import { HexMapArgsObjectSchema as HexMapArgsObjectSchema } from './HexMapArgs.schema';
+import { DiceRollLogFindManySchema as DiceRollLogFindManySchema } from '../findManyDiceRollLog.schema';
+import { CampaignCountOutputTypeArgsObjectSchema as CampaignCountOutputTypeArgsObjectSchema } from './CampaignCountOutputTypeArgs.schema'
 
 const makeSchema = () => z.object({
   gm: z.union([z.boolean(), z.lazy(() => UserArgsObjectSchema)]).optional(),

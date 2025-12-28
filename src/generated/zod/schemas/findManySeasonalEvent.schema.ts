@@ -1,8 +1,8 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { SeasonalEventOrderByWithRelationInputObjectSchema } from './objects/SeasonalEventOrderByWithRelationInput.schema';
-import { SeasonalEventWhereInputObjectSchema } from './objects/SeasonalEventWhereInput.schema';
-import { SeasonalEventWhereUniqueInputObjectSchema } from './objects/SeasonalEventWhereUniqueInput.schema';
+import * as z from 'zod';
+import { SeasonalEventOrderByWithRelationInputObjectSchema as SeasonalEventOrderByWithRelationInputObjectSchema } from './objects/SeasonalEventOrderByWithRelationInput.schema';
+import { SeasonalEventWhereInputObjectSchema as SeasonalEventWhereInputObjectSchema } from './objects/SeasonalEventWhereInput.schema';
+import { SeasonalEventWhereUniqueInputObjectSchema as SeasonalEventWhereUniqueInputObjectSchema } from './objects/SeasonalEventWhereUniqueInput.schema';
 import { SeasonalEventScalarFieldEnumSchema } from './enums/SeasonalEventScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

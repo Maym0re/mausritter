@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { VerificationTokenSelectObjectSchema } from './VerificationTokenSelect.schema'
+import { VerificationTokenSelectObjectSchema as VerificationTokenSelectObjectSchema } from './VerificationTokenSelect.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => VerificationTokenSelectObjectSchema).optional()

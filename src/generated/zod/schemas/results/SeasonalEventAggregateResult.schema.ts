@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const SeasonalEventAggregateResultSchema = z.object({  _count: z.object({
     id: z.number(),
     season: z.number(),

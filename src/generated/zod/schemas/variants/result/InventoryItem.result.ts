@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 import { SlotTypeSchema } from '../../enums/SlotType.schema';
 // prettier-ignore
 export const InventoryItemResultSchema = z.object({

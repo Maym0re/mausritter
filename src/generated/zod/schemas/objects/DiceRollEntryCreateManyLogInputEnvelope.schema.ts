@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { DiceRollEntryCreateManyLogInputObjectSchema } from './DiceRollEntryCreateManyLogInput.schema'
+import { DiceRollEntryCreateManyLogInputObjectSchema as DiceRollEntryCreateManyLogInputObjectSchema } from './DiceRollEntryCreateManyLogInput.schema'
 
 const makeSchema = () => z.object({
   data: z.union([z.lazy(() => DiceRollEntryCreateManyLogInputObjectSchema), z.lazy(() => DiceRollEntryCreateManyLogInputObjectSchema).array()]),

@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { BackgroundIncludeObjectSchema } from './objects/BackgroundInclude.schema';
-import { BackgroundOrderByWithRelationInputObjectSchema } from './objects/BackgroundOrderByWithRelationInput.schema';
-import { BackgroundWhereInputObjectSchema } from './objects/BackgroundWhereInput.schema';
-import { BackgroundWhereUniqueInputObjectSchema } from './objects/BackgroundWhereUniqueInput.schema';
+import * as z from 'zod';
+import { BackgroundIncludeObjectSchema as BackgroundIncludeObjectSchema } from './objects/BackgroundInclude.schema';
+import { BackgroundOrderByWithRelationInputObjectSchema as BackgroundOrderByWithRelationInputObjectSchema } from './objects/BackgroundOrderByWithRelationInput.schema';
+import { BackgroundWhereInputObjectSchema as BackgroundWhereInputObjectSchema } from './objects/BackgroundWhereInput.schema';
+import { BackgroundWhereUniqueInputObjectSchema as BackgroundWhereUniqueInputObjectSchema } from './objects/BackgroundWhereUniqueInput.schema';
 import { BackgroundScalarFieldEnumSchema } from './enums/BackgroundScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

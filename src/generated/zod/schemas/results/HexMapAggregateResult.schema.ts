@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const HexMapAggregateResultSchema = z.object({  _count: z.object({
     id: z.number(),
     campaignId: z.number(),

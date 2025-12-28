@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { InventoryItemWhereInputObjectSchema } from './InventoryItemWhereInput.schema'
+import { InventoryItemWhereInputObjectSchema as InventoryItemWhereInputObjectSchema } from './InventoryItemWhereInput.schema'
 
 const makeSchema = () => z.object({
   every: z.lazy(() => InventoryItemWhereInputObjectSchema).optional(),

@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const SessionModelSchema = z.object({
     id: z.string(),
@@ -9,4 +8,4 @@ export const SessionModelSchema = z.object({
     user: z.unknown()
 }).strict();
 
-export type SessionModelType = z.infer<typeof SessionModelSchema>;
+export type SessionPureType = z.infer<typeof SessionModelSchema>;

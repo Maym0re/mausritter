@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { SettlementIncludeObjectSchema } from './objects/SettlementInclude.schema';
-import { SettlementOrderByWithRelationInputObjectSchema } from './objects/SettlementOrderByWithRelationInput.schema';
-import { SettlementWhereInputObjectSchema } from './objects/SettlementWhereInput.schema';
-import { SettlementWhereUniqueInputObjectSchema } from './objects/SettlementWhereUniqueInput.schema';
+import * as z from 'zod';
+import { SettlementIncludeObjectSchema as SettlementIncludeObjectSchema } from './objects/SettlementInclude.schema';
+import { SettlementOrderByWithRelationInputObjectSchema as SettlementOrderByWithRelationInputObjectSchema } from './objects/SettlementOrderByWithRelationInput.schema';
+import { SettlementWhereInputObjectSchema as SettlementWhereInputObjectSchema } from './objects/SettlementWhereInput.schema';
+import { SettlementWhereUniqueInputObjectSchema as SettlementWhereUniqueInputObjectSchema } from './objects/SettlementWhereUniqueInput.schema';
 import { SettlementScalarFieldEnumSchema } from './enums/SettlementScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

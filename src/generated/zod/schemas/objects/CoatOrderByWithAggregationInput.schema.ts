@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { CoatCountOrderByAggregateInputObjectSchema } from './CoatCountOrderByAggregateInput.schema';
-import { CoatMaxOrderByAggregateInputObjectSchema } from './CoatMaxOrderByAggregateInput.schema';
-import { CoatMinOrderByAggregateInputObjectSchema } from './CoatMinOrderByAggregateInput.schema'
+import { CoatCountOrderByAggregateInputObjectSchema as CoatCountOrderByAggregateInputObjectSchema } from './CoatCountOrderByAggregateInput.schema';
+import { CoatMaxOrderByAggregateInputObjectSchema as CoatMaxOrderByAggregateInputObjectSchema } from './CoatMaxOrderByAggregateInput.schema';
+import { CoatMinOrderByAggregateInputObjectSchema as CoatMinOrderByAggregateInputObjectSchema } from './CoatMinOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

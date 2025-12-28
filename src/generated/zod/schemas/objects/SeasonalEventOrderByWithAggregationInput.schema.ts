@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { SortOrderInputObjectSchema } from './SortOrderInput.schema';
-import { SeasonalEventCountOrderByAggregateInputObjectSchema } from './SeasonalEventCountOrderByAggregateInput.schema';
-import { SeasonalEventMaxOrderByAggregateInputObjectSchema } from './SeasonalEventMaxOrderByAggregateInput.schema';
-import { SeasonalEventMinOrderByAggregateInputObjectSchema } from './SeasonalEventMinOrderByAggregateInput.schema'
+import { SortOrderInputObjectSchema as SortOrderInputObjectSchema } from './SortOrderInput.schema';
+import { SeasonalEventCountOrderByAggregateInputObjectSchema as SeasonalEventCountOrderByAggregateInputObjectSchema } from './SeasonalEventCountOrderByAggregateInput.schema';
+import { SeasonalEventMaxOrderByAggregateInputObjectSchema as SeasonalEventMaxOrderByAggregateInputObjectSchema } from './SeasonalEventMaxOrderByAggregateInput.schema';
+import { SeasonalEventMinOrderByAggregateInputObjectSchema as SeasonalEventMinOrderByAggregateInputObjectSchema } from './SeasonalEventMinOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

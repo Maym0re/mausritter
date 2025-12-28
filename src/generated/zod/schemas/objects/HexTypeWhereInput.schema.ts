@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { LandmarkListRelationFilterObjectSchema } from './LandmarkListRelationFilter.schema';
-import { HexCellListRelationFilterObjectSchema } from './HexCellListRelationFilter.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { LandmarkListRelationFilterObjectSchema as LandmarkListRelationFilterObjectSchema } from './LandmarkListRelationFilter.schema';
+import { HexCellListRelationFilterObjectSchema as HexCellListRelationFilterObjectSchema } from './HexCellListRelationFilter.schema'
 
 const hextypewhereinputSchema = z.object({
   AND: z.union([z.lazy(() => HexTypeWhereInputObjectSchema), z.lazy(() => HexTypeWhereInputObjectSchema).array()]).optional(),

@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterCreateWithoutCampaignInputObjectSchema } from './CharacterCreateWithoutCampaignInput.schema';
-import { CharacterUncheckedCreateWithoutCampaignInputObjectSchema } from './CharacterUncheckedCreateWithoutCampaignInput.schema';
-import { CharacterCreateOrConnectWithoutCampaignInputObjectSchema } from './CharacterCreateOrConnectWithoutCampaignInput.schema';
-import { CharacterCreateManyCampaignInputEnvelopeObjectSchema } from './CharacterCreateManyCampaignInputEnvelope.schema';
-import { CharacterWhereUniqueInputObjectSchema } from './CharacterWhereUniqueInput.schema'
+import { CharacterCreateWithoutCampaignInputObjectSchema as CharacterCreateWithoutCampaignInputObjectSchema } from './CharacterCreateWithoutCampaignInput.schema';
+import { CharacterUncheckedCreateWithoutCampaignInputObjectSchema as CharacterUncheckedCreateWithoutCampaignInputObjectSchema } from './CharacterUncheckedCreateWithoutCampaignInput.schema';
+import { CharacterCreateOrConnectWithoutCampaignInputObjectSchema as CharacterCreateOrConnectWithoutCampaignInputObjectSchema } from './CharacterCreateOrConnectWithoutCampaignInput.schema';
+import { CharacterCreateManyCampaignInputEnvelopeObjectSchema as CharacterCreateManyCampaignInputEnvelopeObjectSchema } from './CharacterCreateManyCampaignInputEnvelope.schema';
+import { CharacterWhereUniqueInputObjectSchema as CharacterWhereUniqueInputObjectSchema } from './CharacterWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => CharacterCreateWithoutCampaignInputObjectSchema), z.lazy(() => CharacterCreateWithoutCampaignInputObjectSchema).array(), z.lazy(() => CharacterUncheckedCreateWithoutCampaignInputObjectSchema), z.lazy(() => CharacterUncheckedCreateWithoutCampaignInputObjectSchema).array()]).optional(),

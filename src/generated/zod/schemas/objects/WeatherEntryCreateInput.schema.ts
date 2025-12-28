@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SeasonNameSchema } from '../enums/SeasonName.schema';
-import { CampaignCreateNestedManyWithoutWeatherEntryInputObjectSchema } from './CampaignCreateNestedManyWithoutWeatherEntryInput.schema'
+import { CampaignCreateNestedManyWithoutWeatherEntryInputObjectSchema as CampaignCreateNestedManyWithoutWeatherEntryInputObjectSchema } from './CampaignCreateNestedManyWithoutWeatherEntryInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string().optional(),
@@ -9,7 +9,7 @@ const makeSchema = () => z.object({
   roll: z.number().int(),
   weather: z.string(),
   isPoorCondition: z.boolean(),
-  Campaign: z.lazy(() => CampaignCreateNestedManyWithoutWeatherEntryInputObjectSchema)
+  Campaign: z.lazy(() => CampaignCreateNestedManyWithoutWeatherEntryInputObjectSchema).optional()
 }).strict();
 export const WeatherEntryCreateInputObjectSchema: z.ZodType<Prisma.WeatherEntryCreateInput> = makeSchema() as unknown as z.ZodType<Prisma.WeatherEntryCreateInput>;
 export const WeatherEntryCreateInputObjectZodSchema = makeSchema();

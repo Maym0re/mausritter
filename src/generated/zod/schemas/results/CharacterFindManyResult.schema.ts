@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const CharacterFindManyResultSchema = z.object({
   data: z.array(z.object({
   id: z.string(),

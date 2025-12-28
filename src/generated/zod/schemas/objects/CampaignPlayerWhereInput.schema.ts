@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { CampaignScalarRelationFilterObjectSchema } from './CampaignScalarRelationFilter.schema';
-import { CampaignWhereInputObjectSchema } from './CampaignWhereInput.schema';
-import { UserScalarRelationFilterObjectSchema } from './UserScalarRelationFilter.schema';
-import { UserWhereInputObjectSchema } from './UserWhereInput.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { CampaignScalarRelationFilterObjectSchema as CampaignScalarRelationFilterObjectSchema } from './CampaignScalarRelationFilter.schema';
+import { CampaignWhereInputObjectSchema as CampaignWhereInputObjectSchema } from './CampaignWhereInput.schema';
+import { UserScalarRelationFilterObjectSchema as UserScalarRelationFilterObjectSchema } from './UserScalarRelationFilter.schema';
+import { UserWhereInputObjectSchema as UserWhereInputObjectSchema } from './UserWhereInput.schema'
 
 const campaignplayerwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => CampaignPlayerWhereInputObjectSchema), z.lazy(() => CampaignPlayerWhereInputObjectSchema).array()]).optional(),

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const SettlementSizeSchema = z.enum(['FARM', 'CROSSROADS', 'HAMLET', 'VILLAGE', 'TOWN', 'CITY'])
 

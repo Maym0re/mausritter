@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { MapImageIncludeObjectSchema } from './objects/MapImageInclude.schema';
-import { MapImageOrderByWithRelationInputObjectSchema } from './objects/MapImageOrderByWithRelationInput.schema';
-import { MapImageWhereInputObjectSchema } from './objects/MapImageWhereInput.schema';
-import { MapImageWhereUniqueInputObjectSchema } from './objects/MapImageWhereUniqueInput.schema';
+import * as z from 'zod';
+import { MapImageIncludeObjectSchema as MapImageIncludeObjectSchema } from './objects/MapImageInclude.schema';
+import { MapImageOrderByWithRelationInputObjectSchema as MapImageOrderByWithRelationInputObjectSchema } from './objects/MapImageOrderByWithRelationInput.schema';
+import { MapImageWhereInputObjectSchema as MapImageWhereInputObjectSchema } from './objects/MapImageWhereInput.schema';
+import { MapImageWhereUniqueInputObjectSchema as MapImageWhereUniqueInputObjectSchema } from './objects/MapImageWhereUniqueInput.schema';
 import { MapImageScalarFieldEnumSchema } from './enums/MapImageScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

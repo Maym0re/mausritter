@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const ConditionDeleteResultSchema = z.nullable(z.object({
   id: z.string(),
   name: z.string(),

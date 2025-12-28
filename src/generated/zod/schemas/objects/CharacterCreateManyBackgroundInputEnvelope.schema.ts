@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterCreateManyBackgroundInputObjectSchema } from './CharacterCreateManyBackgroundInput.schema'
+import { CharacterCreateManyBackgroundInputObjectSchema as CharacterCreateManyBackgroundInputObjectSchema } from './CharacterCreateManyBackgroundInput.schema'
 
 const makeSchema = () => z.object({
   data: z.union([z.lazy(() => CharacterCreateManyBackgroundInputObjectSchema), z.lazy(() => CharacterCreateManyBackgroundInputObjectSchema).array()]),

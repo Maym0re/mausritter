@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { GameTimeWhereInputObjectSchema } from './GameTimeWhereInput.schema'
+import { GameTimeWhereInputObjectSchema as GameTimeWhereInputObjectSchema } from './GameTimeWhereInput.schema'
 
 const makeSchema = () => z.object({
   is: z.lazy(() => GameTimeWhereInputObjectSchema).optional().nullable(),

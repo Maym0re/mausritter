@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { MapImageWhereInputObjectSchema } from './MapImageWhereInput.schema'
+import { MapImageWhereInputObjectSchema as MapImageWhereInputObjectSchema } from './MapImageWhereInput.schema'
 
 const makeSchema = () => z.object({
   every: z.lazy(() => MapImageWhereInputObjectSchema).optional(),

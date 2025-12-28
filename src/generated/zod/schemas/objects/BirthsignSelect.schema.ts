@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterFindManySchema } from '../findManyCharacter.schema';
-import { BirthsignCountOutputTypeArgsObjectSchema } from './BirthsignCountOutputTypeArgs.schema'
+import { CharacterFindManySchema as CharacterFindManySchema } from '../findManyCharacter.schema';
+import { BirthsignCountOutputTypeArgsObjectSchema as BirthsignCountOutputTypeArgsObjectSchema } from './BirthsignCountOutputTypeArgs.schema'
 
 const makeSchema = () => z.object({
   id: z.boolean().optional(),

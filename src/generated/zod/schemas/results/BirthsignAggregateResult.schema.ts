@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const BirthsignAggregateResultSchema = z.object({  _count: z.object({
     id: z.number(),
     sign: z.number(),

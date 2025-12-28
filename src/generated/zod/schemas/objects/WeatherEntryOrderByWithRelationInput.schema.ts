@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { CampaignOrderByRelationAggregateInputObjectSchema } from './CampaignOrderByRelationAggregateInput.schema'
+import { CampaignOrderByRelationAggregateInputObjectSchema as CampaignOrderByRelationAggregateInputObjectSchema } from './CampaignOrderByRelationAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

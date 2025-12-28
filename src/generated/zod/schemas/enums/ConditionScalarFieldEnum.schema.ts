@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const ConditionScalarFieldEnumSchema = z.enum(['id', 'name', 'description', 'clearRequirement', 'effects', 'createdAt', 'updatedAt'])
 

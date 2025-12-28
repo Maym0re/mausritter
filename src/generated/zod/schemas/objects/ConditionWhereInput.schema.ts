@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
-import { StringNullableListFilterObjectSchema } from './StringNullableListFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { CharacterListRelationFilterObjectSchema } from './CharacterListRelationFilter.schema'
+import { StringFilterObjectSchema as StringFilterObjectSchema } from './StringFilter.schema';
+import { StringNullableFilterObjectSchema as StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
+import { StringNullableListFilterObjectSchema as StringNullableListFilterObjectSchema } from './StringNullableListFilter.schema';
+import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+import { CharacterListRelationFilterObjectSchema as CharacterListRelationFilterObjectSchema } from './CharacterListRelationFilter.schema'
 
 const conditionwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => ConditionWhereInputObjectSchema), z.lazy(() => ConditionWhereInputObjectSchema).array()]).optional(),

@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexMapArgsObjectSchema } from './HexMapArgs.schema'
+import { HexMapArgsObjectSchema as HexMapArgsObjectSchema } from './HexMapArgs.schema'
 
 const makeSchema = () => z.object({
   hexMap: z.union([z.boolean(), z.lazy(() => HexMapArgsObjectSchema)]).optional()

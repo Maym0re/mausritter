@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CoatSelectObjectSchema } from './CoatSelect.schema';
-import { CoatIncludeObjectSchema } from './CoatInclude.schema'
+import { CoatSelectObjectSchema as CoatSelectObjectSchema } from './CoatSelect.schema';
+import { CoatIncludeObjectSchema as CoatIncludeObjectSchema } from './CoatInclude.schema'
 
 const makeSchema = () => z.object({
   select: z.lazy(() => CoatSelectObjectSchema).optional(),

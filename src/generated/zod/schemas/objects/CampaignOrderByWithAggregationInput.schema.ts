@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
 import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { SortOrderInputObjectSchema } from './SortOrderInput.schema';
-import { CampaignCountOrderByAggregateInputObjectSchema } from './CampaignCountOrderByAggregateInput.schema';
-import { CampaignMaxOrderByAggregateInputObjectSchema } from './CampaignMaxOrderByAggregateInput.schema';
-import { CampaignMinOrderByAggregateInputObjectSchema } from './CampaignMinOrderByAggregateInput.schema'
+import { SortOrderInputObjectSchema as SortOrderInputObjectSchema } from './SortOrderInput.schema';
+import { CampaignCountOrderByAggregateInputObjectSchema as CampaignCountOrderByAggregateInputObjectSchema } from './CampaignCountOrderByAggregateInput.schema';
+import { CampaignMaxOrderByAggregateInputObjectSchema as CampaignMaxOrderByAggregateInputObjectSchema } from './CampaignMaxOrderByAggregateInput.schema';
+import { CampaignMinOrderByAggregateInputObjectSchema as CampaignMinOrderByAggregateInputObjectSchema } from './CampaignMinOrderByAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),

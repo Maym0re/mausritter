@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const UserInputSchema = z.object({
     id: z.string(),
@@ -8,12 +7,12 @@ export const UserInputSchema = z.object({
     emailVerified: z.date().optional().nullable(),
     image: z.string().optional().nullable(),
     password: z.string().optional().nullable(),
-    accounts: z.array(z.unknown()).array(),
-    sessions: z.array(z.unknown()).array(),
-    ownedCampaigns: z.array(z.unknown()).array(),
-    characters: z.array(z.unknown()).array(),
-    playerIn: z.array(z.unknown()).array(),
-    diceRollLogs: z.array(z.unknown()).array(),
+    accounts: z.array(z.unknown()),
+    sessions: z.array(z.unknown()),
+    ownedCampaigns: z.array(z.unknown()),
+    characters: z.array(z.unknown()),
+    playerIn: z.array(z.unknown()),
+    diceRollLogs: z.array(z.unknown()),
     createdAt: z.date(),
     updatedAt: z.date()
 }).strict();

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const BackgroundUpsertResultSchema = z.object({
   id: z.string(),
   name: z.string(),

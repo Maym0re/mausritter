@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 import { SettlementSizeSchema } from '../../enums/SettlementSize.schema';
 // prettier-ignore
 export const SettlementInputSchema = z.object({
@@ -12,7 +11,7 @@ export const SettlementInputSchema = z.object({
     industry: z.string(),
     event: z.string(),
     population: z.number().int(),
-    HexCell: z.array(z.unknown()).array()
+    HexCell: z.array(z.unknown())
 }).strict();
 
 export type SettlementInputType = z.infer<typeof SettlementInputSchema>;

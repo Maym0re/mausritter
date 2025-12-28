@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { LandmarkDetailUncheckedCreateNestedManyWithoutLandmarkInputObjectSchema } from './LandmarkDetailUncheckedCreateNestedManyWithoutLandmarkInput.schema'
+import { LandmarkDetailUncheckedCreateNestedManyWithoutLandmarkInputObjectSchema as LandmarkDetailUncheckedCreateNestedManyWithoutLandmarkInputObjectSchema } from './LandmarkDetailUncheckedCreateNestedManyWithoutLandmarkInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string(),

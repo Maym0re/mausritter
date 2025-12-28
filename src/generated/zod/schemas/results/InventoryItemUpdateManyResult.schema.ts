@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const InventoryItemUpdateManyResultSchema = z.object({
   count: z.number()
 });

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 export const AccountCreateResultSchema = z.object({
   id: z.string(),
   userId: z.string(),

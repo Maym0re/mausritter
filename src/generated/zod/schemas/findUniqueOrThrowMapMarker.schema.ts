@@ -1,8 +1,8 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { MapMarkerSelectObjectSchema } from './objects/MapMarkerSelect.schema';
-import { MapMarkerIncludeObjectSchema } from './objects/MapMarkerInclude.schema';
-import { MapMarkerWhereUniqueInputObjectSchema } from './objects/MapMarkerWhereUniqueInput.schema';
+import * as z from 'zod';
+import { MapMarkerSelectObjectSchema as MapMarkerSelectObjectSchema } from './objects/MapMarkerSelect.schema';
+import { MapMarkerIncludeObjectSchema as MapMarkerIncludeObjectSchema } from './objects/MapMarkerInclude.schema';
+import { MapMarkerWhereUniqueInputObjectSchema as MapMarkerWhereUniqueInputObjectSchema } from './objects/MapMarkerWhereUniqueInput.schema';
 
 export const MapMarkerFindUniqueOrThrowSchema: z.ZodType<Prisma.MapMarkerFindUniqueOrThrowArgs> = z.object({ select: MapMarkerSelectObjectSchema.optional(), include: MapMarkerIncludeObjectSchema.optional(), where: MapMarkerWhereUniqueInputObjectSchema }).strict() as unknown as z.ZodType<Prisma.MapMarkerFindUniqueOrThrowArgs>;
 

@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexTypeCreateNestedOneWithoutLandmarksInputObjectSchema } from './HexTypeCreateNestedOneWithoutLandmarksInput.schema';
-import { LandmarkDetailCreateNestedManyWithoutLandmarkInputObjectSchema } from './LandmarkDetailCreateNestedManyWithoutLandmarkInput.schema'
+import { HexTypeCreateNestedOneWithoutLandmarksInputObjectSchema as HexTypeCreateNestedOneWithoutLandmarksInputObjectSchema } from './HexTypeCreateNestedOneWithoutLandmarksInput.schema';
+import { LandmarkDetailCreateNestedManyWithoutLandmarkInputObjectSchema as LandmarkDetailCreateNestedManyWithoutLandmarkInputObjectSchema } from './LandmarkDetailCreateNestedManyWithoutLandmarkInput.schema'
 
 const makeSchema = () => z.object({
   id: z.string(),

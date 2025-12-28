@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { HexMapArgsObjectSchema } from './HexMapArgs.schema';
-import { HexTypeArgsObjectSchema } from './HexTypeArgs.schema';
-import { LandmarkArgsObjectSchema } from './LandmarkArgs.schema';
-import { LandmarkDetailArgsObjectSchema } from './LandmarkDetailArgs.schema';
-import { SettlementArgsObjectSchema } from './SettlementArgs.schema'
+import { HexMapArgsObjectSchema as HexMapArgsObjectSchema } from './HexMapArgs.schema';
+import { HexTypeArgsObjectSchema as HexTypeArgsObjectSchema } from './HexTypeArgs.schema';
+import { LandmarkArgsObjectSchema as LandmarkArgsObjectSchema } from './LandmarkArgs.schema';
+import { LandmarkDetailArgsObjectSchema as LandmarkDetailArgsObjectSchema } from './LandmarkDetailArgs.schema';
+import { SettlementArgsObjectSchema as SettlementArgsObjectSchema } from './SettlementArgs.schema'
 
 const makeSchema = () => z.object({
   id: z.boolean().optional(),

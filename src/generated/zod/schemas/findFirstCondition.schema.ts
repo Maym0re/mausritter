@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
-import { z } from 'zod';
-import { ConditionIncludeObjectSchema } from './objects/ConditionInclude.schema';
-import { ConditionOrderByWithRelationInputObjectSchema } from './objects/ConditionOrderByWithRelationInput.schema';
-import { ConditionWhereInputObjectSchema } from './objects/ConditionWhereInput.schema';
-import { ConditionWhereUniqueInputObjectSchema } from './objects/ConditionWhereUniqueInput.schema';
+import * as z from 'zod';
+import { ConditionIncludeObjectSchema as ConditionIncludeObjectSchema } from './objects/ConditionInclude.schema';
+import { ConditionOrderByWithRelationInputObjectSchema as ConditionOrderByWithRelationInputObjectSchema } from './objects/ConditionOrderByWithRelationInput.schema';
+import { ConditionWhereInputObjectSchema as ConditionWhereInputObjectSchema } from './objects/ConditionWhereInput.schema';
+import { ConditionWhereUniqueInputObjectSchema as ConditionWhereUniqueInputObjectSchema } from './objects/ConditionWhereUniqueInput.schema';
 import { ConditionScalarFieldEnumSchema } from './enums/ConditionScalarFieldEnum.schema';
 
 // Select schema needs to be in file to prevent circular imports

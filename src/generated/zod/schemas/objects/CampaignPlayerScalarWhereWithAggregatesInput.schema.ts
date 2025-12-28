@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
-import { DateTimeWithAggregatesFilterObjectSchema } from './DateTimeWithAggregatesFilter.schema'
+import { StringWithAggregatesFilterObjectSchema as StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
+import { DateTimeWithAggregatesFilterObjectSchema as DateTimeWithAggregatesFilterObjectSchema } from './DateTimeWithAggregatesFilter.schema'
 
 const campaignplayerscalarwherewithaggregatesinputSchema = z.object({
   AND: z.union([z.lazy(() => CampaignPlayerScalarWhereWithAggregatesInputObjectSchema), z.lazy(() => CampaignPlayerScalarWhereWithAggregatesInputObjectSchema).array()]).optional(),

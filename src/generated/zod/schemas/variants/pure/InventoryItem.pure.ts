@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 import { SlotTypeSchema } from '../../enums/SlotType.schema';
 // prettier-ignore
 export const InventoryItemModelSchema = z.object({
@@ -19,4 +18,4 @@ export const InventoryItemModelSchema = z.object({
     updatedAt: z.date()
 }).strict();
 
-export type InventoryItemModelType = z.infer<typeof InventoryItemModelSchema>;
+export type InventoryItemPureType = z.infer<typeof InventoryItemModelSchema>;

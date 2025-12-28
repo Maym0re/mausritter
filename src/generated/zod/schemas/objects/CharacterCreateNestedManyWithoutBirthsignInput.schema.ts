@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { CharacterCreateWithoutBirthsignInputObjectSchema } from './CharacterCreateWithoutBirthsignInput.schema';
-import { CharacterUncheckedCreateWithoutBirthsignInputObjectSchema } from './CharacterUncheckedCreateWithoutBirthsignInput.schema';
-import { CharacterCreateOrConnectWithoutBirthsignInputObjectSchema } from './CharacterCreateOrConnectWithoutBirthsignInput.schema';
-import { CharacterCreateManyBirthsignInputEnvelopeObjectSchema } from './CharacterCreateManyBirthsignInputEnvelope.schema';
-import { CharacterWhereUniqueInputObjectSchema } from './CharacterWhereUniqueInput.schema'
+import { CharacterCreateWithoutBirthsignInputObjectSchema as CharacterCreateWithoutBirthsignInputObjectSchema } from './CharacterCreateWithoutBirthsignInput.schema';
+import { CharacterUncheckedCreateWithoutBirthsignInputObjectSchema as CharacterUncheckedCreateWithoutBirthsignInputObjectSchema } from './CharacterUncheckedCreateWithoutBirthsignInput.schema';
+import { CharacterCreateOrConnectWithoutBirthsignInputObjectSchema as CharacterCreateOrConnectWithoutBirthsignInputObjectSchema } from './CharacterCreateOrConnectWithoutBirthsignInput.schema';
+import { CharacterCreateManyBirthsignInputEnvelopeObjectSchema as CharacterCreateManyBirthsignInputEnvelopeObjectSchema } from './CharacterCreateManyBirthsignInputEnvelope.schema';
+import { CharacterWhereUniqueInputObjectSchema as CharacterWhereUniqueInputObjectSchema } from './CharacterWhereUniqueInput.schema'
 
 const makeSchema = () => z.object({
   create: z.union([z.lazy(() => CharacterCreateWithoutBirthsignInputObjectSchema), z.lazy(() => CharacterCreateWithoutBirthsignInputObjectSchema).array(), z.lazy(() => CharacterUncheckedCreateWithoutBirthsignInputObjectSchema), z.lazy(() => CharacterUncheckedCreateWithoutBirthsignInputObjectSchema).array()]).optional(),

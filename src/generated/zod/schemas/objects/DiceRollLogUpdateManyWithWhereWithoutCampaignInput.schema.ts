@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import type { Prisma } from '@prisma/client';
-import { DiceRollLogScalarWhereInputObjectSchema } from './DiceRollLogScalarWhereInput.schema';
-import { DiceRollLogUpdateManyMutationInputObjectSchema } from './DiceRollLogUpdateManyMutationInput.schema';
-import { DiceRollLogUncheckedUpdateManyWithoutCampaignInputObjectSchema } from './DiceRollLogUncheckedUpdateManyWithoutCampaignInput.schema'
+import { DiceRollLogScalarWhereInputObjectSchema as DiceRollLogScalarWhereInputObjectSchema } from './DiceRollLogScalarWhereInput.schema';
+import { DiceRollLogUpdateManyMutationInputObjectSchema as DiceRollLogUpdateManyMutationInputObjectSchema } from './DiceRollLogUpdateManyMutationInput.schema';
+import { DiceRollLogUncheckedUpdateManyWithoutCampaignInputObjectSchema as DiceRollLogUncheckedUpdateManyWithoutCampaignInputObjectSchema } from './DiceRollLogUncheckedUpdateManyWithoutCampaignInput.schema'
 
 const makeSchema = () => z.object({
   where: z.lazy(() => DiceRollLogScalarWhereInputObjectSchema),

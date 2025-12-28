@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const SlotTypeSchema = z.enum(['PAWS', 'BODY', 'PACK'])
 

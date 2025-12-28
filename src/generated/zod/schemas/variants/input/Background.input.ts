@@ -1,12 +1,11 @@
-import { z } from 'zod';
-
+import * as z from 'zod';
 // prettier-ignore
 export const BackgroundInputSchema = z.object({
     id: z.string(),
     name: z.string(),
     itemA: z.string(),
     itemB: z.string(),
-    characters: z.array(z.unknown()).array(),
+    characters: z.array(z.unknown()),
     createdAt: z.date(),
     updatedAt: z.date()
 }).strict();
